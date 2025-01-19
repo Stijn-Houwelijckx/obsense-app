@@ -12,18 +12,18 @@ import {
 const objectList = [
   {
     id: "1",
-    name: "Coffee Mug",
-    source: require("./res/coffee_mug/object_coffee_mug.vrx"),
+    name: "Cyber Robot",
+    source: require("./res/cyber_robot/cyber_robot.glb"),
   },
   {
     id: "2",
-    name: "Flowers",
-    source: require("./res/object_flowers/object_flowers.vrx"),
+    name: "Predator",
+    source: require("./res/predator_alien/predator_alien.glb"),
   },
   {
     id: "3",
-    name: "Emoji Smile",
-    source: require("./res/emoji_smile/emoji_smile.vrx"),
+    name: "Zombie Head",
+    source: require("./res/zombie_head/zombie_head.glb"),
   },
 ];
 
@@ -45,18 +45,16 @@ const ARScene = ({ sceneNavigator }) => {
   };
 
   // Function to handle drag events and update the position of the dragged object
-  const onDrag = (event, objectId) => {
-    // Check if the event has a position (dragging has started)
-    if (event.nativeEvent && event.nativeEvent.position) {
-      setObjects((prevObjects) =>
-        prevObjects.map(
-          (obj) =>
-            obj.id === objectId // Find the object being dragged
-              ? { ...obj, position: event.nativeEvent.position } // Update the position of the dragged object
-              : obj // Keep the other objects as they are
-        )
-      );
-    }
+  const onDrag = (dragToPos, objectId) => {
+    setObjects((prevObjects) =>
+      prevObjects.map((obj) => {
+        if (obj.id !== objectId) return obj; // Skip objects that aren't being dragged
+
+        // Update the position of the dragged object
+        console.log("Dragging Object:", objectId, "to Position:", dragToPos);
+        return { ...obj, position: dragToPos };
+      })
+    );
   };
 
   // React hook to add the selected object to the scene when the selection changes
@@ -87,9 +85,10 @@ const ARScene = ({ sceneNavigator }) => {
           key={obj.id} // Unique key for the object
           source={obj.source} // Source of the 3D object
           position={obj.position} // Position of the object in the AR space
-          scale={[0.4, 0.4, 0.4]} // Scale of the object
-          type="VRX" // Type of the object
-          onDrag={(event) => onDrag(event, obj.id)} // Handle drag for this specific object
+          scale={[0.1, 0.1, 0.1]} // Initial scale of the object
+          rotation={[0, 0, 0]} // Initial rotation of the object
+          type="GLB" // Type of the object
+          onDrag={(dragToPos) => onDrag(dragToPos, obj.id)} // Pass the object ID
         />
       ))}
     </ViroARScene>
