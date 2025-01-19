@@ -39,6 +39,7 @@ const ARScene = ({ sceneNavigator }) => {
       {
         ...selectedObject, // Add the selected object's data
         position: [0, 0, -0.5], // Set the initial position of the object in the AR space
+        scale: [0.1, 0.1, 0.1], // Set the initial scale of the object
         id: Date.now(), // Unique id for the object (using the current timestamp)
       },
     ]);
@@ -53,6 +54,33 @@ const ARScene = ({ sceneNavigator }) => {
         // Update the position of the dragged object
         console.log("Dragging Object:", objectId, "to Position:", dragToPos);
         return { ...obj, position: dragToPos };
+      })
+    );
+  };
+
+  const onPinch = (pinchState, scaleFactor, objectId) => {
+    setObjects((prevObjects) =>
+      prevObjects.map((obj) => {
+        if (obj.id !== objectId) return obj; // Skip objects that aren't being scaled
+
+        if (pinchState === 1) {
+          // Pinch start: Save the initial scale
+          return { ...obj, baseScale: obj.scale };
+        }
+
+        if (pinchState === 2) {
+          // Pinch move: Calculate the new scale dynamically
+          const newScale = obj.baseScale.map((s) => s * scaleFactor); // Scale all axes equally
+          return { ...obj, scale: newScale };
+        }
+
+        if (pinchState === 3) {
+          // Pinch end: Finalize the scale
+          console.log("Final scale:", obj.scale);
+          return obj; // No additional changes needed
+        }
+
+        return obj; // Default case
       })
     );
   };
@@ -85,10 +113,13 @@ const ARScene = ({ sceneNavigator }) => {
           key={obj.id} // Unique key for the object
           source={obj.source} // Source of the 3D object
           position={obj.position} // Position of the object in the AR space
-          scale={[0.1, 0.1, 0.1]} // Initial scale of the object
-          rotation={[0, 0, 0]} // Initial rotation of the object
+          scale={obj.scale} // Scale of the object
+          rotation={[0, 0, 0]} // Rotation of the object
           type="GLB" // Type of the object
           onDrag={(dragToPos) => onDrag(dragToPos, obj.id)} // Pass the object ID
+          onPinch={(pinchState, scaleFactor) =>
+            onPinch(pinchState, scaleFactor, obj.id)
+          } // Pass the object ID
         />
       ))}
     </ViroARScene>
