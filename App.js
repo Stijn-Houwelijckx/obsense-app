@@ -1,6 +1,15 @@
 // Import the necessary libraries
 import React, { useState } from "react";
-import { View, Alert, Button } from "react-native";
+import {
+  View,
+  Alert,
+  Button,
+  Modal,
+  Text,
+  Switch,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import {
   ViroARScene,
   ViroARSceneNavigator,
@@ -28,22 +37,21 @@ const objectList = [
   },
 ];
 
-// ARScene component to render the AR scene
 const ARScene = ({ sceneNavigator }) => {
-  // State to store the objects in the scene
   const [objects, setObjects] = useState([]);
   const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
+  const { snapToSurfaceEnabled } = sceneNavigator.viroAppProps;
 
   // Function to add a new object to the scene
   const addObjectToScene = (selectedObject) => {
     setObjects((prevObjects) => [
-      ...prevObjects, // Keep the previous objects
+      ...prevObjects,
       {
-        ...selectedObject, // Add the selected object's data
-        position: [0, 0, -0.5], // Set the initial position of the object in the AR space
-        scale: [0.1, 0.1, 0.1], // Set the initial scale of the object
-        rotation: [0, 0, 0], // Set the initial rotation of the object
-        id: Date.now(), // Unique id for the object (using the current timestamp)
+        ...selectedObject,
+        position: [0, 0, -0.5],
+        scale: [0.1, 0.1, 0.1],
+        rotation: [0, 0, 0],
+        id: Date.now(),
       },
     ]);
   };
@@ -54,10 +62,11 @@ const ARScene = ({ sceneNavigator }) => {
       prevObjects.map((obj) => {
         if (obj.id !== objectId) return obj;
 
-        // Fix the Y position to the height of the detected plane
         const newPos = [
           dragToPos[0],
-          selectedPlane ? selectedPlane.position[1] : obj.position[1], // Use the plane's Y height
+          snapToSurfaceEnabled && selectedPlane
+            ? selectedPlane.position[1]
+            : dragToPos[1], // Use the plane's Y height only if snap is enabled
           dragToPos[2],
         ];
         return { ...obj, position: newPos };
@@ -68,26 +77,18 @@ const ARScene = ({ sceneNavigator }) => {
   const onPinch = (pinchState, scaleFactor, objectId) => {
     setObjects((prevObjects) =>
       prevObjects.map((obj) => {
-        if (obj.id !== objectId) return obj; // Skip objects that aren't being scaled
+        if (obj.id !== objectId) return obj;
 
         if (pinchState === 1) {
-          // Pinch start: Save the initial scale
           return { ...obj, baseScale: obj.scale };
         }
 
         if (pinchState === 2) {
-          // Pinch move: Calculate the new scale dynamically
-          const newScale = obj.baseScale.map((s) => s * scaleFactor); // Scale all axes equally
+          const newScale = obj.baseScale.map((s) => s * scaleFactor);
           return { ...obj, scale: newScale };
         }
 
-        if (pinchState === 3) {
-          // Pinch end: Finalize the scale
-          // console.log("Final scale:", obj.scale);
-          return obj; // No additional changes needed
-        }
-
-        return obj; // Default case
+        return obj;
       })
     );
   };
@@ -95,75 +96,54 @@ const ARScene = ({ sceneNavigator }) => {
   const onRotate = (rotateState, rotationFactor, objectId) => {
     setObjects((prevObjects) =>
       prevObjects.map((obj) => {
-        if (obj.id !== objectId) return obj; // Skip objects that aren't being rotated
+        if (obj.id !== objectId) return obj;
 
         if (rotateState === 1) {
-          // Rotation start: Save the initial rotation
           return { ...obj, baseRotation: obj.rotation };
         }
 
         if (rotateState === 2) {
-          // Rotation move: Calculate the new rotation
           const newRotation = [
-            obj.baseRotation[0], // X-axis remains unchanged
-            obj.baseRotation[1] + rotationFactor, // Adjust Y-axis by the rotation factor
-            obj.baseRotation[2], // Z-axis remains unchanged
+            obj.baseRotation[0],
+            obj.baseRotation[1] + rotationFactor,
+            obj.baseRotation[2],
           ];
           return { ...obj, rotation: newRotation };
         }
 
-        if (rotateState === 3) {
-          // Rotation end: Finalize the rotation
-          // console.log("Final rotation:", obj.rotation);
-          return obj; // No additional changes needed
-        }
-
-        return obj; // Default case
+        return obj;
       })
     );
   };
 
-  // React hook to add the selected object to the scene when the selection changes
   React.useEffect(() => {
-    // Get the selected object from the props
     const selectedObject = sceneNavigator.viroAppProps.selectedObject;
 
-    // Check if an object has been selected
     if (selectedObject) {
-      console.log("Adding object to scene:", selectedObject.name);
-
-      // Add the selected object to the scene
       addObjectToScene(selectedObject);
 
-      // Reset AFTER the object has been added to the state
       setTimeout(() => {
-        // Reset the selected object to null
         sceneNavigator.viroAppProps.onObjectSelected(null);
-      }, 100); // Allow time for rendering
+      }, 100);
     }
-  }, [sceneNavigator.viroAppProps.selectedObject]); // Run when the selected object changes
+  }, [sceneNavigator.viroAppProps.selectedObject]);
 
-  // Handle plane selection (automatically detect the plane)
   const onAnchorFound = (anchor) => {
-    // console.log("onAnchorFound:", anchor);
-    setSelectedPlane(anchor); // Store the anchor's data
+    setSelectedPlane(anchor);
   };
 
   const onAnchorUpdated = (anchor) => {
-    // console.log("onAnchorUpdated:", anchor.position[1]);
-    setSelectedPlane(anchor); // Update the plane's position
+    setSelectedPlane(anchor);
   };
 
   const onAnchorRemoved = () => {
-    // console.log("onAnchorRemoved");
-    setSelectedPlane(null); // Clear the selected plane when removed
+    setSelectedPlane(null);
   };
 
   return (
     <ViroARScene>
       <ViroAmbientLight color="#ffffff" intensity={200} />
 
-      {/* Automatically detects and anchors objects to the plane */}
       <ViroARPlane
         onAnchorFound={onAnchorFound}
         onAnchorUpdated={onAnchorUpdated}
@@ -171,44 +151,42 @@ const ARScene = ({ sceneNavigator }) => {
         minHeight={0.5}
         minWidth={0.5}
       />
+
       {objects.map((obj) => (
         <Viro3DObject
-          key={obj.id} // Unique key for the object
-          source={obj.source} // Source of the 3D object
-          position={obj.position} // Position of the object in the AR space
-          scale={obj.scale} // Scale of the object
-          rotation={obj.rotation} // Rotation of the object
-          type="GLB" // Type of the object
-          onDrag={(dragToPos) => onDrag(dragToPos, obj.id)} // Pass the object ID
+          key={obj.id}
+          source={obj.source}
+          position={obj.position}
+          scale={obj.scale}
+          rotation={obj.rotation}
+          type="GLB"
+          onDrag={(dragToPos) => onDrag(dragToPos, obj.id)}
           onPinch={(pinchState, scaleFactor) =>
             onPinch(pinchState, scaleFactor, obj.id)
-          } // Pass the object ID
+          }
           onRotate={(rotateState, rotationFactor) =>
             onRotate(rotateState, rotationFactor, obj.id)
-          } // Pass the object ID
+          }
         />
       ))}
     </ViroARScene>
   );
 };
 
-// Main App component
 const App = () => {
-  const [selectedObject, setSelectedObject] = useState(null); // State to store the selected object
+  const [selectedObject, setSelectedObject] = useState(null);
+  const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
 
-  // Function to show an alert with the list of available 3D objects
   const showObjectSelectionAlert = () => {
     Alert.alert(
       "Choose a Model",
       "Select a 3D object to place in the AR scene:",
       objectList.map((obj) => ({
-        text: obj.name, // Display the name of the object
-        onPress: () => {
-          console.log("Selected:", obj.name);
-          setSelectedObject(obj); // Set the selected object
-        },
+        text: obj.name,
+        onPress: () => setSelectedObject(obj),
       })),
-      { cancelable: true } // Allow the user to cancel the alert
+      { cancelable: true }
     );
   };
 
@@ -219,21 +197,90 @@ const App = () => {
         viroAppProps={{
           selectedObject: selectedObject,
           onObjectSelected: setSelectedObject,
+          snapToSurfaceEnabled: snapToSurfaceEnabled,
         }}
       />
-      <View
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: 20,
-          right: 20,
-          alignItems: "center",
-        }}
-      >
+
+      {/* Button to open settings modal */}
+      <View style={styles.settingsButton}>
+        <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
+          <Text style={styles.buttonText}>Settings</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Button to select a model */}
+      <View style={styles.selectModelButton}>
         <Button title="Select Model" onPress={showObjectSelectionAlert} />
       </View>
+
+      {/* Modal for settings */}
+      <Modal
+        visible={isSettingsVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Settings</Text>
+            <View style={styles.switchContainer}>
+              <Text>Snap to Surface:</Text>
+              <Switch
+                value={snapToSurfaceEnabled}
+                onValueChange={setSnapToSurfaceEnabled}
+              />
+            </View>
+            <Button title="Close" onPress={() => setIsSettingsVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  settingsButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "#007BFF",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  selectModelButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    margin: 20,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "80%",
+    marginBottom: 20,
+  },
+});
 
 export default App;
