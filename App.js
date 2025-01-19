@@ -6,6 +6,7 @@ import {
   ViroARSceneNavigator,
   Viro3DObject,
   ViroAmbientLight,
+  ViroARPlane,
 } from "@reactvision/react-viro";
 
 // List of available 3D objects with their names and sources
@@ -31,6 +32,7 @@ const objectList = [
 const ARScene = ({ sceneNavigator }) => {
   // State to store the objects in the scene
   const [objects, setObjects] = useState([]);
+  const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
 
   // Function to add a new object to the scene
   const addObjectToScene = (selectedObject) => {
@@ -50,11 +52,15 @@ const ARScene = ({ sceneNavigator }) => {
   const onDrag = (dragToPos, objectId) => {
     setObjects((prevObjects) =>
       prevObjects.map((obj) => {
-        if (obj.id !== objectId) return obj; // Skip objects that aren't being dragged
+        if (obj.id !== objectId) return obj;
 
-        // Update the position of the dragged object
-        console.log("Dragging Object:", objectId, "to Position:", dragToPos);
-        return { ...obj, position: dragToPos };
+        // Fix the Y position to the height of the detected plane
+        const newPos = [
+          dragToPos[0],
+          selectedPlane ? selectedPlane.position[1] : obj.position[1], // Use the plane's Y height
+          dragToPos[2],
+        ];
+        return { ...obj, position: newPos };
       })
     );
   };
@@ -77,7 +83,7 @@ const ARScene = ({ sceneNavigator }) => {
 
         if (pinchState === 3) {
           // Pinch end: Finalize the scale
-          console.log("Final scale:", obj.scale);
+          // console.log("Final scale:", obj.scale);
           return obj; // No additional changes needed
         }
 
@@ -108,7 +114,7 @@ const ARScene = ({ sceneNavigator }) => {
 
         if (rotateState === 3) {
           // Rotation end: Finalize the rotation
-          console.log("Final rotation:", obj.rotation);
+          // console.log("Final rotation:", obj.rotation);
           return obj; // No additional changes needed
         }
 
@@ -137,9 +143,34 @@ const ARScene = ({ sceneNavigator }) => {
     }
   }, [sceneNavigator.viroAppProps.selectedObject]); // Run when the selected object changes
 
+  // Handle plane selection (automatically detect the plane)
+  const onAnchorFound = (anchor) => {
+    // console.log("onAnchorFound:", anchor);
+    setSelectedPlane(anchor); // Store the anchor's data
+  };
+
+  const onAnchorUpdated = (anchor) => {
+    // console.log("onAnchorUpdated:", anchor.position[1]);
+    setSelectedPlane(anchor); // Update the plane's position
+  };
+
+  const onAnchorRemoved = () => {
+    // console.log("onAnchorRemoved");
+    setSelectedPlane(null); // Clear the selected plane when removed
+  };
+
   return (
     <ViroARScene>
       <ViroAmbientLight color="#ffffff" intensity={200} />
+
+      {/* Automatically detects and anchors objects to the plane */}
+      <ViroARPlane
+        onAnchorFound={onAnchorFound}
+        onAnchorUpdated={onAnchorUpdated}
+        onAnchorRemoved={onAnchorRemoved}
+        minHeight={0.5}
+        minWidth={0.5}
+      />
       {objects.map((obj) => (
         <Viro3DObject
           key={obj.id} // Unique key for the object
