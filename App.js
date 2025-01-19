@@ -40,6 +40,7 @@ const ARScene = ({ sceneNavigator }) => {
         ...selectedObject, // Add the selected object's data
         position: [0, 0, -0.5], // Set the initial position of the object in the AR space
         scale: [0.1, 0.1, 0.1], // Set the initial scale of the object
+        rotation: [0, 0, 0], // Set the initial rotation of the object
         id: Date.now(), // Unique id for the object (using the current timestamp)
       },
     ]);
@@ -85,6 +86,37 @@ const ARScene = ({ sceneNavigator }) => {
     );
   };
 
+  const onRotate = (rotateState, rotationFactor, objectId) => {
+    setObjects((prevObjects) =>
+      prevObjects.map((obj) => {
+        if (obj.id !== objectId) return obj; // Skip objects that aren't being rotated
+
+        if (rotateState === 1) {
+          // Rotation start: Save the initial rotation
+          return { ...obj, baseRotation: obj.rotation };
+        }
+
+        if (rotateState === 2) {
+          // Rotation move: Calculate the new rotation
+          const newRotation = [
+            obj.baseRotation[0], // X-axis remains unchanged
+            obj.baseRotation[1] + rotationFactor, // Adjust Y-axis by the rotation factor
+            obj.baseRotation[2], // Z-axis remains unchanged
+          ];
+          return { ...obj, rotation: newRotation };
+        }
+
+        if (rotateState === 3) {
+          // Rotation end: Finalize the rotation
+          console.log("Final rotation:", obj.rotation);
+          return obj; // No additional changes needed
+        }
+
+        return obj; // Default case
+      })
+    );
+  };
+
   // React hook to add the selected object to the scene when the selection changes
   React.useEffect(() => {
     // Get the selected object from the props
@@ -114,11 +146,14 @@ const ARScene = ({ sceneNavigator }) => {
           source={obj.source} // Source of the 3D object
           position={obj.position} // Position of the object in the AR space
           scale={obj.scale} // Scale of the object
-          rotation={[0, 0, 0]} // Rotation of the object
+          rotation={obj.rotation} // Rotation of the object
           type="GLB" // Type of the object
           onDrag={(dragToPos) => onDrag(dragToPos, obj.id)} // Pass the object ID
           onPinch={(pinchState, scaleFactor) =>
             onPinch(pinchState, scaleFactor, obj.id)
+          } // Pass the object ID
+          onRotate={(rotateState, rotationFactor) =>
+            onRotate(rotateState, rotationFactor, obj.id)
           } // Pass the object ID
         />
       ))}
