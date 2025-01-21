@@ -38,15 +38,14 @@ const objectList = [
 ];
 
 const ARScene = ({ sceneNavigator }) => {
-  const [objects, setObjects] = useState([]);
+  // const [objects, setObjects] = useState([]);
   const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
-  const [currentlySelectedObjectId, setCurrentlySelectedObjectId] =
-    useState(null); // Track the currently selected object
   const {
     snapToSurfaceEnabled,
-    showSaveButton,
-    saveObject,
-    updateCurrentlySelectedObjectId,
+    objects,
+    setObjects,
+    currentlySelectedObjectId,
+    handleObjectSelect,
   } = sceneNavigator.viroAppProps;
 
   // Function to add a new object to the scene
@@ -63,58 +62,10 @@ const ARScene = ({ sceneNavigator }) => {
     ]);
   };
 
-  const handleObjectSelect = (clickState, objectId) => {
+  const handleObjectClick = (clickState, objectId) => {
     if (clickState === 1) {
-      if (currentlySelectedObjectId && currentlySelectedObjectId !== objectId) {
-        Alert.alert(
-          "Save Changes",
-          "You have unsaved changes. Do you want to save them before selecting another object?",
-          [
-            {
-              text: "Cancel",
-              onPress: () => {},
-              style: "cancel",
-            },
-            {
-              text: "Save:",
-              description: "Save the changes and select the new object",
-              onPress: () => {
-                saveSelectedObject();
-              },
-            },
-          ]
-        );
-      } else {
-        selectNewObject(objectId);
-      }
+      handleObjectSelect({ id: objectId });
     }
-  };
-
-  const selectNewObject = (objectId) => {
-    setCurrentlySelectedObjectId(objectId);
-    sceneNavigator.viroAppProps.setShowSaveButton(true);
-
-    if (sceneNavigator.viroAppProps.updateCurrentlySelectedObjectId) {
-      sceneNavigator.viroAppProps.updateCurrentlySelectedObjectId(objectId);
-    }
-  };
-
-  const saveSelectedObject = () => {
-    saveObject(currentlySelectedObjectId);
-    console.log("Object saved with ID: ", currentlySelectedObjectId);
-    console.log(
-      "Position: ",
-      objects.find((obj) => obj.id === currentlySelectedObjectId).position
-    );
-    console.log(
-      "Scale: ",
-      objects.find((obj) => obj.id === currentlySelectedObjectId).scale
-    );
-    console.log(
-      "Rotation: ",
-      objects.find((obj) => obj.id === currentlySelectedObjectId).rotation
-    );
-    setCurrentlySelectedObjectId(null);
   };
 
   // Function to handle drag events and update the position of the dragged object
@@ -225,7 +176,7 @@ const ARScene = ({ sceneNavigator }) => {
           rotation={obj.rotation}
           type="GLB"
           // dragType="FixedToWorld"
-          onClickState={(clickState) => handleObjectSelect(clickState, obj.id)}
+          onClickState={(clickState) => handleObjectClick(clickState, obj.id)}
           onDrag={(dragToPos) => onDrag(dragToPos, obj.id)}
           onPinch={(pinchState, scaleFactor) =>
             onPinch(pinchState, scaleFactor, obj.id)
@@ -243,13 +194,9 @@ const App = () => {
   const [selectedObject, setSelectedObject] = useState(null);
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
-  const [showSaveButton, setShowSaveButton] = useState(false);
   const [currentlySelectedObjectId, setCurrentlySelectedObjectId] =
     useState(null);
-
-  const updateCurrentlySelectedObjectId = (objectId) => {
-    setCurrentlySelectedObjectId(objectId);
-  };
+  const [objects, setObjects] = useState([]); // Manage objects in App
 
   const showObjectSelectionAlert = () => {
     Alert.alert(
@@ -263,13 +210,52 @@ const App = () => {
     );
   };
 
+  const handleObjectSelect = (obj) => {
+    // If an object is selected already and it's different from the current one
+    if (currentlySelectedObjectId && currentlySelectedObjectId !== obj.id) {
+      Alert.alert(
+        "Save Changes",
+        "You have unsaved changes. Do you want to save them before selecting another object?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {},
+            style: "cancel",
+          },
+          {
+            text: "Save",
+            onPress: () => {
+              saveObject(currentlySelectedObjectId);
+            },
+          },
+        ]
+      );
+    } else {
+      // If no object is selected, just select the new object
+      selectNewObject(obj);
+    }
+  };
+
+  const selectNewObject = (obj) => {
+    setCurrentlySelectedObjectId(obj.id);
+  };
+
   const saveObject = (objectId) => {
     if (!objectId) {
       console.log("No object selected to save.");
       return;
     }
     console.log("Save object with ID: ", objectId);
-    setShowSaveButton(false);
+    console.log(
+      "Position: ",
+      objects.find((obj) => obj.id === objectId).position
+    );
+    console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
+    console.log(
+      "Rotation: ",
+      objects.find((obj) => obj.id === objectId).rotation
+    );
+    setCurrentlySelectedObjectId(null); // Reset the selected object after saving
   };
 
   return (
@@ -280,10 +266,10 @@ const App = () => {
           selectedObject: selectedObject,
           onObjectSelected: setSelectedObject,
           snapToSurfaceEnabled: snapToSurfaceEnabled,
-          showSaveButton: showSaveButton,
-          saveObject: saveObject,
-          setShowSaveButton: setShowSaveButton,
-          updateCurrentlySelectedObjectId: updateCurrentlySelectedObjectId, // Pass the callback
+          objects: objects, // Pass objects to ARScene
+          setObjects: setObjects, // Allow ARScene to update objects
+          currentlySelectedObjectId: currentlySelectedObjectId,
+          handleObjectSelect: handleObjectSelect,
         }}
       />
 
@@ -320,7 +306,7 @@ const App = () => {
         </View>
       </Modal>
 
-      {showSaveButton && (
+      {currentlySelectedObjectId && (
         <View style={styles.saveButton}>
           <Button
             title="Save"
