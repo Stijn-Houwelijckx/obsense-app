@@ -258,6 +258,13 @@ const App = () => {
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
   };
 
+  const deleteSelectedObject = () => {
+    setObjects((prevObjects) =>
+      prevObjects.filter((obj) => obj.id !== currentlySelectedObjectId)
+    );
+    setCurrentlySelectedObjectId(null);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <ViroARSceneNavigator
@@ -314,6 +321,12 @@ const App = () => {
           />
         </View>
       )}
+
+      {currentlySelectedObjectId && (
+        <View style={styles.deleteButton}>
+          <Button title="Delete" onPress={deleteSelectedObject} color="red" />
+        </View>
+      )}
     </View>
   );
 };
@@ -366,6 +379,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     left: 20,
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 20,
+    left: "50%",
+    transform: [{ translateX: -50 }],
   },
 });
 
