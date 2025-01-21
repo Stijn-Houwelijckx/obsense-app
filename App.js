@@ -68,6 +68,13 @@ const ARScene = ({ sceneNavigator }) => {
     }
   };
 
+  // Helper function to determine opacity based on selection
+  const getObjectOpacity = (objectId) => {
+    return currentlySelectedObjectId && currentlySelectedObjectId !== objectId
+      ? 0.5 // Reduced opacity for unselected objects
+      : 1.0; // Full opacity for selected or all if none is selected
+  };
+
   // Function to handle drag events and update the position of the dragged object
   const onDrag = (dragToPos, objectId) => {
     if (currentlySelectedObjectId !== objectId) return;
@@ -177,6 +184,7 @@ const ARScene = ({ sceneNavigator }) => {
           type="GLB"
           // dragType="FixedToWorld"
           onClickState={(clickState) => handleObjectClick(clickState, obj.id)}
+          opacity={getObjectOpacity(obj.id)} // Apply opacity dynamically
           onDrag={(dragToPos) => onDrag(dragToPos, obj.id)}
           onPinch={(pinchState, scaleFactor) =>
             onPinch(pinchState, scaleFactor, obj.id)
