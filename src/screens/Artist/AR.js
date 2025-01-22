@@ -1,5 +1,5 @@
 // Import the necessary libraries
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Alert,
@@ -17,23 +17,24 @@ import {
   ViroAmbientLight,
   ViroARPlane,
 } from "@reactvision/react-viro";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 // List of available 3D objects with their names and sources
 const objectList = [
   {
     id: "1",
     name: "Cyber Robot",
-    source: require("./res/cyber_robot/cyber_robot.glb"),
+    source: require("../../../res/cyber_robot/cyber_robot.glb"),
   },
   {
     id: "2",
     name: "Predator",
-    source: require("./res/predator_alien/predator_alien.glb"),
+    source: require("../../../res/predator_alien/predator_alien.glb"),
   },
   {
     id: "3",
     name: "Zombie Head",
-    source: require("./res/zombie_head/zombie_head.glb"),
+    source: require("../../../res/zombie_head/zombie_head.glb"),
   },
 ];
 
@@ -198,13 +199,56 @@ const ARScene = ({ sceneNavigator }) => {
   );
 };
 
-const App = () => {
+const AR = () => {
+  const navigation = useNavigation(); // React Navigation hook for navigation
+  const isFocused = useIsFocused(); // React Navigation hook to track focus
   const [selectedObject, setSelectedObject] = useState(null);
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
   const [currentlySelectedObjectId, setCurrentlySelectedObjectId] =
     useState(null);
   const [objects, setObjects] = useState([]); // Manage objects in App
+  const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
+
+  // React Navigation Focus Effect
+  useEffect(() => {
+    if (isFocused) {
+      setIsARActive(true); // Activate AR scene when screen is focused
+    } else {
+      setIsARActive(false); // Deactivate AR scene when screen is blurred
+    }
+  }, [isFocused]);
+
+  const handleBackPress = () => {
+    if (currentlySelectedObjectId) {
+      Alert.alert(
+        "Save Changes",
+        "You have unsaved changes. Do you want to save them before exiting?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {},
+            style: "cancel",
+          },
+          {
+            text: "Save",
+            onPress: () => {
+              saveObject(currentlySelectedObjectId);
+              cleanupAndGoBack();
+            },
+          },
+        ]
+      );
+    } else {
+      cleanupAndGoBack();
+    }
+  };
+
+  const cleanupAndGoBack = () => {
+    setObjects([]); // Clear objects when navigating away
+    setCurrentlySelectedObjectId(null); // Reset selected object
+    navigation.goBack(); // Go back to the previous screen
+  };
 
   const showObjectSelectionAlert = () => {
     Alert.alert(
@@ -275,18 +319,28 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <ViroARSceneNavigator
-        initialScene={{ scene: ARScene }}
-        viroAppProps={{
-          selectedObject: selectedObject,
-          onObjectSelected: setSelectedObject,
-          snapToSurfaceEnabled: snapToSurfaceEnabled,
-          objects: objects, // Pass objects to ARScene
-          setObjects: setObjects, // Allow ARScene to update objects
-          currentlySelectedObjectId: currentlySelectedObjectId,
-          handleObjectSelect: handleObjectSelect,
-        }}
-      />
+      {isARActive && (
+        <ViroARSceneNavigator
+          autofocus={true}
+          initialScene={{ scene: ARScene }}
+          viroAppProps={{
+            selectedObject: selectedObject,
+            onObjectSelected: setSelectedObject,
+            snapToSurfaceEnabled: snapToSurfaceEnabled,
+            objects: objects, // Pass objects to ARScene
+            setObjects: setObjects, // Allow ARScene to update objects
+            currentlySelectedObjectId: currentlySelectedObjectId,
+            handleObjectSelect: handleObjectSelect,
+          }}
+        />
+      )}
+
+      <TouchableOpacity
+        style={styles.customBackButton}
+        onPress={handleBackPress}
+      >
+        <Text style={styles.backButtonText}>{"< Back"}</Text>
+      </TouchableOpacity>
 
       {/* Button to open settings modal */}
       <View style={styles.settingsButton}>
@@ -340,6 +394,19 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  customBackButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   settingsButton: {
     position: "absolute",
     top: 20,
@@ -396,4 +463,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default AR;
