@@ -10,6 +10,13 @@ import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import Details from "../screens/Shared/Details";
 
+// Import custom icons
+import HomeIcon from "../components/icons/HomeIcon";
+import CompassIcon from "../components/icons/CompassIcon";
+import CameraIcon from "../components/icons/CameraIcon";
+import MapIcon from "../components/icons/MapIcon";
+import CogIcon from "../components/icons/CogIcon";
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -50,12 +57,60 @@ const SettingsStack = () => (
 );
 
 const UserNavigator = () => (
-  <Tab.Navigator>
-    <Tab.Screen name="Home" component={HomeStack} />
-    <Tab.Screen name="Explore" component={ExploreStack} />
-    <Tab.Screen name="AR" component={ARStack} />
-    <Tab.Screen name="Map" component={MapStack} />
-    <Tab.Screen name="Settings" component={SettingsStack} />
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      tabBarStyle: route.name === "AR" ? { display: "none" } : {}, // Hide tab bar on AR screen
+    })}
+  >
+    <Tab.Screen
+      name="Home"
+      component={HomeStack}
+      options={{
+        tabBarIcon: () => (
+          <HomeIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Explore"
+      component={ExploreStack}
+      options={{
+        tabBarIcon: () => <CompassIcon width={24} height={24} fill="#B1B0AF" />,
+      }}
+    />
+    <Tab.Screen
+      name="AR"
+      component={ARStack}
+      options={{
+        tabBarIcon: () => (
+          <CameraIcon
+            width={24}
+            height={24}
+            stroke="#B1B0AF"
+            strokeWidth="1.5"
+          />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Map"
+      component={MapStack}
+      options={{
+        tabBarIcon: () => (
+          <MapIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Settings"
+      component={SettingsStack}
+      options={{
+        tabBarIcon: () => (
+          <CogIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        ),
+      }}
+    />
   </Tab.Navigator>
 );
 
