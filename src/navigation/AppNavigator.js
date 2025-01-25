@@ -8,6 +8,7 @@ import AuthNavigator from "./AuthNavigator";
 const AppNavigator = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isArtist, setIsArtist] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false); // Track if the status is updated
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -15,7 +16,8 @@ const AppNavigator = () => {
 
       if (userToken) {
         setIsLoggedIn(true);
-        const isArtist = await AsyncStorage.getItem("isArtist");
+        const isArtist =
+          (await AsyncStorage.getItem("isArtist")) === "true" ? true : false;
         if (isArtist) {
           setIsArtist(true);
         } else {
@@ -27,15 +29,26 @@ const AppNavigator = () => {
     };
 
     checkUserStatus();
-  }, []);
+  }, [isUpdated]);
 
-  if (!isLoggedIn) {
-    return <AuthNavigator />;
-  }
+  // Function to notify that sign-up was successful
+  const handleAuthChangeSuccess = () => {
+    setIsUpdated((prev) => !prev); // Trigger state update to force recheck
+    console.log("Auth Change successfull. Rechecking user status...");
+  };
 
   return (
     <NavigationContainer>
-      {isArtist ? <ArtistNavigator /> : <UserNavigator />}
+      {/* If the user is not logged in, show AuthNavigator */}
+      {isLoggedIn ? (
+        isArtist ? (
+          <ArtistNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+        ) : (
+          <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+        )
+      ) : (
+        <AuthNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+      )}
     </NavigationContainer>
   );
 };
