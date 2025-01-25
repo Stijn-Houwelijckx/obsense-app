@@ -36,9 +36,16 @@ const MapStack = () => (
 );
 
 // Settings Stack (for settings pages like AccountSettings, ChangePassword, etc.)
-const SettingsStack = () => (
+const SettingsStack = ({ handleAuthChangeSuccess }) => (
   <Stack.Navigator>
-    <Stack.Screen name="SettingsScreen" component={Settings} />
+    <Stack.Screen name="SettingsScreen">
+      {(props) => (
+        <Settings
+          {...props}
+          handleAuthChangeSuccess={handleAuthChangeSuccess} // Pass it here
+        />
+      )}
+    </Stack.Screen>
     <Stack.Screen name="AccountSettings" component={AccountSettings} />
     <Stack.Screen name="ChangePassword" component={ChangePassword} />
     <Stack.Screen name="Notification" component={Notification} />
@@ -46,7 +53,7 @@ const SettingsStack = () => (
 );
 
 // Main Artist Tab Navigator
-const ArtistNavigator = () => (
+const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false,
@@ -87,13 +94,19 @@ const ArtistNavigator = () => (
     />
     <Tab.Screen
       name="Settings"
-      component={SettingsStack}
       options={{
         tabBarIcon: () => (
           <CogIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
-    />
+    >
+      {(props) => (
+        <SettingsStack
+          {...props}
+          handleAuthChangeSuccess={handleAuthChangeSuccess}
+        />
+      )}
+    </Tab.Screen>
   </Tab.Navigator>
 );
 

@@ -5,6 +5,7 @@ import Home from "../screens/User/Home";
 import Explore from "../screens/User/Explore";
 import AR from "../screens/User/AR";
 import Map from "../screens/User/Map";
+import Settings from "../screens/User/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
@@ -48,15 +49,23 @@ const MapStack = () => (
   </Stack.Navigator>
 );
 
-const SettingsStack = () => (
+const SettingsStack = ({ handleAuthChangeSuccess }) => (
   <Stack.Navigator>
+    <Stack.Screen name="SettingsScreen">
+      {(props) => (
+        <Settings
+          {...props}
+          handleAuthChangeSuccess={handleAuthChangeSuccess} // Pass it here
+        />
+      )}
+    </Stack.Screen>
     <Stack.Screen name="AccountSettings" component={AccountSettings} />
     <Stack.Screen name="ChangePassword" component={ChangePassword} />
     <Stack.Screen name="Notification" component={Notification} />
   </Stack.Navigator>
 );
 
-const UserNavigator = () => (
+const UserNavigator = ({ handleAuthChangeSuccess }) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false,
@@ -104,13 +113,19 @@ const UserNavigator = () => (
     />
     <Tab.Screen
       name="Settings"
-      component={SettingsStack}
       options={{
         tabBarIcon: () => (
           <CogIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
-    />
+    >
+      {(props) => (
+        <SettingsStack
+          {...props}
+          handleAuthChangeSuccess={handleAuthChangeSuccess}
+        />
+      )}
+    </Tab.Screen>
   </Tab.Navigator>
 );
 
