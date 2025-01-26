@@ -51,13 +51,13 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
       console.log("Response data:", response.data.status);
 
       if (response.data.status === "success") {
-        const { token, userId, isArtist } = response.data.data;
+        const { _id, isArtist, token } = response.data.data;
 
         console.log("Token:", token);
 
         // Save token and user type in AsyncStorage
         await AsyncStorage.setItem("userToken", token);
-        await AsyncStorage.setItem("userId", userId);
+        await AsyncStorage.setItem("userId", _id);
         await AsyncStorage.setItem("isArtist", isArtist.toString());
 
         // Notify AppNavigator that sign-up was successful
@@ -79,7 +79,7 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
-        <Text style={styles.title}>Sign Up</Text>
+        <Text style={styles.title}>Login</Text>
 
         {/* Error Message */}
         {errorMessage ? (

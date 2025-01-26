@@ -21,6 +21,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
   // Input states
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -32,7 +33,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
   const handleNextStep = () => {
     // Validation for step 1 (first name, last name, email)
-    if (!firstName || !lastName || !email) {
+    if (!firstName || !lastName || !username || !email) {
       setErrorMessage("All fields are required.");
       return;
     }
@@ -71,6 +72,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
           user: {
             firstName,
             lastName,
+            username,
             email,
             password,
           },
@@ -84,13 +86,13 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
       console.log("Response data:", response.data.status);
 
       if (response.data.status === "success") {
-        const { token, userId, isArtist } = response.data.data;
+        const { _id, isArtist, token } = response.data.data;
 
         console.log("Token:", token);
 
         // Save token and user type in AsyncStorage
         await AsyncStorage.setItem("userToken", token);
-        await AsyncStorage.setItem("userId", userId);
+        await AsyncStorage.setItem("userId", _id);
         await AsyncStorage.setItem("isArtist", isArtist.toString());
 
         // Notify AppNavigator that sign-up was successful
@@ -135,6 +137,13 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
               placeholderTextColor="#aaa"
               value={lastName}
               onChangeText={setLastName}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#aaa"
+              value={username}
+              onChangeText={setUsername}
             />
             <TextInput
               style={styles.input}
