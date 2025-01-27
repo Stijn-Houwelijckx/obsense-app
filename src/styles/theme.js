@@ -153,3 +153,38 @@ export const LINE_HEIGHT = {
     lg: 18, // Large Label
   },
 };
+
+export const LETTER_SPACING = {
+  // Display Letter Spacings
+  display: {
+    xs: -0.32, // Extra Small Display
+    sm: -0.32, // Small Display
+    lg: -0.32, // Large Display
+  },
+
+  // Heading Letter Spacings
+  heading: {
+    xs: -0.32, // Extra Small Heading
+    sm: -0.32, // Small Heading
+    md: -0.32, // Medium Heading
+    lg: -0.32, // Large Heading
+    xl: -0.32, // Extra Large Heading
+    xxl: -0.32, // Extra Extra Large Heading
+  },
+
+  // Body Text Letter Spacings
+  body: {
+    xs: 0, // Extra Small Body
+    sm: 0, // Small Body
+    md: 0, // Medium Body
+    lg: 0, // Large Body
+  },
+
+  // Label Letter Spacings
+  label: {
+    xs: 0, // Extra Extra Small Label
+    sm: 0, // Small Label
+    md: 0, // Medium Label
+    lg: 0, // Large Label
+  },
+};
