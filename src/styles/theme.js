@@ -118,3 +118,38 @@ export const FONT_SIZES = {
     lg: 16, // Large Label
   },
 };
+
+export const LINE_HEIGHT = {
+  // Display Line Heights
+  display: {
+    xs: 36, // Extra Small Display
+    sm: 48, // Small Display
+    lg: 56, // Large Display
+  },
+
+  // Heading Line Heights
+  heading: {
+    xs: 28, // Extra Small Heading
+    sm: 32, // Small Heading
+    md: 36, // Medium Heading
+    lg: 40, // Large Heading
+    xl: 44, // Extra Large Heading
+    xxl: 48, // Extra Extra Large Heading
+  },
+
+  // Body Text Line Heights
+  body: {
+    xs: 20, // Extra Small Body
+    sm: 20, // Small Body
+    md: 24, // Medium Body
+    lg: 28, // Large Body
+  },
+
+  // Label Line Heights
+  label: {
+    xs: 14, // Extra Extra Small Label
+    sm: 16, // Small Label
+    md: 16, // Medium Label
+    lg: 18, // Large Label
+  },
+};
