@@ -83,3 +83,38 @@ export const COLORS = {
     950: "#450a0a",
   },
 };
+
+export const FONT_SIZES = {
+  // Display Sizes
+  display: {
+    xs: 36, // Extra Small Display
+    sm: 44, // Small Display
+    lg: 52, // Large Display
+  },
+
+  // Heading Sizes
+  heading: {
+    xs: 20, // Extra Small Heading
+    sm: 24, // Small Heading
+    md: 28, // Medium Heading
+    lg: 32, // Large Heading
+    xl: 36, // Extra Large Heading
+    xxl: 40, // Extra Extra Large Heading
+  },
+
+  // Body Text Sizes
+  body: {
+    xs: 12, // Extra Small Body
+    sm: 14, // Small Body
+    md: 16, // Medium Body
+    lg: 18, // Large Body
+  },
+
+  // Label Sizes
+  label: {
+    xs: 10, // Extra Extra Small Label
+    sm: 12, // Small Label
+    md: 14, // Medium Label
+    lg: 16, // Large Label
+  },
+};
