@@ -65,7 +65,7 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       component={HomeStack}
       options={{
         tabBarIcon: () => (
-          <HomeIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <HomeIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -74,12 +74,7 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       component={AR}
       options={{
         tabBarIcon: () => (
-          <CameraIcon
-            width={24}
-            height={24}
-            stroke="#B1B0AF"
-            strokeWidth="1.5"
-          />
+          <CameraIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -88,7 +83,7 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       component={MapStack}
       options={{
         tabBarIcon: () => (
-          <MapIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <MapIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -96,7 +91,7 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       name="Settings"
       options={{
         tabBarIcon: () => (
-          <CogIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <CogIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     >

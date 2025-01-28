@@ -1,10 +1,10 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
-const CompassIcon = ({ width = 24, height = 24, fill = "#B1B0AF" }) => (
+const CompassIcon = ({ size = 24, fill = "#B1B0AF" }) => (
   <Svg
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

@@ -77,7 +77,7 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       component={HomeStack}
       options={{
         tabBarIcon: () => (
-          <HomeIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <HomeIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -85,7 +85,7 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       name="Explore"
       component={ExploreStack}
       options={{
-        tabBarIcon: () => <CompassIcon width={24} height={24} fill="#B1B0AF" />,
+        tabBarIcon: () => <CompassIcon size={24} fill="#B1B0AF" />,
       }}
     />
     <Tab.Screen
@@ -93,12 +93,7 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       component={ARStack}
       options={{
         tabBarIcon: () => (
-          <CameraIcon
-            width={24}
-            height={24}
-            stroke="#B1B0AF"
-            strokeWidth="1.5"
-          />
+          <CameraIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -107,7 +102,7 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       component={MapStack}
       options={{
         tabBarIcon: () => (
-          <MapIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <MapIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     />
@@ -115,7 +110,7 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       name="Settings"
       options={{
         tabBarIcon: () => (
-          <CogIcon width={24} height={24} stroke="#B1B0AF" strokeWidth="1.5" />
+          <CogIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
         ),
       }}
     >
