@@ -9,7 +9,7 @@ import {
 
 const CustomButton = ({
   variant = "filled",
-  size = "medium",
+  size = "large",
   title,
   onPress,
 }) => {
