@@ -30,17 +30,17 @@ const AuthNavigator = ({ handleAuthChangeSuccess }) => {
       }}
     >
       <Stack.Screen name="LandingPage" component={LandingPage} />
-      <Stack.Screen name="Login">
-        {(props) => (
-          <Login {...props} handleAuthChangeSuccess={handleAuthChangeSuccess} />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="SignUp">
+      <Stack.Screen name="Create Account">
         {(props) => (
           <SignUp
             {...props}
             handleAuthChangeSuccess={handleAuthChangeSuccess}
           />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Login">
+        {(props) => (
+          <Login {...props} handleAuthChangeSuccess={handleAuthChangeSuccess} />
         )}
       </Stack.Screen>
     </Stack.Navigator>

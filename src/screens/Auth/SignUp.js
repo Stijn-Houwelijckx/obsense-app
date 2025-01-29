@@ -14,6 +14,8 @@ import CheckBox from "@react-native-community/checkbox";
 import axios from "axios";
 import API_PATHS from "../../config/apiConfig";
 
+import ProgressIndicator from "../../components/UI/ProgressIndicator";
+
 const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
   // Step state
   const [step, setStep] = useState(1);
@@ -124,6 +126,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
         {/* Step 1: First Name, Last Name, Email */}
         {step === 1 && (
           <>
+            <ProgressIndicator totalSteps={2} currentStep={step} />
             <TextInput
               style={styles.input}
               placeholder="First Name"
@@ -163,6 +166,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
         {/* Step 2: Password, Confirm Password, Privacy Policy */}
         {step === 2 && (
           <>
+            <ProgressIndicator totalSteps={2} currentStep={step} />
             <TextInput
               style={styles.input}
               placeholder="Password"

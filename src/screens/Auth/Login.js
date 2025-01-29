@@ -115,7 +115,7 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
 
         <TouchableOpacity
           style={styles.link}
-          onPress={() => navigation.navigate("SignUp")}
+          onPress={() => navigation.navigate("Create Account")}
         >
           <Text style={styles.linkText}>
             Don't have an account yet? Sign Up

@@ -44,15 +44,15 @@ const LandingPage = ({ navigation }) => {
           <CustomButton
             variant="filled"
             size="large"
-            title="Login"
-            onPress={() => navigation.navigate("Login")} // Navigate to Login screen
+            title="Create Account"
+            onPress={() => navigation.navigate("Create Account")} // Navigate to Signup screen
             style={styles.btn}
           />
           <CustomButton
             variant="outlined"
             size="large"
-            title="Sign Up"
-            onPress={() => navigation.navigate("SignUp")} // Navigate to Signup screen
+            title="Already Have an Account"
+            onPress={() => navigation.navigate("Login")} // Navigate to Login screen
             style={styles.btn}
           />
         </View>
