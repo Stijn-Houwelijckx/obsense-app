@@ -2,6 +2,22 @@ import { StyleSheet } from "react-native";
 import { COLORS, FONT_SIZES, LINE_HEIGHT, LETTER_SPACING } from "./theme";
 
 export const globalStyles = StyleSheet.create({
+  // Container
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: COLORS.primaryNeutral[900],
+  },
+  secondaryContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: COLORS.primaryNeutral[800],
+  },
+
+  // ===== FONT STYLES =====
   // Display Text Styles
   // displayLarge
   displayLargeMedium: {
