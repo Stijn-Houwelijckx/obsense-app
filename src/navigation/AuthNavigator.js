@@ -14,20 +14,20 @@ const AuthNavigator = ({ handleAuthChangeSuccess }) => {
   return (
     <Stack.Navigator
       initialRouteName="LandingPage"
-      screenOptions={({ navigation, route }) => ({
-        // We use navigation.canGoBack() to check if there's a back action
-        header: () => {
-          const showBackButton =
-            route.name !== "LandingPage" && navigation.canGoBack();
+      screenOptions={({ navigation, route }) => {
+        // Hide header for LandingPage
+        if (route.name === "LandingPage") {
+          return { headerShown: false };
+        }
 
-          return (
-            <Header
-              title={route.name} // You can set dynamic title here if needed
-              showBackButton={showBackButton}
-            />
-          );
-        },
-      })}
+        const showBackButton = navigation.canGoBack();
+
+        return {
+          header: () => (
+            <Header title={route.name} showBackButton={showBackButton} />
+          ),
+        };
+      }}
     >
       <Stack.Screen name="LandingPage" component={LandingPage} />
       <Stack.Screen name="Login">
