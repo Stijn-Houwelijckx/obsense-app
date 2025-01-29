@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArtistNavigator from "./ArtistNavigator";
 import UserNavigator from "./UserNavigator";
 import AuthNavigator from "./AuthNavigator";
+
+import { COLORS } from "../styles/theme";
 
 const AppNavigator = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,6 +42,10 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
+      <StatusBar
+        barStyle="light-content" // Makes the status bar text white
+        backgroundColor={COLORS.primaryNeutral[900]} // Sets the background color of the status bar
+      />
       {/* If the user is not logged in, show AuthNavigator */}
       {isLoggedIn ? (
         isArtist ? (
