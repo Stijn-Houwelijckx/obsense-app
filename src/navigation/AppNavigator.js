@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SystemNavigationBar from "react-native-system-navigation-bar";
 import ArtistNavigator from "./ArtistNavigator";
 import UserNavigator from "./UserNavigator";
 import AuthNavigator from "./AuthNavigator";
@@ -14,6 +15,8 @@ const AppNavigator = () => {
   const [isUpdated, setIsUpdated] = useState(false); // Track if the status is updated
 
   useEffect(() => {
+    SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[900], "light");
+
     const checkUserStatus = async () => {
       const userToken = await AsyncStorage.getItem("userToken");
 
