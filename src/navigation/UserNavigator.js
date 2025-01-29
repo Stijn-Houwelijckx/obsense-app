@@ -18,39 +18,117 @@ import CameraIcon from "../components/icons/CameraIcon";
 import MapIcon from "../components/icons/MapIcon";
 import CogIcon from "../components/icons/CogIcon";
 
+// Custom Components
+import Header from "../components/UI/Header";
+
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={({ navigation, route }) => ({
+      // We use navigation.canGoBack() to check if there's a back action
+      header: () => {
+        const showBackButton =
+          route.name !== "HomeScreen" && navigation.canGoBack();
+
+        return (
+          <Header
+            title={route.name} // You can set dynamic title here if needed
+            showBackButton={showBackButton}
+          />
+        );
+      },
+    })}
+  >
     <Stack.Screen name="HomeScreen" component={Home} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
 
 const ExploreStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={({ navigation, route }) => ({
+      // We use navigation.canGoBack() to check if there's a back action
+      header: () => {
+        const showBackButton =
+          route.name !== "ExploreScreen" && navigation.canGoBack();
+
+        return (
+          <Header
+            title={route.name} // You can set dynamic title here if needed
+            showBackButton={showBackButton}
+          />
+        );
+      },
+    })}
+  >
     <Stack.Screen name="ExploreScreen" component={Explore} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
 
 const ARStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={({ navigation, route }) => ({
+      // We use navigation.canGoBack() to check if there's a back action
+      header: () => {
+        const showBackButton =
+          route.name !== "ARScreen" && navigation.canGoBack();
+
+        return (
+          <Header
+            title={route.name} // You can set dynamic title here if needed
+            showBackButton={showBackButton}
+          />
+        );
+      },
+    })}
+  >
     <Stack.Screen name="ARScreen" component={AR} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
 
 const MapStack = () => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={({ navigation, route }) => ({
+      // We use navigation.canGoBack() to check if there's a back action
+      header: () => {
+        const showBackButton =
+          route.name !== "MapScreen" && navigation.canGoBack();
+
+        return (
+          <Header
+            title={route.name} // You can set dynamic title here if needed
+            showBackButton={showBackButton}
+          />
+        );
+      },
+    })}
+  >
     <Stack.Screen name="MapScreen" component={Map} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
 
 const SettingsStack = ({ handleAuthChangeSuccess }) => (
-  <Stack.Navigator>
+  <Stack.Navigator
+    screenOptions={({ navigation, route }) => ({
+      // We use navigation.canGoBack() to check if there's a back action
+      header: () => {
+        const showBackButton =
+          route.name !== "SettingsScreen" && navigation.canGoBack();
+
+        return (
+          <Header
+            title={route.name} // You can set dynamic title here if needed
+            showBackButton={showBackButton}
+          />
+        );
+      },
+    })}
+  >
     <Stack.Screen name="SettingsScreen">
       {(props) => (
         <Settings
