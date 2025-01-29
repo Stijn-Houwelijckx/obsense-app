@@ -35,7 +35,7 @@ const LandingPage = ({ navigation }) => {
         style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
       >
         <View style={styles.headingContainer}>
-          <LogoSmallText />
+          <LogoSmallText width={210} />
           <Text style={[styles.title, globalStyles.bodyLargeBold]}>
             Where Reality and Imagination Collide
           </Text>
