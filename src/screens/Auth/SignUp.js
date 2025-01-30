@@ -14,7 +14,20 @@ import CheckBox from "@react-native-community/checkbox";
 import axios from "axios";
 import API_PATHS from "../../config/apiConfig";
 
+// Import Styles
+import { COLORS } from "../../styles/theme";
+import { globalStyles } from "../../styles/global";
+
+// Import Icons
+import LockClosedIcon from "../../components/icons/LockClosedIcon";
+import EyeIcon from "../../components/icons/EyeIcon";
+import EyeSlashIcon from "../../components/icons/EyeSlashIcon";
+
+// Import Components
 import ProgressIndicator from "../../components/UI/ProgressIndicator";
+import InputField from "../../components/UI/InputField";
+import CustomButton from "../../components/UI/CustomButton";
+import SocialButton from "../../components/UI/SocialButton";
 
 const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
   // Step state
@@ -35,14 +48,23 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
   const handleNextStep = () => {
     // Validation for step 1 (first name, last name, email)
-    if (!firstName || !lastName || !username || !email) {
-      setErrorMessage("All fields are required.");
-      return;
-    }
+    if (step === 1) {
+      if (!firstName || !lastName) {
+        setErrorMessage("All fields are required.");
+        return;
+      }
 
-    // Proceed to step 2
-    setErrorMessage("");
-    setStep(2);
+      // Proceed to step 2
+      setErrorMessage("");
+      setStep(2);
+    } else if (step === 2) {
+      if (!username || !email) {
+        setErrorMessage("All fields are required.");
+        return;
+      }
+      setErrorMessage("");
+      setStep(3);
+    }
   };
 
   const handleSignUp = async () => {
@@ -115,165 +137,300 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Sign Up</Text>
-
-        {/* Error Message */}
-        {errorMessage ? (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        ) : null}
-
-        {/* Step 1: First Name, Last Name, Email */}
-        {step === 1 && (
-          <>
-            <ProgressIndicator totalSteps={2} currentStep={step} />
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              placeholderTextColor="#aaa"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              placeholderTextColor="#aaa"
-              value={lastName}
-              onChangeText={setLastName}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Username"
-              placeholderTextColor="#aaa"
-              value={username}
-              onChangeText={setUsername}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email Address"
-              placeholderTextColor="#aaa"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <TouchableOpacity style={styles.button} onPress={handleNextStep}>
-              <Text style={styles.buttonText}>Next</Text>
-            </TouchableOpacity>
-          </>
-        )}
-
-        {/* Step 2: Password, Confirm Password, Privacy Policy */}
-        {step === 2 && (
-          <>
-            <ProgressIndicator totalSteps={2} currentStep={step} />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="#aaa"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Confirm Password"
-              placeholderTextColor="#aaa"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-            <View style={styles.checkboxContainer}>
-              <CheckBox
-                value={agreeToPolicy}
-                onValueChange={setAgreeToPolicy}
-                style={styles.checkbox}
-              />
-              <Text style={styles.checkboxLabel}>
-                I agree with the privacy policy.
-              </Text>
-            </View>
-            {loading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-              <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                <Text style={styles.buttonText}>Sign Up</Text>
-              </TouchableOpacity>
-            )}
-          </>
-        )}
-
-        <TouchableOpacity
-          style={styles.link}
-          onPress={() => navigation.navigate("Login")}
+      <View style={[globalStyles.container, styles.container]}>
+        <View
+          style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
         >
-          <Text style={styles.linkText}>Already have an account? Log in</Text>
-        </TouchableOpacity>
+          <Text style={[globalStyles.headingH6Bold, styles.title]}>
+            Sign up to continue
+          </Text>
+
+          {/* Error Message */}
+          {errorMessage ? (
+            <Text style={[globalStyles.labelMediumRegular, styles.errorText]}>
+              {errorMessage}
+            </Text>
+          ) : null}
+
+          {/* Step 1: First Name, Last Name, Email */}
+          {step === 1 && (
+            <>
+              <ProgressIndicator totalSteps={3} currentStep={step} />
+
+              <View style={styles.formContainer}>
+                <View style={styles.fieldsContainer}>
+                  <InputField
+                    label="First Name"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                  />
+                  <InputField
+                    label="Last Name"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChangeText={setLastName}
+                  />
+                </View>
+
+                <CustomButton
+                  variant="filled"
+                  size="large"
+                  title="Continue"
+                  onPress={handleNextStep}
+                  style={styles.button}
+                />
+              </View>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <ProgressIndicator totalSteps={3} currentStep={step} />
+
+              <View style={styles.formContainer}>
+                <View style={styles.fieldsContainer}>
+                  <InputField
+                    label="Username"
+                    placeholder="Username"
+                    value={username}
+                    onChangeText={setUsername}
+                  />
+                  <InputField
+                    label="Email Address"
+                    placeholder="Email Address"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                </View>
+
+                <CustomButton
+                  variant="filled"
+                  size="large"
+                  title="Continue"
+                  onPress={handleNextStep}
+                  style={styles.button}
+                />
+              </View>
+            </>
+          )}
+
+          {/* Step 2: Password, Confirm Password, Privacy Policy */}
+          {step === 3 && (
+            <>
+              <ProgressIndicator totalSteps={3} currentStep={step} />
+
+              <View style={styles.formContainer}>
+                <View style={styles.fieldsContainer}>
+                  <InputField
+                    type="password"
+                    label="Password"
+                    leadingIcon={
+                      <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
+                    }
+                    placeholder="Password"
+                    secureTextEntry={false}
+                    value={password}
+                    onChangeText={setPassword}
+                    trailingIcon={{
+                      visible: (
+                        <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
+                      ),
+                      hidden: (
+                        <EyeIcon size={20} stroke={COLORS.neutral[500]} />
+                      ),
+                    }}
+                    autoCapitalize="none"
+                  />
+                  <InputField
+                    type="password"
+                    label="Confirm Password"
+                    leadingIcon={
+                      <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
+                    }
+                    placeholder="Confirm Password"
+                    secureTextEntry={false}
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    trailingIcon={{
+                      visible: (
+                        <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
+                      ),
+                      hidden: (
+                        <EyeIcon size={20} stroke={COLORS.neutral[500]} />
+                      ),
+                    }}
+                    autoCapitalize="none"
+                  />
+                </View>
+                <View style={styles.checkboxContainer}>
+                  <CheckBox
+                    value={agreeToPolicy}
+                    onValueChange={setAgreeToPolicy}
+                    style={styles.checkbox}
+                    tintColors
+                  />
+                  <Text style={styles.checkboxLabel}>
+                    I agree with the privacy policy.
+                  </Text>
+                </View>
+                {loading ? (
+                  <ActivityIndicator size="large" color={COLORS.primary[500]} />
+                ) : (
+                  <CustomButton
+                    variant="filled"
+                    size="large"
+                    title="Sign Up"
+                    onPress={handleSignUp}
+                    style={styles.button}
+                  />
+                )}
+              </View>
+            </>
+          )}
+
+          <View style={styles.alternativeLoginContainer}>
+            <View style={styles.alternativeLoginText}>
+              <View style={styles.line} />
+              <Text
+                style={[
+                  globalStyles.labelXSmallSemiBold,
+                  { color: COLORS.neutral[200] },
+                ]}
+              >
+                or sign up with
+              </Text>
+              <View style={styles.line} />
+            </View>
+
+            <View style={styles.socialButtonsContainer}>
+              <SocialButton
+                provider={"google"}
+                backgroundColor={COLORS.primary["500-20"]}
+                borderColor={COLORS.primary[500]}
+                textColor={COLORS.neutral[50]}
+                style={styles.socialButton}
+              />
+              <SocialButton
+                provider={"apple"}
+                backgroundColor={COLORS.primary["500-20"]}
+                borderColor={COLORS.primary[500]}
+                textColor={COLORS.neutral[50]}
+                style={styles.socialButton}
+              />
+              <SocialButton
+                provider={"facebook"}
+                backgroundColor={COLORS.primary["500-20"]}
+                borderColor={COLORS.primary[500]}
+                textColor={COLORS.neutral[50]}
+                style={styles.socialButton}
+              />
+            </View>
+            <View style={styles.linkContainer}>
+              <View style={styles.linkContent}>
+                <Text style={[globalStyles.bodySmallBold, styles.linkText]}>
+                  Already have an account?
+                </Text>
+                <CustomButton
+                  variant="text"
+                  size="medium"
+                  title="Login"
+                  onPress={() => navigation.navigate("Login")}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-    backgroundColor: "#fff",
+  container: {},
+  secondaryContainer: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    borderRadius: 16,
+    width: "100%",
+    height: "100%",
+    gap: 32,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    color: COLORS.neutral[50],
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    fontSize: 16,
-    color: "#333",
+  formContainer: {
+    width: "100%",
+    gap: 20,
   },
+  fieldsContainer: {
+    width: "100%",
+    gap: 20,
+  },
+  input: {},
   button: {
-    backgroundColor: "#007bff",
-    padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
+    width: "100%",
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  alternativeLoginContainer: {
+    flex: 1,
+    width: "100%",
+    gap: 20,
   },
-  link: {
-    marginTop: 15,
+  alternativeLoginText: {
+    flexDirection: "row",
     alignItems: "center",
+    gap: 4,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.neutral[300],
+    marginTop: 2, // Adjust line position to center with text
+  },
+  socialButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 12,
+  },
+  socialButton: {
+    flex: 1,
+    height: 56,
+  },
+  linkContainer: {
+    flex: 1,
+    height: "100%",
+    width: "100%",
+    justifyContent: "flex-end",
+  },
+  linkContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    gap: -12,
   },
   linkText: {
-    color: "#007bff",
-    fontSize: 16,
+    color: COLORS.neutral[50],
+    paddingBottom: 4, // Adjust text position to center with button
   },
   errorText: {
-    color: "red",
-    fontSize: 14,
-    marginBottom: 15,
-    textAlign: "center",
+    color: COLORS.error[500],
+    position: "absolute",
+    top: 110,
+    left: 16,
   },
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 15,
   },
   checkbox: {
     marginRight: 8,
   },
   checkboxLabel: {
     fontSize: 14,
-    color: "#333",
+    color: COLORS.neutral[50],
   },
 });
 
