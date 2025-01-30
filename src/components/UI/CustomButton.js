@@ -12,10 +12,11 @@ const CustomButton = ({
   size = "large",
   title,
   onPress,
+  style,
 }) => {
   return (
     <TouchableOpacity
-      style={[styles.base, styles[variant], styles[size]]}
+      style={[styles.base, styles[variant], styles[size], style]}
       onPress={onPress}
     >
       <Text
