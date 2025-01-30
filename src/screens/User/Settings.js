@@ -9,6 +9,7 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
       await AsyncStorage.removeItem("userToken");
       await AsyncStorage.removeItem("userId");
       await AsyncStorage.removeItem("isArtist");
+      await AsyncStorage.removeItem("selectedRole");
 
       // Trigger re-check in AppNavigator
       handleAuthChangeSuccess(); // This will notify AppNavigator to update
