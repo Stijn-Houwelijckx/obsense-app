@@ -6,6 +6,7 @@ import SystemNavigationBar from "react-native-system-navigation-bar";
 import ArtistNavigator from "./ArtistNavigator";
 import UserNavigator from "./UserNavigator";
 import AuthNavigator from "./AuthNavigator";
+import RoleSelection from "../screens/Auth/RoleSelection";
 
 import { COLORS } from "../styles/theme";
 
@@ -13,6 +14,7 @@ const AppNavigator = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isArtist, setIsArtist] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false); // Track if the status is updated
+  const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
     SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[900], "light");
@@ -24,10 +26,11 @@ const AppNavigator = () => {
         setIsLoggedIn(true);
         const isArtist =
           (await AsyncStorage.getItem("isArtist")) === "true" ? true : false;
+        setIsArtist(isArtist);
+
         if (isArtist) {
-          setIsArtist(true);
-        } else {
-          setIsArtist(false);
+          const savedRole = await AsyncStorage.getItem("selectedRole");
+          setSelectedRole(savedRole);
         }
       } else {
         setIsLoggedIn(false);
@@ -52,7 +55,15 @@ const AppNavigator = () => {
       {/* If the user is not logged in, show AuthNavigator */}
       {isLoggedIn ? (
         isArtist ? (
-          <ArtistNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+          selectedRole === "artist" ? (
+            <ArtistNavigator
+              handleAuthChangeSuccess={handleAuthChangeSuccess}
+            />
+          ) : selectedRole === "user" ? (
+            <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+          ) : (
+            <RoleSelection handleAuthChangeSuccess={handleAuthChangeSuccess} />
+          )
         ) : (
           <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
         )

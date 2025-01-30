@@ -75,7 +75,11 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
         await AsyncStorage.setItem("isArtist", isArtist.toString());
 
         // Notify AppNavigator that sign-up was successful
-        handleAuthChangeSuccess(); // Trigger re-check in AppNavigator
+        if (isArtist) {
+          navigation.replace("RoleSelection");
+        } else {
+          handleAuthChangeSuccess(); // Proceed to UserNavigator
+        }
       } else {
         throw new Error(response.data.message);
       }
