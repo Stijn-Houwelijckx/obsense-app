@@ -38,6 +38,7 @@ const InputField = ({
 
   const inputContainerStyle = [
     styles.inputContainer,
+    type === "password" && { paddingRight: 12 }, // Add padding for the eye icon
     error && type !== "link" && styles.inputError, // Apply error styling if error prop is passed
   ];
 
@@ -95,6 +96,7 @@ const InputField = ({
 const styles = StyleSheet.create({
   container: {
     gap: 8,
+    width: "100%",
   },
   label: {
     fontSize: FONT_SIZES.label.lg,
