@@ -200,7 +200,7 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
                   variant="text"
                   size="medium"
                   title="Sign Up"
-                  onPress={() => navigation.navigate("Create Account")}
+                  onPress={() => navigation.replace("Create Account")}
                 />
               </View>
             </View>

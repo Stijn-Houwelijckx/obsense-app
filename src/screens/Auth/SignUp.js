@@ -337,7 +337,7 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                   variant="text"
                   size="medium"
                   title="Login"
-                  onPress={() => navigation.navigate("Login")}
+                  onPress={() => navigation.replace("Login")}
                 />
               </View>
             </View>
