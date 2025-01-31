@@ -44,7 +44,7 @@ const AuthNavigator = ({ handleAuthChangeSuccess }) => {
           <Login {...props} handleAuthChangeSuccess={handleAuthChangeSuccess} />
         )}
       </Stack.Screen>
-      <Stack.Screen name="RoleSelection">
+      <Stack.Screen name="Role Selection">
         {(props) => (
           <RoleSelection
             {...props}

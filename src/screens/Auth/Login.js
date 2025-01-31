@@ -76,7 +76,7 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
 
         // Notify AppNavigator that sign-up was successful
         if (isArtist) {
-          navigation.replace("RoleSelection");
+          navigation.navigate("Role Selection");
         } else {
           handleAuthChangeSuccess(); // Proceed to UserNavigator
         }
