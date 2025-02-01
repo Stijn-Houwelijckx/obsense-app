@@ -332,6 +332,13 @@ export const globalStyles = StyleSheet.create({
     letterSpacing: LETTER_SPACING.body.sm,
     fontFamily: "Nunito-Bold",
   },
+  // BodySmallSpecial
+  bodySmallItalic: {
+    fontSize: FONT_SIZES.body.sm,
+    lineHeight: LINE_HEIGHT.body.sm,
+    letterSpacing: LETTER_SPACING.body.sm,
+    fontFamily: "Nunito-Italic",
+  },
 
   // bodyXSmall
   bodyXSmallRegular: {
