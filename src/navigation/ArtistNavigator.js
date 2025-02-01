@@ -31,6 +31,18 @@ const HomeStack = () => (
         const showBackButton =
           route.name !== "HomeScreen" && navigation.canGoBack();
 
+        if (route.name === "HomeScreen") {
+          return (
+            <Header
+              type="profile"
+              profileImage="https://avatars.githubusercontent.com/u/147377015?v=4" // Replace with actual user image
+              userName="John Doe" // Replace with actual user name
+              tokens={150} // Replace with actual token count
+              onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
+            />
+          );
+        }
+
         return (
           <Header
             title={route.name} // You can set dynamic title here if needed

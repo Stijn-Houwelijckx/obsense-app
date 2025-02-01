@@ -1,18 +1,32 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
+// Import Styles
 import {
   COLORS,
   FONT_SIZES,
   LINE_HEIGHT,
   LETTER_SPACING,
 } from "../../styles/theme";
+import { globalStyles } from "../../styles/global";
 
+// Import icons
 import ArrowLeftIcon from "../icons/ArrowLeftIcon";
+import MagnifyingGlassIcon from "../icons/MagnifyingGlassIcon";
 
+// Import Components
 import IconButton from "./IconButton";
 
-const Header = ({ title, showBackButton = true }) => {
+const Header = ({
+  title,
+  showBackButton = true,
+  type = "default", // "default" or "profile"
+  profileImage,
+  userName,
+  tokens,
+  onProfilePress,
+}) => {
   const navigation = useNavigation();
 
   // Function to go back to the previous screen
@@ -22,16 +36,48 @@ const Header = ({ title, showBackButton = true }) => {
 
   return (
     <View style={styles.headerContainer}>
-      {showBackButton && (
-        <IconButton
-          icon={ArrowLeftIcon}
-          onPress={handleBack}
-          buttonSize={48}
-          iconSize={24}
-        />
+      {type === "default" ? (
+        <>
+          {showBackButton && (
+            <IconButton
+              icon={ArrowLeftIcon}
+              onPress={handleBack}
+              buttonSize={48}
+              iconSize={24}
+            />
+          )}
+          <Text style={[globalStyles.headingH6Bold, styles.headerTitle]}>
+            {title}
+          </Text>
+          {showBackButton && <View style={styles.spacer} />}
+        </>
+      ) : (
+        <>
+          {/* Profile Section */}
+          <TouchableOpacity
+            style={styles.profileContainer}
+            onPress={onProfilePress}
+          >
+            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            <View style={styles.userInfo}>
+              <Text style={[globalStyles.bodySmallBold, styles.userName]}>
+                {userName}
+              </Text>
+              <Text style={[globalStyles.bodySmallItalic, styles.tokens]}>
+                {tokens} Tokens
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Search Button */}
+          <IconButton
+            icon={MagnifyingGlassIcon}
+            onPress={() => console.log("Search")}
+            buttonSize={48}
+            iconSize={24}
+          />
+        </>
       )}
-      <Text style={styles.headerTitle}>{title}</Text>
-      {showBackButton && <View style={styles.spacer} />}
     </View>
   );
 };
@@ -41,9 +87,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 10,
-    height: 58,
+    paddingTop: 8,
+    height: 56,
     backgroundColor: COLORS.primaryNeutral[900],
+    justifyContent: "space-between",
   },
   backButton: {
     // paddingRight: 12,
@@ -52,16 +99,31 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: COLORS.neutral[50],
-
-    fontSize: FONT_SIZES.heading.xs,
-    lineHeight: LINE_HEIGHT.heading.xs,
-    letterSpacing: LETTER_SPACING.heading.xs,
-    fontFamily: "Nohemi-Bold",
   },
   spacer: {
     width: 48,
     // height: 48,
     // backgroundColor: "red",
+  },
+  profileContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  userInfo: {
+    flexDirection: "column",
+  },
+  userName: {
+    color: COLORS.neutral[50],
+  },
+  tokens: {
+    color: COLORS.neutral[400],
+    // fontStyle: "italic",
   },
 });
 
