@@ -23,6 +23,7 @@ const Header = ({
   showBackButton = true,
   type = "default", // "default" or "profile"
   profileImage,
+  text,
   userName,
   tokens,
   onProfilePress,
@@ -59,13 +60,20 @@ const Header = ({
             onPress={onProfilePress}
           >
             <Image source={{ uri: profileImage }} style={styles.profileImage} />
-            <View style={styles.userInfo}>
+            <View style={[styles.userInfo, text && tokens ? { gap: -3 } : {}]}>
+              {text && (
+                <Text style={[globalStyles.bodyXSmallRegular, styles.text]}>
+                  {text}
+                </Text>
+              )}
               <Text style={[globalStyles.bodySmallBold, styles.userName]}>
                 {userName}
               </Text>
-              <Text style={[globalStyles.bodySmallItalic, styles.tokens]}>
-                {tokens} Tokens
-              </Text>
+              {tokens && (
+                <Text style={[globalStyles.bodySmallItalic, styles.tokens]}>
+                  {tokens} Tokens
+                </Text>
+              )}
             </View>
           </TouchableOpacity>
 
@@ -108,21 +116,27 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 12,
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 9999,
+    borderWidth: 2,
+    borderColor: COLORS.primary[500],
+    // marginRight: 12,
   },
   userInfo: {
     flexDirection: "column",
+  },
+  text: {
+    color: COLORS.neutral[500],
   },
   userName: {
     color: COLORS.neutral[50],
   },
   tokens: {
-    color: COLORS.neutral[400],
+    color: COLORS.neutral[300],
     // fontStyle: "italic",
   },
 });
