@@ -36,8 +36,8 @@ const HomeStack = () => (
             <Header
               type="profile"
               profileImage="https://avatars.githubusercontent.com/u/147377015?v=4" // Replace with actual user image
+              text="Welcome Back!"
               userName="John Doe" // Replace with actual user name
-              tokens={150} // Replace with actual token count
               onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
             />
           );
