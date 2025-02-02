@@ -11,19 +11,32 @@ const CustomButton = ({
   variant = "filled",
   size = "large",
   title,
+  leadingIcon,
+  trailingIcon,
   onPress,
   style,
 }) => {
+  const textColor = styles[`text_${variant}`]?.color || COLORS.neutral[950];
+  const iconSize = size === "small" ? 16 : 20; // Adjust icon size based on button size
+  const gap = size === "large" ? 8 : 6; // Adjust gap between icon and text based on button size
+
   return (
     <TouchableOpacity
-      style={[styles.base, styles[variant], styles[size], style]}
+      style={[styles.base, styles[variant], styles[size], style, { gap: gap }]}
       onPress={onPress}
     >
+      {leadingIcon &&
+        React.createElement(leadingIcon, { size: iconSize, stroke: textColor })}
       <Text
         style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`]]}
       >
         {title}
       </Text>
+      {trailingIcon &&
+        React.createElement(trailingIcon, {
+          size: iconSize,
+          stroke: textColor,
+        })}
     </TouchableOpacity>
   );
 };
@@ -35,6 +48,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 14,
+    flexDirection: "row",
   },
   // Filled Button Styles
   filled: {
