@@ -57,7 +57,7 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
           },
         },
         {
-          validateStatus: (status) => status >= 200 && status < 300, // Accept any 2xx status as success
+          validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx status as success
         }
       );
 
@@ -80,15 +80,21 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
         } else {
           handleAuthChangeSuccess(); // Proceed to UserNavigator
         }
-      } else {
-        throw new Error(response.data.message);
+      } else if (response.data.status === "fail") {
+        // Handle "fail" response here
+        // The error messages are inside the "data" object
+        setErrorMessage(
+          response.data.data.message ||
+            "Something went wrong. Please try again."
+        );
       }
     } catch (error) {
-      // console.error("Signup failed:", error.response?.data || error.message);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
+      // If response is available, extract error message or details
+      const errorMsg = error.response?.data?.message || error.message;
+      const errorDetails = error.response?.data?.details;
+
+      // Combine both message and details if available
+      setErrorMessage(errorDetails ? `${errorMsg}: ${errorDetails}` : errorMsg);
     } finally {
       setLoading(false);
     }
