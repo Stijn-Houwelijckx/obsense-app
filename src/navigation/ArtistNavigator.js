@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SystemNavigationBar from "react-native-system-navigation-bar";
 import Home from "../screens/Artist/Home";
 import AR from "../screens/Artist/AR";
 import Map from "../screens/Artist/Map";
@@ -10,7 +11,15 @@ import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import Details from "../screens/Shared/Details";
 
-// Import custom icons
+// Import Styles
+import {
+  COLORS,
+  FONT_SIZES,
+  LINE_HEIGHT,
+  LETTER_SPACING,
+} from "../styles/theme";
+
+// Import Icons
 import HomeIcon from "../components/icons/HomeIcon";
 import CameraIcon from "../components/icons/CameraIcon";
 import MapIcon from "../components/icons/MapIcon";
@@ -21,6 +30,8 @@ import Header from "../components/UI/Header";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[800], "light");
 
 // Home Stack
 const HomeStack = () => (
@@ -117,15 +128,35 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false,
-      tabBarStyle: route.name === "AR" ? { display: "none" } : {}, // Hide tab bar on AR screen
+      tabBarStyle:
+        route.name === "AR"
+          ? { display: "none" }
+          : {
+              backgroundColor: COLORS.primaryNeutral[800],
+              borderTopWidth: 0, // Ensure no actual border
+              elevation: 0, // Removes shadow on Android
+              shadowOpacity: 0, // Removes shadow on iOS
+            }, // Hide tab bar on AR screen
+      tabBarLabelStyle: {
+        fontSize: FONT_SIZES.label.sm,
+        lineHeight: LINE_HEIGHT.label.sm,
+        letterSpacing: LETTER_SPACING.label.sm,
+        fontFamily: "Nunito-Medium",
+      },
+      tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
+      tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
     })}
   >
     <Tab.Screen
       name="Home"
       component={HomeStack}
       options={{
-        tabBarIcon: () => (
-          <HomeIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <HomeIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
@@ -133,8 +164,12 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       name="AR"
       component={AR}
       options={{
-        tabBarIcon: () => (
-          <CameraIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <CameraIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
@@ -142,16 +177,24 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
       name="Map"
       component={MapStack}
       options={{
-        tabBarIcon: () => (
-          <MapIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <MapIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
     <Tab.Screen
       name="Settings"
       options={{
-        tabBarIcon: () => (
-          <CogIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <CogIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     >
