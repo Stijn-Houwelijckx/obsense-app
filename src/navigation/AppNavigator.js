@@ -17,7 +17,7 @@ const AppNavigator = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
-    SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[900], "light");
+    SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[800], "light");
 
     const checkUserStatus = async () => {
       const userToken = await AsyncStorage.getItem("userToken");
