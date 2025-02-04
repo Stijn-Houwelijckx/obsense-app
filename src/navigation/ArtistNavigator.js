@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SystemNavigationBar from "react-native-system-navigation-bar";
+
+// Import Utils
+import { getCurrentUser } from "../utils/api";
+
+// Import Screens
 import Home from "../screens/Artist/Home";
 import AR from "../screens/Artist/AR";
 import Map from "../screens/Artist/Map";
@@ -34,39 +39,68 @@ const Stack = createNativeStackNavigator();
 SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[800], "light");
 
 // Home Stack
-const HomeStack = () => (
-  <Stack.Navigator
-    screenOptions={({ navigation, route }) => ({
-      // We use navigation.canGoBack() to check if there's a back action
-      header: () => {
-        const showBackButton =
-          route.name !== "HomeScreen" && navigation.canGoBack();
+const HomeStack = () => {
+  const [user, setUser] = useState(null); // State to store user data
+  const [isLoading, setIsLoading] = useState(true); // State to manage loading state
 
-        if (route.name === "HomeScreen") {
-          return (
-            <Header
-              type="profile"
-              profileImage="https://avatars.githubusercontent.com/u/147377015?v=4" // Replace with actual user image
-              text="Welcome Back!"
-              userName="John Doe" // Replace with actual user name
-              onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
-            />
-          );
-        }
+  useEffect(() => {
+    const getUser = async () => {
+      const result = await getCurrentUser();
 
-        return (
-          <Header
-            title={route.name} // You can set dynamic title here if needed
-            showBackButton={showBackButton}
-          />
-        );
-      },
-    })}
-  >
-    <Stack.Screen name="HomeScreen" component={Home} />
-    <Stack.Screen name="Details" component={Details} />
-  </Stack.Navigator>
-);
+      if (result.status === "success") {
+        setUser(result.data.data.user); // Set user data
+      } else {
+        console.log("Error getting user data:", result.message); // Log error message
+      }
+
+      setIsLoading(false); // Set loading state to false
+    };
+
+    getUser(); // Call the function
+  }, []);
+
+  if (!isLoading) {
+    console.log(user); // Log user data
+
+    const profilePicture = user?.profilePicture
+      ? require("../../assets/profileImages/Stijn.png")
+      : require("../../assets/profileImages/Leen.jpg");
+
+    return (
+      <Stack.Navigator
+        screenOptions={({ navigation, route }) => ({
+          // We use navigation.canGoBack() to check if there's a back action
+          header: () => {
+            const showBackButton =
+              route.name !== "HomeScreen" && navigation.canGoBack();
+
+            if (route.name === "HomeScreen") {
+              return (
+                <Header
+                  type="profile"
+                  profileImage={profilePicture}
+                  text="Welcome Back!"
+                  userName={user?.username}
+                  onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
+                />
+              );
+            }
+
+            return (
+              <Header
+                title={route.name} // You can set dynamic title here if needed
+                showBackButton={showBackButton}
+              />
+            );
+          },
+        })}
+      >
+        <Stack.Screen name="HomeScreen" component={Home} />
+        <Stack.Screen name="Details" component={Details} />
+      </Stack.Navigator>
+    );
+  }
+};
 
 // Map Stack
 const MapStack = () => (
