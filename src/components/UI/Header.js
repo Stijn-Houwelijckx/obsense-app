@@ -29,6 +29,8 @@ const Header = ({
   onProfilePress,
 }) => {
   const navigation = useNavigation();
+  const imageSource =
+    typeof profileImage === "string" ? { uri: profileImage } : profileImage;
 
   // Function to go back to the previous screen
   const handleBack = () => {
@@ -59,7 +61,7 @@ const Header = ({
             style={styles.profileContainer}
             onPress={onProfilePress}
           >
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            <Image source={imageSource} style={styles.profileImage} />
             <View style={[styles.userInfo, text && tokens ? { gap: -3 } : {}]}>
               {text && (
                 <Text style={[globalStyles.bodyXSmallRegular, styles.text]}>
