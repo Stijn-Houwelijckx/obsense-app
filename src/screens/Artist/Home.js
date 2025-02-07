@@ -4,9 +4,13 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ActivityIndicator,
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Import Utils
+import { getCollectionsForCurrentArtist } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -19,56 +23,34 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 import ArtistCard from "../../components/UI/ArtistCard";
 
 const Home = ({ navigation }) => {
-  const [userId, setUserId] = useState(null);
-
-  const collectionData = [
-    {
-      id: "65a7f92b8e4f9c0012345678",
-      imageUrl: require("../../../assets/collectionImages/SpookyScarySkeleton.jpg"),
-      title: "Spooky Scary Skeleton",
-      published: false,
-      category: "Exposition",
-    },
-    {
-      id: "65a7f92b8e4f9c0012345679",
-      imageUrl: require("../../../assets/collectionImages/Monolith.png"),
-      title: "Monolith",
-      published: true,
-      category: "Tour",
-    },
-    {
-      id: "65a7f92b8e4f9c0012345680",
-      imageUrl: require("../../../assets/collectionImages/DeliveryDragon.jpg"),
-      title: "Delivery Dragon",
-      published: true,
-      category: "Tour",
-    },
-    {
-      id: "65a7f92b8e4f9c0012345681",
-      imageUrl: require("../../../assets/collectionImages/EifelTower.png"),
-      title: "Eifel Tower",
-      published: true,
-      category: "Exposition",
-    },
-    // Add more items as needed
-  ];
+  const [collectionData, setCollectionData] = useState([]); // State to store collection data
+  const [isLoading, setIsLoading] = useState(true); // State to manage loading state
 
   useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const storedUserId = await AsyncStorage.getItem("userId");
-        if (storedUserId !== null) {
-          setUserId(storedUserId);
-        } else {
-          console.log("UserId not found");
-        }
-      } catch (error) {
-        console.error("Error retrieving userId from AsyncStorage", error);
+    const getCollectionData = async () => {
+      const result = await getCollectionsForCurrentArtist();
+
+      if (result.status === "success") {
+        // setUser(result.data.data.user); // Set user data
+        setCollectionData(result.data.data); // Set collection data
+        console.log(result.data.data); // Log collection data
+      } else {
+        console.log("Error getting user data:", result.message); // Log error message
       }
+
+      setIsLoading(false); // Set loading state to false
     };
 
-    getUserId();
+    getCollectionData(); // Call the function
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={globalStyles.container}>
+        <ActivityIndicator size="large" color={COLORS.primary[500]} />
+      </View>
+    );
+  }
 
   return (
     <View style={[globalStyles.container, styles.container]}>
@@ -90,19 +72,19 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={collectionData.filter((item) => !item.published)}
+          data={collectionData.filter((item) => !item.isPublished)}
           renderItem={({ item }) => (
             <ArtistCard
-              id={item.id}
-              imageUrl={item.imageUrl}
+              id={item._id}
+              imageUrl={item.coverImage.filePath}
               title={item.title}
-              published={item.published}
-              category={item.category}
+              published={item.isPublished}
+              category={item.type}
               onPress={(id) => console.log("Go to details of", id)}
               style={{ width: 140 }} // Custom styles (46%)
             />
           )}
-          keyExtractor={(item) => item.id} // Unique key for each card
+          keyExtractor={(item) => item._id} // Unique key for each card
           contentContainerStyle={styles.cardsContainer} // Apply container styles
           horizontal // Optional: if you want to display the cards horizontally
           showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
@@ -127,19 +109,19 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={collectionData.filter((item) => item.published)}
+          data={collectionData.filter((item) => item.isPublished)}
           renderItem={({ item }) => (
             <ArtistCard
-              id={item.id}
-              imageUrl={item.imageUrl}
+              id={item._id}
+              imageUrl={item.coverImage.filePath}
               title={item.title}
-              published={item.published}
-              category={item.category}
+              published={item.isPublished}
+              category={item.type}
               onPress={(id) => console.log("Go to details of", id)}
               style={{ width: 140 }} // Custom styles (46%)
             />
           )}
-          keyExtractor={(item) => item.id} // Unique key for each card
+          keyExtractor={(item) => item._id} // Unique key for each card
           contentContainerStyle={styles.cardsContainer} // Apply container styles
           horizontal // Optional: if you want to display the cards horizontally
           showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
