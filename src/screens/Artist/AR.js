@@ -19,6 +19,21 @@ import {
 } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
+// Import Styles
+// Import Styles
+import { COLORS } from "../../styles/theme";
+import { globalStyles } from "../../styles/global";
+
+// Import Icons
+import ArrowLeftIcon from "../../components/icons/ArrowLeftIcon";
+import SaveIcon from "../../components/icons/SaveIcon";
+import PlusIcon from "../../components/icons/PlusIcon";
+import DotsVerticalIcon from "../../components/icons/DotsVerticalIcon";
+import TrashIcon from "../../components/icons/TrashIcon";
+
+// Import Components
+import IconButton from "../../components/UI/IconButton";
+
 // List of available 3D objects with their names and sources
 const objectList = [
   {
@@ -335,24 +350,40 @@ const AR = () => {
         />
       )}
 
-      <TouchableOpacity
-        style={styles.customBackButton}
+      {/* Button to go back */}
+      <IconButton
+        icon={ArrowLeftIcon}
         onPress={handleBackPress}
-      >
-        <Text style={styles.backButtonText}>{"< Back"}</Text>
-      </TouchableOpacity>
+        buttonSize={48}
+        iconSize={24}
+        style={styles.customBackButton}
+      />
 
       {/* Button to open settings modal */}
-      <View style={styles.settingsButton}>
-        <TouchableOpacity onPress={() => setIsSettingsVisible(true)}>
-          <Text style={styles.buttonText}>Settings</Text>
-        </TouchableOpacity>
-      </View>
+      <IconButton
+        icon={DotsVerticalIcon}
+        onPress={() => setIsSettingsVisible(true)}
+        buttonSize={48}
+        iconSize={24}
+        style={styles.settingsButton}
+      />
 
-      {/* Button to select a model */}
-      <View style={styles.selectModelButton}>
-        <Button title="Select Model" onPress={showObjectSelectionAlert} />
-      </View>
+      {/* Button to add a new object */}
+      {!currentlySelectedObjectId && (
+        <View style={styles.selectModelButton}>
+          <IconButton
+            icon={PlusIcon}
+            onPress={showObjectSelectionAlert}
+            buttonSize={40}
+            iconSize={20}
+          />
+          <Text
+            style={[globalStyles.labelSmallSemiBold, styles.iconButtonText]}
+          >
+            Add
+          </Text>
+        </View>
+      )}
 
       {/* Modal for settings */}
       <Modal
@@ -377,16 +408,28 @@ const AR = () => {
 
       {currentlySelectedObjectId && (
         <View style={styles.saveButton}>
-          <Button
-            title="Save"
+          <IconButton
+            icon={SaveIcon}
             onPress={() => saveObject(currentlySelectedObjectId)}
+            buttonSize={64}
+            iconSize={32}
           />
         </View>
       )}
 
       {currentlySelectedObjectId && (
         <View style={styles.deleteButton}>
-          <Button title="Delete" onPress={deleteSelectedObject} color="red" />
+          <IconButton
+            icon={TrashIcon}
+            onPress={deleteSelectedObject}
+            buttonSize={40}
+            iconSize={20}
+          />
+          <Text
+            style={[globalStyles.labelSmallSemiBold, styles.iconButtonText]}
+          >
+            Remove
+          </Text>
         </View>
       )}
     </View>
@@ -396,24 +439,16 @@ const AR = () => {
 const styles = StyleSheet.create({
   customBackButton: {
     position: "absolute",
-    bottom: 20,
-    left: 20,
-    padding: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: 5,
+    top: 16,
+    left: 16,
   },
-  backButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+  iconButtonText: {
+    color: COLORS.neutral[50],
   },
   settingsButton: {
     position: "absolute",
-    top: 20,
-    right: 20,
-    backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 5,
+    top: 16,
+    right: 16,
   },
   buttonText: {
     color: "#fff",
@@ -452,14 +487,16 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     position: "absolute",
-    top: 20,
+    bottom: 16,
     left: 20,
+    right: 20,
+    alignItems: "center",
   },
   deleteButton: {
     position: "absolute",
-    top: 20,
-    left: "50%",
-    transform: [{ translateX: -50 }],
+    bottom: 16,
+    right: 20,
+    alignItems: "center",
   },
 });
 
