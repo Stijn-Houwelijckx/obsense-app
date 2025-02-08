@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import FastImage from "react-native-fast-image";
 
 // Import Styles
 import {
@@ -33,7 +34,8 @@ const ArtistCard = ({
     >
       {/* Image with Badge Overlay */}
       <View style={styles.imageContainer}>
-        <Image source={imageSource} style={styles.image} />
+        {/* <Image source={imageSource} style={styles.image} /> */}
+        <FastImage style={styles.image} source={imageSource} />
         <View style={styles.badgeContainer}>
           <Badge
             size="small"
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
+    // resizeMode: "cover",
   },
 
   badgeContainer: {
