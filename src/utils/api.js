@@ -19,7 +19,7 @@ const getCurrentUser = async () => {
 
     // Handle success response
     if (response.status === 200) {
-      return { status: "success", data: response.data };
+      return { status: "success", data: response.data.data };
     }
 
     // Handle other errors
@@ -48,7 +48,7 @@ const getCollectionsForCurrentArtist = async () => {
 
     // Handle success response
     if (response.status === 200) {
-      return { status: "success", data: response.data };
+      return { status: "success", data: response.data.data };
     }
 
     // Handle 404 error

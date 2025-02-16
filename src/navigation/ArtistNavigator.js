@@ -48,7 +48,7 @@ const HomeStack = () => {
       const result = await getCurrentUser();
 
       if (result.status === "success") {
-        setUser(result.data.data.user); // Set user data
+        setUser(result.data.user); // Set user data
       } else {
         console.log("Error getting user data:", result.message); // Log error message
       }
