@@ -14,6 +14,7 @@ import Settings from "../screens/Artist/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
+import CollectionDetails from "../screens/Artist/CollectionDetails";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -96,7 +97,15 @@ const HomeStack = () => {
         })}
       >
         <Stack.Screen name="HomeScreen" component={Home} />
-        <Stack.Screen name="Details" component={Details} />
+        <Stack.Screen
+          name="CollectionDetails"
+          component={CollectionDetails}
+          options={({ route }) => ({
+            header: () => (
+              <Header title={route.params?.title || "Loading..."} />
+            ),
+          })}
+        />
       </Stack.Navigator>
     );
   }

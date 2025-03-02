@@ -80,7 +80,9 @@ const Home = ({ navigation }) => {
               title={item.title}
               published={item.isPublished}
               category={item.type}
-              onPress={(id) => console.log("Go to details of", id)}
+              onPress={(id) =>
+                navigation.navigate("CollectionDetails", { collectionId: id })
+              }
               style={{ width: 140 }} // Custom styles (46%)
             />
           )}
@@ -117,7 +119,9 @@ const Home = ({ navigation }) => {
               title={item.title}
               published={item.isPublished}
               category={item.type}
-              onPress={(id) => console.log("Go to details of", id)}
+              onPress={(id) =>
+                navigation.navigate("CollectionDetails", { collectionId: id })
+              }
               style={{ width: 140 }} // Custom styles (46%)
             />
           )}
