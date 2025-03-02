@@ -74,7 +74,7 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={collectionData.filter((item) => !item.isPublished)}
+          data={collectionData.filter((item) => !item.isPublished).slice(0, 3)}
           renderItem={({ item }) => (
             <ArtistCollectionCard
               id={item._id}
@@ -115,7 +115,7 @@ const Home = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <FlatList
-          data={collectionData.filter((item) => item.isPublished)}
+          data={collectionData.filter((item) => item.isPublished).slice(0, 3)}
           renderItem={({ item }) => (
             <ArtistCollectionCard
               id={item._id}
