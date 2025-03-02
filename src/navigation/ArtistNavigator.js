@@ -15,6 +15,8 @@ import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import CollectionDetails from "../screens/Artist/CollectionDetails";
+import PublishedCollections from "../screens/Artist/PublishedCollections";
+import DraftCollections from "../screens/Artist/DraftCollections";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -106,6 +108,11 @@ const HomeStack = () => {
             ),
           })}
         />
+        <Stack.Screen
+          name="Published Collections"
+          component={PublishedCollections}
+        />
+        <Stack.Screen name="Draft Collections" component={DraftCollections} />
       </Stack.Navigator>
     );
   }

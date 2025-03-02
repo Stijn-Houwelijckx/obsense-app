@@ -60,7 +60,9 @@ const Home = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Drafts
           </Text>
-          <TouchableOpacity onPress={() => console.log("Go to drafts")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Draft Collections")}
+          >
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}
@@ -99,7 +101,9 @@ const Home = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Published
           </Text>
-          <TouchableOpacity onPress={() => console.log("Go to published")}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Published Collections")}
+          >
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}
