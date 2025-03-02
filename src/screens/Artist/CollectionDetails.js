@@ -137,16 +137,23 @@ const CollectionDetails = ({ navigation, route }) => {
                 : "Artworks"}
             </Text>
           </View>
-          <FlatList
-            data={collectionDetailsData.objects}
-            renderItem={({ item }) => (
-              <ObjectCard title={item.title} isPlaced={false} />
-            )}
-            keyExtractor={(item) => item._id}
-            contentContainerStyle={styles.cardsContainer}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
+
+          {collectionDetailsData.objects.length > 0 ? (
+            <FlatList
+              data={collectionDetailsData.objects}
+              renderItem={({ item }) => (
+                <ObjectCard title={item.title} isPlaced={false} />
+              )}
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={styles.cardsContainer}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          ) : (
+            <Text style={[globalStyles.bodyMediumRegular, styles.emptyText]}>
+              No Artworks Found
+            </Text>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -203,6 +210,10 @@ const styles = StyleSheet.create({
   },
   text: {
     color: COLORS.neutral[50],
+  },
+  emptyText: {
+    color: COLORS.neutral[500],
+    fontStyle: "italic",
   },
   cardsContainer: {
     width: "100%",
