@@ -6,6 +6,7 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -48,6 +49,28 @@ const Home = ({ navigation }) => {
     return (
       <View style={globalStyles.container}>
         <ActivityIndicator size="large" color={COLORS.primary[500]} />
+      </View>
+    );
+  }
+
+  // Check if collectionData is empty
+  if (collectionData.length === 0) {
+    return (
+      <View style={globalStyles.container}>
+        <Image source={require("../../../assets/images/RocketImage.png")} />
+        <Text style={[globalStyles.headingH5Bold, styles.textColor]}>
+          No collections yet
+        </Text>
+        <Text
+          style={[
+            globalStyles.bodyMediumRegular,
+            styles.textColor,
+            { textAlign: "center" },
+          ]}
+        >
+          Log in to your dashboard to create tours or expositions. Created tours
+          and expositions will appear here.
+        </Text>
       </View>
     );
   }
@@ -174,6 +197,9 @@ const styles = StyleSheet.create({
   cardsContainer: {
     flexDirection: "row",
     gap: 16,
+  },
+  textColor: {
+    color: COLORS.neutral[50],
   },
 });
 
