@@ -20,7 +20,7 @@ import { COLORS } from "../../styles/theme";
 import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
-import ArtistCard from "../../components/UI/ArtistCard";
+import ArtistCollectionCard from "../../components/UI/ArtistCollectionCard";
 
 const Home = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data
@@ -74,7 +74,7 @@ const Home = ({ navigation }) => {
         <FlatList
           data={collectionData.filter((item) => !item.isPublished)}
           renderItem={({ item }) => (
-            <ArtistCard
+            <ArtistCollectionCard
               id={item._id}
               imageUrl={item.coverImage.filePath}
               title={item.title}
@@ -113,7 +113,7 @@ const Home = ({ navigation }) => {
         <FlatList
           data={collectionData.filter((item) => item.isPublished)}
           renderItem={({ item }) => (
-            <ArtistCard
+            <ArtistCollectionCard
               id={item._id}
               imageUrl={item.coverImage.filePath}
               title={item.title}

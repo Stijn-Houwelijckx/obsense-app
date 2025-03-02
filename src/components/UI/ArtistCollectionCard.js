@@ -14,7 +14,7 @@ import { globalStyles } from "../../styles/global";
 // Import Components
 import Badge from "./Badge";
 
-const ArtistCard = ({
+const ArtistCollectionCard = ({
   id,
   imageUrl,
   title,
@@ -103,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArtistCard;
+export default ArtistCollectionCard;
