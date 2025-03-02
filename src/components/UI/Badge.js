@@ -154,19 +154,19 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.label.md,
     lineHeight: LINE_HEIGHT.label.md,
     letterSpacing: LETTER_SPACING.label.md,
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-Bold",
   },
   text_medium: {
     fontSize: FONT_SIZES.label.md,
     lineHeight: LINE_HEIGHT.label.md,
     letterSpacing: LETTER_SPACING.label.md,
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-Bold",
   },
   text_small: {
     fontSize: FONT_SIZES.label.sm,
     lineHeight: LINE_HEIGHT.label.sm,
     letterSpacing: LETTER_SPACING.label.sm,
-    fontFamily: "Nunito-Medium",
+    fontFamily: "Nunito-Bold",
   },
 });
 
