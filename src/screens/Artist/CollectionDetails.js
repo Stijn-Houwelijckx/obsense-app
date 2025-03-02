@@ -90,7 +90,7 @@ const CollectionDetails = ({ navigation, route }) => {
 
           <View style={styles.imageContainer}>
             <Badge
-              size="small"
+              size="large"
               shape="rounded"
               type="primary"
               styleType="filled"
@@ -102,7 +102,7 @@ const CollectionDetails = ({ navigation, route }) => {
               source={{ uri: collectionDetailsData.coverImage.filePath }}
             />
             <Badge
-              size="small"
+              size="large"
               shape="rounded"
               type="primary"
               styleType="filled"
