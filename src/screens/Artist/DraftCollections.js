@@ -61,6 +61,15 @@ const DraftCollections = ({ navigation }) => {
             Tours
           </Text>
         </View>
+        {/* If empty */}
+        {collectionData.filter(
+          (item) => !item.isPublished && item.type === "tour"
+        ).length === 0 && (
+          <Text style={[globalStyles.bodyText, styles.emptyText]}>
+            No tours found.
+          </Text>
+        )}
+        {/* If not empty */}
         <FlatList
           data={collectionData.filter(
             (item) => !item.isPublished && item.type === "tour"
@@ -92,6 +101,15 @@ const DraftCollections = ({ navigation }) => {
             Expositions
           </Text>
         </View>
+        {/* If empty */}
+        {collectionData.filter(
+          (item) => !item.isPublished && item.type === "exposition"
+        ).length === 0 && (
+          <Text style={[globalStyles.bodyText, styles.emptyText]}>
+            No expositions found.
+          </Text>
+        )}
+        {/* If not empty */}
         <FlatList
           data={collectionData.filter(
             (item) => !item.isPublished && item.type === "exposition"
@@ -154,6 +172,10 @@ const styles = StyleSheet.create({
   cardsContainer: {
     flexDirection: "row",
     gap: 16,
+  },
+  emptyText: {
+    color: COLORS.neutral[300],
+    fontStyle: "italic",
   },
 });
 
