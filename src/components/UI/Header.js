@@ -71,9 +71,9 @@ const Header = ({
               <Text style={[globalStyles.bodySmallBold, styles.userName]}>
                 {userName}
               </Text>
-              {tokens && (
+              {tokens != null && tokens !== "" && (
                 <Text style={[globalStyles.bodySmallItalic, styles.tokens]}>
-                  {tokens} Tokens
+                  {String(tokens)} Tokens
                 </Text>
               )}
             </View>
