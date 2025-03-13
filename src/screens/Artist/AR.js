@@ -9,6 +9,7 @@ import {
   Switch,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   ViroARScene,
@@ -48,8 +49,78 @@ const objectList = [
   },
   {
     id: "3",
+    name: "Velociraptor",
+    source: require("../../../res/velociraptor/velociraptor.glb"),
+  },
+  {
+    id: "4",
     name: "Zombie Head",
     source: require("../../../res/zombie_head/zombie_head.glb"),
+  },
+  {
+    id: "5",
+    name: "Abstract Ball",
+    source: require("../../../res/abstract_ball/symmetrical_abstract_ball.glb"),
+  },
+  {
+    id: "6",
+    name: "Stonehenge",
+    source: require("../../../res/stonehenge/stonehenge_england_-_vr.glb"),
+  },
+  {
+    id: "7",
+    name: "Nautilus",
+    source: require("../../../res/nautilus/nautilus_concept.glb"),
+  },
+  {
+    id: "8",
+    name: "Black Castle",
+    source: require("../../../res/black_castle/low_poly_black_castle.glb"),
+  },
+  {
+    id: "9",
+    name: "Golden Eagle",
+    source: require("../../../res/golden_eagle/golden_eagle.glb"),
+  },
+  {
+    id: "10",
+    name: "Castle",
+    source: require("../../../res/castle/corridor_castle.glb"),
+  },
+  {
+    id: "11",
+    name: "Layered Structure",
+    source: require("../../../res/layered_structure/abstract_layered_architecture_structure_1.glb"),
+  },
+  {
+    id: "12",
+    name: "Iron Man",
+    source: require("../../../res/iron_man/abstract_ironman.glb"),
+  },
+  {
+    id: "13",
+    name: "Flying Bee",
+    source: require("../../../res/flying_bee/stylized_flying_bee_bird_rigged.glb"),
+  },
+  {
+    id: "14",
+    name: "Abstract 1",
+    source: require("../../../res/abstract_1/abstract_shape.glb"),
+  },
+  {
+    id: "15",
+    name: "Abstract 2",
+    source: require("../../../res/abstract_2/abstract_design.glb"),
+  },
+  {
+    id: "16",
+    name: "Diamond",
+    source: require("../../../res/diamond/diamond.glb"),
+  },
+  {
+    id: "17",
+    name: "Manneken Pis",
+    source: require("../../../res/manneken_pis/manneken_pis.glb"),
   },
 ];
 
@@ -219,6 +290,7 @@ const AR = () => {
   const isFocused = useIsFocused(); // React Navigation hook to track focus
   const [selectedObject, setSelectedObject] = useState(null);
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
+  const [isObjectModalVisible, setIsObjectModalVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
   const [currentlySelectedObjectId, setCurrentlySelectedObjectId] =
     useState(null);
@@ -265,16 +337,13 @@ const AR = () => {
     navigation.goBack(); // Go back to the previous screen
   };
 
-  const showObjectSelectionAlert = () => {
-    Alert.alert(
-      "Choose a Model",
-      "Select a 3D object to place in the AR scene:",
-      objectList.map((obj) => ({
-        text: obj.name,
-        onPress: () => setSelectedObject(obj),
-      })),
-      { cancelable: true }
-    );
+  const showObjectSelectionModal = () => {
+    setIsObjectModalVisible(true);
+  };
+
+  const selectObject = (obj) => {
+    setSelectedObject(obj);
+    setIsObjectModalVisible(false);
   };
 
   const handleObjectSelect = (obj) => {
@@ -373,7 +442,7 @@ const AR = () => {
         <View style={styles.selectModelButton}>
           <IconButton
             icon={PlusIcon}
-            onPress={showObjectSelectionAlert}
+            onPress={showObjectSelectionModal}
             buttonSize={40}
             iconSize={20}
           />
@@ -402,6 +471,33 @@ const AR = () => {
               />
             </View>
             <Button title="Close" onPress={() => setIsSettingsVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={isObjectModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Choose a Model</Text>
+            <ScrollView style={{ maxHeight: 300 }}>
+              {objectList.map((obj) => (
+                <TouchableOpacity
+                  key={obj.id}
+                  style={styles.objectItem}
+                  onPress={() => selectObject(obj)}
+                >
+                  <Text>{obj.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <Button
+              title="Close"
+              onPress={() => setIsObjectModalVisible(false)}
+            />
           </View>
         </View>
       </Modal>
@@ -496,6 +592,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 16,
     right: 20,
+    alignItems: "center",
+  },
+  objectItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
     alignItems: "center",
   },
 });
