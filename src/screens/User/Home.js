@@ -1,41 +1,162 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  Image,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Import Utils
+import { getOwnedCollections } from "../../utils/api";
+
+// Import Styles
+import { globalStyles } from "../../styles/global";
+import { COLORS } from "../../styles/theme";
+
+// Import Icons
+import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
+
+// Import Components
+import BoughtCollectionCard from "../../components/UI/BoughtCollectionCard";
+
 const Home = ({ navigation }) => {
-  const [userId, setUserId] = useState(null);
+  const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections
+  const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const [timeLeft, setTimeLeft] = useState([]); // State to store time left for each collection
 
   useEffect(() => {
-    const getUserId = async () => {
-      try {
-        const storedUserId = await AsyncStorage.getItem("userId");
-        if (storedUserId !== null) {
-          setUserId(storedUserId);
-        } else {
-          console.log("UserId not found");
-        }
-      } catch (error) {
-        console.error("Error retrieving userId from AsyncStorage", error);
+    const getOwnedCollectionsData = async () => {
+      const result = await getOwnedCollections();
+
+      if (result.status === "success") {
+        // setUser(result.data.data.user); // Set user data
+        setOwnedCollections(result.data.purchases); // Set collection data
+
+        // Calculate time left for each collection
+        // "purchasedAt": "2025-03-16T21:15:24.146Z", "expiresAt": "2025-04-15T21:15:24.146Z"
+        setTimeLeft(
+          result.data.purchases.map((purchase) => {
+            const timeDifference =
+              new Date(purchase.expiresAt).getTime() - new Date().getTime();
+
+            if (timeDifference > 24 * 60 * 60 * 1000) {
+              const daysLeft = Math.floor(
+                timeDifference / (24 * 60 * 60 * 1000)
+              );
+              return `${daysLeft} Days Left`;
+            } else if (timeDifference > 60 * 60 * 1000) {
+              const hoursLeft = Math.floor(timeDifference / (60 * 60 * 1000));
+              return `${hoursLeft} Hours Left`;
+            } else if (timeDifference > 0) {
+              const minutesLeft = Math.floor(timeDifference / (60 * 1000));
+              return `${minutesLeft} Minutes Left`;
+            } else {
+              return "Expired";
+            }
+          })
+        );
+
+        console.log(result.data.purchases); // Log collection data
+      } else {
+        console.log("Error getting user data:", result.message); // Log error message
       }
+
+      setIsLoading(false); // Set loading state to false
     };
 
-    getUserId();
+    getOwnedCollectionsData(); // Call the function
   }, []);
 
   return (
-    <View>
-      <Text>User Home</Text>
-      {userId ? (
-        <Text>User ID: {userId}</Text>
-      ) : (
-        <Text>Loading User ID...</Text>
-      )}
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate("Details")}
-      />
+    <View style={[globalStyles.container, styles.container]}>
+      {/* Owned Collections Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionTitleContainer}>
+          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+            Your Tours & Expositions
+          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Draft Collections")}
+          >
+            <View style={styles.linkContainer}>
+              <Text
+                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+              >
+                See all
+              </Text>
+              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+            </View>
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={ownedCollections.slice(0, 3)}
+          renderItem={({ item }) => (
+            <BoughtCollectionCard
+              id={item.collectionRef._id}
+              imageUrl={item.collectionRef.coverImage.filePath}
+              title={item.collectionRef.title}
+              creator={item.collectionRef.createdBy.username}
+              timeLeft={timeLeft[ownedCollections.indexOf(item)]}
+              category={item.collectionRef.type}
+              onPress={(id) =>
+                navigation.navigate("CollectionDetails", { collectionId: id })
+              }
+              style={{ width: 140 }} // Custom styles (46%)
+            />
+          )}
+          keyExtractor={(item) => item._id} // Unique key for each card
+          contentContainerStyle={styles.cardsContainer} // Apply container styles
+          horizontal // Optional: if you want to display the cards horizontally
+          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+        />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: 20,
+  },
+  section: {
+    width: "100%",
+    marginTop: 4,
+    gap: 20,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  sectionTitleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  sectionTitle: {
+    color: COLORS.neutral[50],
+  },
+  linkContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingLeft: 5.5,
+    height: 28,
+  },
+  sectionLink: {
+    color: COLORS.neutral[50],
+  },
+  cardsContainer: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  textColor: {
+    color: COLORS.neutral[50],
+  },
+});
 
 export default Home;
