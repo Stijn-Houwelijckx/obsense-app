@@ -16,6 +16,14 @@ import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import Details from "../screens/Shared/Details";
 
+// Import Styles
+import {
+  COLORS,
+  FONT_SIZES,
+  LINE_HEIGHT,
+  LETTER_SPACING,
+} from "../styles/theme";
+
 // Import custom icons
 import HomeIcon from "../components/icons/HomeIcon";
 import CompassIcon from "../components/icons/CompassIcon";
@@ -187,15 +195,35 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       headerShown: false,
-      tabBarStyle: route.name === "AR" ? { display: "none" } : {}, // Hide tab bar on AR screen
+      tabBarStyle:
+        route.name === "AR"
+          ? { display: "none" }
+          : {
+              backgroundColor: COLORS.primaryNeutral[800],
+              borderTopWidth: 0, // Ensure no actual border
+              elevation: 0, // Removes shadow on Android
+              shadowOpacity: 0, // Removes shadow on iOS
+            }, // Hide tab bar on AR screen
+      tabBarLabelStyle: {
+        fontSize: FONT_SIZES.label.sm,
+        lineHeight: LINE_HEIGHT.label.sm,
+        letterSpacing: LETTER_SPACING.label.sm,
+        fontFamily: "Nunito-Medium",
+      },
+      tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
+      tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
     })}
   >
     <Tab.Screen
       name="Home"
       component={HomeStack}
       options={{
-        tabBarIcon: () => (
-          <HomeIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <HomeIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
@@ -203,15 +231,24 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       name="Explore"
       component={ExploreStack}
       options={{
-        tabBarIcon: () => <CompassIcon size={24} fill="#B1B0AF" />,
+        tabBarIcon: ({ focused }) => (
+          <CompassIcon
+            size={24}
+            fill={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+          />
+        ),
       }}
     />
     <Tab.Screen
       name="AR"
       component={ARStack}
       options={{
-        tabBarIcon: () => (
-          <CameraIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <CameraIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
@@ -219,16 +256,24 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
       name="Map"
       component={MapStack}
       options={{
-        tabBarIcon: () => (
-          <MapIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <MapIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     />
     <Tab.Screen
       name="Settings"
       options={{
-        tabBarIcon: () => (
-          <CogIcon size={24} stroke="#B1B0AF" strokeWidth="1.5" />
+        tabBarIcon: ({ focused }) => (
+          <CogIcon
+            size={24}
+            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            strokeWidth="1.5"
+          />
         ),
       }}
     >
