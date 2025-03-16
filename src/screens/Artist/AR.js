@@ -122,6 +122,11 @@ const objectList = [
     name: "Manneken Pis",
     source: require("../../../res/manneken_pis/manneken_pis.glb"),
   },
+  {
+    id: "18",
+    name: "Kings Hall",
+    source: require("../../../res/kings_hall/the_king_s_hall.glb"),
+  },
 ];
 
 const ARScene = ({ sceneNavigator }) => {
