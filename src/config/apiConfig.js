@@ -14,6 +14,10 @@ const API_PATHS = {
   ARTIST_COLLECTIONS: `${API_BASE_URL}/artist/collections`,
 
   // User Endpoints
+
+  // Purchase Endpoints
+  // GET /purchases -> Get all purchases for the current user
+  OWNED_COLLECTIONS: `${API_BASE_URL}/purchases`,
 };
 
 export default API_PATHS;
