@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
         setCollectionData(result.data.collections); // Set collection data
         console.log(result.data.collections); // Log collection data
       } else {
-        console.log("Error getting user data:", result.message); // Log error message
+        console.log("Error getting collection data:", result.message); // Log error message
       }
 
       setIsLoading(false); // Set loading state to false
