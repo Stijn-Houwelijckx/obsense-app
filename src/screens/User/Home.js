@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getOwnedCollections } from "../../utils/api";
+import { getArtists } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -22,13 +23,16 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import BoughtCollectionCard from "../../components/UI/BoughtCollectionCard";
+import ArtistItem from "../../components/UI/ArtistItem";
 
 const Home = ({ navigation }) => {
   const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections
+  const [artists, setArtists] = useState([]); // State to store artists
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [timeLeft, setTimeLeft] = useState([]); // State to store time left for each collection
 
   useEffect(() => {
+    // Function to get the owned collections data
     const getOwnedCollectionsData = async () => {
       const result = await getOwnedCollections();
 
@@ -64,10 +68,27 @@ const Home = ({ navigation }) => {
       } else {
         console.log("Error getting user data:", result.message); // Log error message
       }
-
-      setIsLoading(false); // Set loading state to false
     };
 
+    // Function to get all artists
+    const getArtistsData = async () => {
+      const result = await getArtists();
+
+      if (result.status === "success") {
+        setArtists(result.data.artists); // Set artists data
+        console.log(result.data.artists); // Log artists data
+      } else {
+        console.log("Error getting artists data:", result.message); // Log error message
+      }
+    };
+
+    if (ownedCollections.length === 0 && artists.length === 0) {
+      setIsLoading(true); // Set loading state to true
+    } else {
+      setIsLoading(false); // Set loading state to false
+    }
+
+    getArtistsData(); // Call the function
     getOwnedCollectionsData(); // Call the function
   }, []);
 
@@ -116,6 +137,53 @@ const Home = ({ navigation }) => {
                 navigation.navigate("CollectionDetails", { collectionId: id })
               }
               style={{ width: 140 }} // Custom styles (46%)
+            />
+          )}
+          keyExtractor={(item) => item._id} // Unique key for each card
+          contentContainerStyle={styles.cardsContainer} // Apply container styles
+          horizontal // Optional: if you want to display the cards horizontally
+          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+        />
+      </View>
+
+      {/* Artists Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionTitleContainer}>
+          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+            Top Artists
+          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Draft Collections")}
+          >
+            <View style={styles.linkContainer}>
+              <Text
+                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+              >
+                See all
+              </Text>
+              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {artists.length === 0 && !isLoading && (
+          <View>
+            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+              No artists found
+            </Text>
+          </View>
+        )}
+
+        {/* Display owned collections */}
+        <FlatList
+          data={artists.slice(0, 3)}
+          renderItem={({ item }) => (
+            <ArtistItem
+              id={item._id}
+              profileImage={item.profilePicture.filePath}
+              username={item.username}
+              collectionCount={item.collectionCount}
+              onPress={(id) => navigation.navigate("Artist", { artistId: id })}
             />
           )}
           keyExtractor={(item) => item._id} // Unique key for each card
