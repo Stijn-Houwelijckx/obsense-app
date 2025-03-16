@@ -10,6 +10,10 @@ const API_PATHS = {
   ME: `${API_BASE_URL}/users/me`,
 
   // Artist Endpoints
+  // GET /artists -> Get all artists
+  ARTISTS: `${API_BASE_URL}/artists`,
+
+  // Artist Endpoints
   // GET /artist/collections -> Get all collections for current artist
   ARTIST_COLLECTIONS: `${API_BASE_URL}/artist/collections`,
 
