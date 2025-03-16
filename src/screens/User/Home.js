@@ -92,6 +92,16 @@ const Home = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
+
+        {ownedCollections.length === 0 && !isLoading && (
+          <View>
+            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+              No owned tours or expositions found
+            </Text>
+          </View>
+        )}
+
+        {/* Display owned collections */}
         <FlatList
           data={ownedCollections.slice(0, 3)}
           renderItem={({ item }) => (
@@ -156,6 +166,9 @@ const styles = StyleSheet.create({
   },
   textColor: {
     color: COLORS.neutral[50],
+  },
+  emptyText: {
+    color: COLORS.neutral[300],
   },
 });
 
