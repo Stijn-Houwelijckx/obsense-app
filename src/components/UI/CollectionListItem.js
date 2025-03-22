@@ -26,7 +26,7 @@ const CollectionListItem = ({
     typeof imageUrl === "string" ? { uri: imageUrl } : imageUrl;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <View style={styles.contentContainer}>
         {/* Collection Image */}
         <FastImage style={styles.image} source={imageSource} />
