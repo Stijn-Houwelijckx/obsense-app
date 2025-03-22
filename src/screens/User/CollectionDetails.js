@@ -30,7 +30,7 @@ import Badge from "../../components/UI/Badge";
 import CustomButton from "../../components/UI/CustomButton";
 
 const CollectionDetails = ({ navigation, route }) => {
-  const { collectionId } = route.params;
+  const { collectionId, owned } = route.params;
   const [collectionDetailsData, setCollectionDetailsData] = useState([]); // State to store collection data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
 
@@ -99,14 +99,16 @@ const CollectionDetails = ({ navigation, route }) => {
               style={styles.image}
               source={{ uri: collectionDetailsData.coverImage.filePath }}
             />
-            <Badge
-              size="large"
-              shape="rounded"
-              type="primary"
-              styleType="filled"
-              text={`Price: ${collectionDetailsData.price} tokens`}
-              style={styles.badgePrice}
-            />
+            {!owned && (
+              <Badge
+                size="large"
+                shape="rounded"
+                type="primary"
+                styleType="filled"
+                text={`Price: ${collectionDetailsData.price} tokens`}
+                style={styles.badgePrice}
+              />
+            )}
           </View>
 
           <View style={styles.tourStats}>
@@ -124,13 +126,23 @@ const CollectionDetails = ({ navigation, route }) => {
             </View>
           </View>
           <DescriptionTextBox description={collectionDetailsData.description} />
-          <CustomButton
-            variant="filled"
-            size="large"
-            title={`Buy ${collectionDetailsData.type} - ${collectionDetailsData.price} tokens`}
-            onPress={() => console.log("Buy button pressed")}
-            style={{ width: "100%" }}
-          />
+          {owned ? (
+            <CustomButton
+              variant="filled"
+              size="large"
+              title={`Start ${collectionDetailsData.type}`}
+              onPress={() => console.log("Start button pressed")}
+              style={{ width: "100%" }}
+            />
+          ) : (
+            <CustomButton
+              variant="filled"
+              size="large"
+              title={`Buy ${collectionDetailsData.type} - ${collectionDetailsData.price} tokens`}
+              onPress={() => console.log("Buy button pressed")}
+              style={{ width: "100%" }}
+            />
+          )}
         </View>
       </ScrollView>
     </View>
