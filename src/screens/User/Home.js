@@ -13,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Import Utils
 import { getOwnedCollections } from "../../utils/api";
 import { getArtists } from "../../utils/api";
+import { getCollections } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -24,10 +25,12 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 // Import Components
 import BoughtCollectionCard from "../../components/UI/BoughtCollectionCard";
 import ArtistItem from "../../components/UI/ArtistItem";
+import CollectionListItem from "../../components/UI/CollectionListItem";
 
 const Home = ({ navigation }) => {
   const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections
   const [artists, setArtists] = useState([]); // State to store artists
+  const [collections, setCollections] = useState([]); // State to store collections
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [timeLeft, setTimeLeft] = useState([]); // State to store time left for each collection
 
@@ -64,7 +67,7 @@ const Home = ({ navigation }) => {
           })
         );
 
-        console.log(result.data.purchases); // Log collection data
+        // console.log(result.data.purchases); // Log collection data
       } else {
         console.log("Error getting user data:", result.message); // Log error message
       }
@@ -76,13 +79,29 @@ const Home = ({ navigation }) => {
 
       if (result.status === "success") {
         setArtists(result.data.artists); // Set artists data
-        console.log(result.data.artists); // Log artists data
+        // console.log(result.data.artists); // Log artists data
       } else {
         console.log("Error getting artists data:", result.message); // Log error message
       }
     };
 
-    if (ownedCollections.length === 0 && artists.length === 0) {
+    // Function to get all collections
+    const getCollectionsData = async () => {
+      const result = await getCollections();
+
+      if (result.status === "success") {
+        setCollections(result.data.collections); // Set collections data
+        console.log(result.data.collections); // Log collections data
+      } else {
+        console.log("Error getting collections data:", result.message); // Log error message
+      }
+    };
+
+    if (
+      ownedCollections.length === 0 &&
+      artists.length === 0 &&
+      collections.length === 0
+    ) {
       setIsLoading(true); // Set loading state to true
     } else {
       setIsLoading(false); // Set loading state to false
@@ -90,6 +109,7 @@ const Home = ({ navigation }) => {
 
     getArtistsData(); // Call the function
     getOwnedCollectionsData(); // Call the function
+    getCollectionsData(); // Call the function
   }, []);
 
   return (
@@ -184,6 +204,56 @@ const Home = ({ navigation }) => {
               username={item.username}
               collectionCount={item.collectionCount}
               onPress={(id) => navigation.navigate("Artist", { artistId: id })}
+            />
+          )}
+          keyExtractor={(item) => item._id} // Unique key for each card
+          contentContainerStyle={styles.cardsContainer} // Apply container styles
+          horizontal // Optional: if you want to display the cards horizontally
+          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+        />
+      </View>
+
+      {/* Trending Collections Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionTitleContainer}>
+          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+            Trending Near You
+          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Draft Collections")}
+          >
+            <View style={styles.linkContainer}>
+              <Text
+                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+              >
+                See all
+              </Text>
+              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {collections.length === 0 && !isLoading && (
+          <View>
+            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+              No collections found
+            </Text>
+          </View>
+        )}
+
+        {/* Display owned collections */}
+
+        <FlatList
+          data={collections.slice(0, 3)}
+          renderItem={({ item }) => (
+            <CollectionListItem
+              imageUrl={item.coverImage.filePath}
+              title={item.title}
+              creator={item.createdBy.username}
+              category={item.type}
+              onPress={(id) =>
+                navigation.navigate("CollectionDetails", { collectionId: id })
+              }
             />
           )}
           keyExtractor={(item) => item._id} // Unique key for each card
