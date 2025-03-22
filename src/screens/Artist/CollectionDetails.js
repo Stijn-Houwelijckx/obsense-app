@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FastImage from "react-native-fast-image";
 
 // Import Utils
-import { getCollectionDetails } from "../../utils/api";
+import { getArtistCollectionDetails } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -36,7 +36,7 @@ const CollectionDetails = ({ navigation, route }) => {
 
   useEffect(() => {
     const getCollectionDataById = async () => {
-      const result = await getCollectionDetails(collectionId);
+      const result = await getArtistCollectionDetails(collectionId);
 
       if (result.status === "success") {
         // setUser(result.data.data.user); // Set user data

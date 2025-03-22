@@ -116,7 +116,7 @@ const getCollectionsForCurrentArtist = async () => {
 };
 
 // Function to get the collection details from the API
-const getCollectionDetails = async (collectionId) => {
+const getArtistCollectionDetails = async (collectionId) => {
   try {
     const token = await AsyncStorage.getItem("userToken");
     if (!token) {
@@ -235,7 +235,7 @@ export {
   getCurrentUser,
   getArtists,
   getCollectionsForCurrentArtist,
-  getCollectionDetails,
+  getArtistCollectionDetails,
   getOwnedCollections,
   getCollections,
 };
