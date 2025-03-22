@@ -247,6 +247,7 @@ const Home = ({ navigation }) => {
           data={collections.slice(0, 3)}
           renderItem={({ item }) => (
             <CollectionListItem
+              id={item._id}
               imageUrl={item.coverImage.filePath}
               title={item.title}
               creator={item.createdBy.username}
