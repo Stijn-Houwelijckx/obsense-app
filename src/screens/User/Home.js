@@ -154,7 +154,10 @@ const Home = ({ navigation }) => {
               timeLeft={timeLeft[ownedCollections.indexOf(item)]}
               category={item.collectionRef.type}
               onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
+                navigation.navigate("CollectionDetails", {
+                  collectionId: id,
+                  owned: true,
+                })
               }
               style={{ width: 140 }} // Custom styles (46%)
             />
@@ -242,7 +245,6 @@ const Home = ({ navigation }) => {
         )}
 
         {/* Display owned collections */}
-
         <FlatList
           data={collections.slice(0, 3)}
           renderItem={({ item }) => (
@@ -253,7 +255,12 @@ const Home = ({ navigation }) => {
               creator={item.createdBy.username}
               category={item.type}
               onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
+                navigation.navigate("CollectionDetails", {
+                  collectionId: id,
+                  owned: ownedCollections.some(
+                    (ownedItem) => ownedItem.collectionRef._id === id
+                  ),
+                })
               }
             />
           )}
