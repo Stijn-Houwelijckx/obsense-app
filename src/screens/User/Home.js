@@ -204,7 +204,9 @@ const Home = ({ navigation }) => {
               profileImage={item.profilePicture.filePath}
               username={item.username}
               collectionCount={item.collectionCount}
-              onPress={(id) => navigation.navigate("Artist", { artistId: id })}
+              onPress={(id) =>
+                navigation.navigate("Artist Profile", { artistId: id })
+              }
             />
           )}
           keyExtractor={(item) => item._id} // Unique key for each card
@@ -240,7 +242,7 @@ const Home = ({ navigation }) => {
           </View>
         )}
 
-        {/* Display owned collections */}
+        {/* Display trending collections */}
         <FlatList
           data={collections.slice(0, 3)}
           renderItem={({ item }) => (

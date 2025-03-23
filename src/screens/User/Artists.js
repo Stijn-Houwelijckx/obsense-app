@@ -89,7 +89,7 @@ const Artists = ({ navigation }) => {
               username={item.username}
               numCollections={item.collectionCount}
               onPress={(id) =>
-                navigation.navigate("ArtistProfile", {
+                navigation.navigate("Artist Profile", {
                   artistId: id,
                 })
               }

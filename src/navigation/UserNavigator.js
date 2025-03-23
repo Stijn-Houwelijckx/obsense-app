@@ -18,6 +18,7 @@ import CollectionDetails from "../screens/User/CollectionDetails";
 import Collections from "../screens/User/Collections";
 import PurchasedCollections from "../screens/User/PurchasedCollections";
 import Artists from "../screens/User/Artists";
+import ArtistProfile from "../screens/User/ArtistProfile";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -117,6 +118,7 @@ const HomeStack = () => {
           })}
         />
         <Stack.Screen name="Artists" component={Artists} />
+        <Stack.Screen name="Artist Profile" component={ArtistProfile} />
       </Stack.Navigator>
     );
   }
