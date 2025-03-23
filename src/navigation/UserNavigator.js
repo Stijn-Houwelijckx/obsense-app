@@ -17,6 +17,7 @@ import Notification from "../screens/Shared/SettingsScreens/Notification";
 import CollectionDetails from "../screens/User/CollectionDetails";
 import Collections from "../screens/User/Collections";
 import PurchasedCollections from "../screens/User/PurchasedCollections";
+import Artists from "../screens/User/Artists";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -115,6 +116,7 @@ const HomeStack = () => {
             header: () => <Header title="Owned Collections" />,
           })}
         />
+        <Stack.Screen name="Artists" component={Artists} />
       </Stack.Navigator>
     );
   }

@@ -175,9 +175,7 @@ const Home = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Top Artists
           </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Draft Collections")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}
