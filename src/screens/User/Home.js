@@ -91,7 +91,7 @@ const Home = ({ navigation }) => {
 
       if (result.status === "success") {
         setCollections(result.data.collections); // Set collections data
-        console.log(result.data.collections); // Log collections data
+        // console.log(result.data.collections); // Log collections data
       } else {
         console.log("Error getting collections data:", result.message); // Log error message
       }
@@ -222,9 +222,7 @@ const Home = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Trending Near You
           </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Draft Collections")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Collections")}>
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}

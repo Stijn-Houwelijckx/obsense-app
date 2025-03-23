@@ -15,6 +15,7 @@ import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import CollectionDetails from "../screens/User/CollectionDetails";
+import Collections from "../screens/User/Collections";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -59,7 +60,7 @@ const HomeStack = () => {
   }, []);
 
   if (!isLoading) {
-    console.log(user); // Log user data
+    // console.log(user); // Log user data
 
     const profilePicture = user?.profilePicture
       ? require("../../assets/profileImages/Stijn.png")
@@ -85,6 +86,13 @@ const HomeStack = () => {
                 />
               );
             }
+
+            return (
+              <Header
+                title={route.name} // You can set dynamic title here if needed
+                showBackButton={showBackButton}
+              />
+            );
           },
         })}
       >
@@ -98,6 +106,7 @@ const HomeStack = () => {
             ),
           })}
         />
+        <Stack.Screen name="Collections" component={Collections} />
       </Stack.Navigator>
     );
   }
