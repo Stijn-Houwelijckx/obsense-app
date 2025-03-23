@@ -78,6 +78,36 @@ const getArtists = async (page = 1, limit = 20) => {
   }
 };
 
+// Function to get the artist details from the API
+const getArtistDetails = async (artistId) => {
+  try {
+    const token = await AsyncStorage.getItem("userToken");
+    if (!token) {
+      return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
+    }
+
+    const response = await axios.get(`${API_PATHS.ARTISTS}/${artistId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+    });
+
+    // Handle success response
+    if (response.status === 200) {
+      return { status: "success", data: response.data.data };
+    }
+
+    // Handle other errors
+    return {
+      status: "fail",
+      message: response.data?.data?.message || "Something went wrong",
+    };
+  } catch (error) {
+    return { status: "fail", message: error.message };
+  }
+};
+
 // Function to get the collections for the current artist from the API
 const getCollectionsForCurrentArtist = async () => {
   try {
@@ -276,6 +306,7 @@ const getCollections = async (page = 1, limit = 20) => {
 export {
   getCurrentUser,
   getArtists,
+  getArtistDetails,
   getCollectionsForCurrentArtist,
   getArtistCollectionDetails,
   getCollectionDetails,
