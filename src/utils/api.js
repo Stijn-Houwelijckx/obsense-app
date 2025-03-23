@@ -33,19 +33,22 @@ const getCurrentUser = async () => {
 };
 
 // Function to get all artists from the API
-const getArtists = async () => {
+const getArtists = async (page = 1, limit = 20) => {
   try {
     const token = await AsyncStorage.getItem("userToken");
     if (!token) {
       return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
     }
 
-    const response = await axios.get(API_PATHS.ARTISTS, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
-    });
+    const response = await axios.get(
+      `${API_PATHS.ARTISTS}?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+      }
+    );
 
     // Handle success response
     if (response.status === 200) {
@@ -60,6 +63,7 @@ const getArtists = async () => {
           code: 204,
           message: "No artists found",
           artists: [],
+          hasMore: false,
         },
       };
     }
