@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getCollections } from "../../utils/api";
+import { getOwnedCollections } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -25,6 +26,7 @@ import CollectionCard from "../../components/UI/CollectionCard";
 
 const Collections = ({ navigation }) => {
   const [collections, setCollections] = useState([]); // State to store collection data
+  const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collection data
   const [page, setPage] = useState(1); // State to manage pagination
   const [isLoading, setIsLoading] = useState(false); // State to manage loading state
   const [hasMore, setHasMore] = useState(true); // State to manage pagination
@@ -59,6 +61,19 @@ const Collections = ({ navigation }) => {
     if (!initialLoadDone.current) {
       loadCollections();
       initialLoadDone.current = true;
+
+      const getOwnedCollectionsData = async () => {
+        const result = await getOwnedCollections();
+
+        if (result.status === "success") {
+          setOwnedCollections(result.data.purchases); // Set owned collection data
+          console.log(result.data.purchases); // Log owned collection data
+        } else {
+          console.log("Error getting owned collection data:", result.message); // Log error message
+        }
+      };
+
+      getOwnedCollectionsData(); // Call the function
     }
   }, [loadCollections]);
 
@@ -71,7 +86,6 @@ const Collections = ({ navigation }) => {
             Tours & Expositions
           </Text>
         </View>
-
         {/* Empty State */}
         {collections.length === 0 && !isLoading && (
           <Text style={[globalStyles.bodyText, styles.emptyText]}>
@@ -82,20 +96,29 @@ const Collections = ({ navigation }) => {
         {/* If not empty */}
         <FlatList
           data={collections}
-          renderItem={({ item }) => (
-            <CollectionCard
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              creator={item.createdBy.username}
-              price={item.price}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
-              }
-              style={{ width: cardWidth }}
-            />
-          )}
+          renderItem={({ item }) => {
+            const isOwned = ownedCollections.some(
+              (c) => c.collectionRef._id === item._id
+            );
+            return (
+              <CollectionCard
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                creator={item.createdBy.username}
+                price={item.price}
+                owned={isOwned}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", {
+                    collectionId: id,
+                    owned: isOwned,
+                  })
+                }
+                style={{ width: cardWidth }}
+              />
+            );
+          }}
           keyExtractor={(item) => item._id} // Unique key for each card
           contentContainerStyle={styles.cardsContainer} // Apply container styles
           numColumns={2} // Show 2 cards in a row
