@@ -121,7 +121,7 @@ const Home = ({ navigation }) => {
             Your Tours & Expositions
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Draft Collections")}
+            onPress={() => navigation.navigate("PurchasedCollections")}
           >
             <View style={styles.linkContainer}>
               <Text

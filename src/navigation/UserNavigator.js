@@ -16,6 +16,7 @@ import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
 import CollectionDetails from "../screens/User/CollectionDetails";
 import Collections from "../screens/User/Collections";
+import PurchasedCollections from "../screens/User/PurchasedCollections";
 import Details from "../screens/Shared/Details";
 
 // Import Styles
@@ -107,6 +108,13 @@ const HomeStack = () => {
           })}
         />
         <Stack.Screen name="Collections" component={Collections} />
+        <Stack.Screen
+          name="PurchasedCollections"
+          component={PurchasedCollections}
+          options={({ route }) => ({
+            header: () => <Header title="Owned Collections" />,
+          })}
+        />
       </Stack.Navigator>
     );
   }
