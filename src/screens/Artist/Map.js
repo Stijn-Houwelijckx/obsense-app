@@ -3,27 +3,50 @@ import {
   View,
   Text,
   Button,
+  Image,
   Alert,
   StyleSheet,
   PermissionsAndroid,
   Platform,
   Linking,
 } from "react-native";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
+import FastImage from "react-native-fast-image";
+
+// Import Utils
+import { getCollectionsForCurrentArtist } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 import darkModeStyle from "../../styles/mapStyles";
+import CustomButton from "../../components/UI/CustomButton";
 
 const Map = ({ navigation }) => {
+  const [collectionData, setCollectionData] = useState([]); // State to store collection data
   const [location, setLocation] = useState({
     latitude: 51.09284609, // Default latitude
     longitude: 4.52385715, // Default longitude
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+  const [zoomLevel, setZoomLevel] = useState(15); // Default zoom level
+
+  useEffect(() => {
+    const getCollectionData = async () => {
+      const result = await getCollectionsForCurrentArtist();
+
+      if (result.status === "success") {
+        // setUser(result.data.data.user); // Set user data
+        setCollectionData(result.data.collections); // Set collection data
+      } else {
+        console.log("Error getting collection data:", result.message); // Log error message
+      }
+    };
+
+    getCollectionData(); // Call the function
+  }, []);
 
   // Request location permission and get the user's location
   const requestLocationPermission = async () => {
@@ -114,6 +137,11 @@ const Map = ({ navigation }) => {
     requestLocationPermission();
   }, []);
 
+  const calculateZoomLevel = (latitudeDelta) => {
+    // Formula to calculate zoom level from latitudeDelta
+    return Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
+  };
+
   return (
     <View style={[globalStyles.container, styles.container]}>
       <MapView
@@ -126,9 +154,14 @@ const Map = ({ navigation }) => {
         // showsBuildings={true} // Optional: Show 3D buildings on the map
         // showsMyLocationButton={true} // Optional: Show the "My Location" button
         scrollEnabled={true} // Enable scrolling
+        toolbarEnabled={false} // Disable the toolbar
         // onPanDrag={() => {
         //   console.log("Map is being dragged");
         // }}
+        onRegionChangeComplete={(region) => {
+          const zoom = calculateZoomLevel(region.latitudeDelta);
+          setZoomLevel(zoom); // Update the zoom level state
+        }}
         onUserLocationChange={(event) => {
           const { latitude, longitude } = event.nativeEvent.coordinate;
           setLocation((prevLocation) => ({
@@ -148,7 +181,57 @@ const Map = ({ navigation }) => {
           zoom: 15, // Set your desired zoom level here
           altitude: 0, // Optional: altitude (not commonly used)
         }}
-      ></MapView>
+      >
+        {/* Render markers for collections with valid locations */}
+        {zoomLevel >= 7 &&
+          collectionData
+            .filter(
+              (collection) =>
+                collection.location?.lat && collection.location?.lon
+            )
+            .map((collection) => (
+              <Marker
+                key={collection._id}
+                coordinate={{
+                  latitude: parseFloat(collection.location.lat),
+                  longitude: parseFloat(collection.location.lon),
+                }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                calloutAnchor={{ x: 0.5, y: 0 }}
+                onCalloutPress={() =>
+                  navigation.navigate("Home", {
+                    screen: "CollectionDetails",
+                    params: {
+                      collectionId: collection._id,
+                    },
+                  })
+                }
+              >
+                {/* Custom marker using the collection's image */}
+                <View style={styles.markerContainer}>
+                  <FastImage
+                    source={{ uri: collection.coverImage.filePath }}
+                    style={styles.markerImage}
+                  />
+                </View>
+
+                {/* Custom Callout */}
+                <Callout tooltip>
+                  <View style={styles.calloutContainer}>
+                    <Text style={styles.calloutTitle}>{collection.title}</Text>
+                    <View style={styles.calloutButtonContainer}>
+                      <CustomButton
+                        variant="filled"
+                        size="small"
+                        title="View Details"
+                        style={{}}
+                      />
+                    </View>
+                  </View>
+                </Callout>
+              </Marker>
+            ))}
+      </MapView>
 
       <View style={styles.coordinatesContainer}>
         <Text style={styles.coordinatesText}>
@@ -180,6 +263,48 @@ const styles = StyleSheet.create({
   coordinatesText: {
     color: "white",
     fontSize: 14,
+  },
+  markerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 40, // Adjust the size of the marker container
+    height: 40,
+  },
+  markerImage: {
+    width: 40, // Adjust the size of the marker image
+    height: 40,
+    borderRadius: 9999, // Make the image circular
+    borderWidth: 2,
+    borderColor: COLORS.primary[500], // Add a border for better visibility
+  },
+
+  calloutContainer: {
+    width: 250, // Set a fixed width for the callout
+    padding: 10,
+    backgroundColor: COLORS.primaryNeutral[600],
+    borderWidth: 1,
+    borderColor: COLORS.primary[500],
+    borderRadius: 8,
+  },
+  calloutTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+    color: COLORS.neutral[50],
+  },
+  calloutCity: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: COLORS.neutral[50],
+  },
+  calloutPrice: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: COLORS.neutral[50],
+    marginBottom: 8,
+  },
+  calloutButtonContainer: {
+    marginTop: 8,
   },
 });
 
