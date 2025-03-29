@@ -28,6 +28,7 @@ import HearthIcon from "../../components/icons/HearthIcon";
 import DescriptionTextBox from "../../components/UI/DescriptionTextBox";
 import Badge from "../../components/UI/Badge";
 import ObjectCard from "../../components/UI/ObjectCard";
+import CustomButton from "../../components/UI/CustomButton";
 
 const CollectionDetails = ({ navigation, route }) => {
   const { collectionId } = route.params;
@@ -41,6 +42,7 @@ const CollectionDetails = ({ navigation, route }) => {
       if (result.status === "success") {
         // setUser(result.data.data.user); // Set user data
         setCollectionDetailsData(result.data.collection); // Set collection data
+        console.log("========================="); // Log collection data
         console.log(result.data.collection); // Log collection data
       } else {
         console.log("Error getting user data:", result.message); // Log error message
@@ -156,6 +158,20 @@ const CollectionDetails = ({ navigation, route }) => {
           )}
         </View>
       </ScrollView>
+
+      <View style={styles.bottomButtonContainer}>
+        <CustomButton
+          variant="filled"
+          size="large"
+          title={`Edit ${collectionDetailsData.type}`}
+          onPress={() =>
+            navigation.navigate("AR", {
+              collectionId: collectionDetailsData._id,
+            })
+          }
+          style={{}}
+        />
+      </View>
     </View>
   );
 };
@@ -219,6 +235,14 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "col",
     gap: 8,
+  },
+  bottomButtonContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: "transparent",
   },
 });
 
