@@ -36,98 +36,98 @@ import TrashIcon from "../../components/icons/TrashIcon";
 import IconButton from "../../components/UI/IconButton";
 
 // List of available 3D objects with their names and sources
-const objectList = [
-  {
-    id: "1",
-    name: "Cyber Robot",
-    source: require("../../../res/cyber_robot/cyber_robot.glb"),
-  },
-  {
-    id: "2",
-    name: "Predator",
-    source: require("../../../res/predator_alien/predator_alien.glb"),
-  },
-  {
-    id: "3",
-    name: "Velociraptor",
-    source: require("../../../res/velociraptor/velociraptor.glb"),
-  },
-  // {
-  //   id: "4",
-  //   name: "Zombie Head",
-  //   source: require("../../../res/zombie_head/zombie_head.glb"),
-  // },
-  // {
-  //   id: "5",
-  //   name: "Abstract Ball",
-  //   source: require("../../../res/abstract_ball/symmetrical_abstract_ball.glb"),
-  // },
-  // {
-  //   id: "6",
-  //   name: "Stonehenge",
-  //   source: require("../../../res/stonehenge/stonehenge_england_-_vr.glb"),
-  // },
-  // {
-  //   id: "7",
-  //   name: "Nautilus",
-  //   source: require("../../../res/nautilus/nautilus_concept.glb"),
-  // },
-  // {
-  //   id: "8",
-  //   name: "Black Castle",
-  //   source: require("../../../res/black_castle/low_poly_black_castle.glb"),
-  // },
-  // {
-  //   id: "9",
-  //   name: "Golden Eagle",
-  //   source: require("../../../res/golden_eagle/golden_eagle.glb"),
-  // },
-  // {
-  //   id: "10",
-  //   name: "Castle",
-  //   source: require("../../../res/castle/corridor_castle.glb"),
-  // },
-  // {
-  //   id: "11",
-  //   name: "Layered Structure",
-  //   source: require("../../../res/layered_structure/abstract_layered_architecture_structure_1.glb"),
-  // },
-  // {
-  //   id: "12",
-  //   name: "Iron Man",
-  //   source: require("../../../res/iron_man/abstract_ironman.glb"),
-  // },
-  // {
-  //   id: "13",
-  //   name: "Flying Bee",
-  //   source: require("../../../res/flying_bee/stylized_flying_bee_bird_rigged.glb"),
-  // },
-  // {
-  //   id: "14",
-  //   name: "Abstract 1",
-  //   source: require("../../../res/abstract_1/abstract_shape.glb"),
-  // },
-  // {
-  //   id: "15",
-  //   name: "Abstract 2",
-  //   source: require("../../../res/abstract_2/abstract_design.glb"),
-  // },
-  // {
-  //   id: "16",
-  //   name: "Diamond",
-  //   source: require("../../../res/diamond/diamond.glb"),
-  // },
-  {
-    id: "17",
-    name: "Manneken Pis",
-    source: require("../../../res/manneken_pis/manneken_pis.glb"),
-  },
-  // {
-  //   id: "18",
-  //   name: "Kings Hall",
-  //   source: require("../../../res/kings_hall/the_king_s_hall.glb"),
-  // },
-];
+// const objectList = [
+//   {
+//     id: "1",
+//     name: "Cyber Robot",
+//     source: require("../../../res/cyber_robot/cyber_robot.glb"),
+//   },
+//   {
+//     id: "2",
+//     name: "Predator",
+//     source: require("../../../res/predator_alien/predator_alien.glb"),
+//   },
+//   {
+//     id: "3",
+//     name: "Velociraptor",
+//     source: require("../../../res/velociraptor/velociraptor.glb"),
+//   },
+//   // {
+//   //   id: "4",
+//   //   name: "Zombie Head",
+//   //   source: require("../../../res/zombie_head/zombie_head.glb"),
+//   // },
+//   // {
+//   //   id: "5",
+//   //   name: "Abstract Ball",
+//   //   source: require("../../../res/abstract_ball/symmetrical_abstract_ball.glb"),
+//   // },
+//   // {
+//   //   id: "6",
+//   //   name: "Stonehenge",
+//   //   source: require("../../../res/stonehenge/stonehenge_england_-_vr.glb"),
+//   // },
+//   // {
+//   //   id: "7",
+//   //   name: "Nautilus",
+//   //   source: require("../../../res/nautilus/nautilus_concept.glb"),
+//   // },
+//   // {
+//   //   id: "8",
+//   //   name: "Black Castle",
+//   //   source: require("../../../res/black_castle/low_poly_black_castle.glb"),
+//   // },
+//   // {
+//   //   id: "9",
+//   //   name: "Golden Eagle",
+//   //   source: require("../../../res/golden_eagle/golden_eagle.glb"),
+//   // },
+//   // {
+//   //   id: "10",
+//   //   name: "Castle",
+//   //   source: require("../../../res/castle/corridor_castle.glb"),
+//   // },
+//   // {
+//   //   id: "11",
+//   //   name: "Layered Structure",
+//   //   source: require("../../../res/layered_structure/abstract_layered_architecture_structure_1.glb"),
+//   // },
+//   // {
+//   //   id: "12",
+//   //   name: "Iron Man",
+//   //   source: require("../../../res/iron_man/abstract_ironman.glb"),
+//   // },
+//   // {
+//   //   id: "13",
+//   //   name: "Flying Bee",
+//   //   source: require("../../../res/flying_bee/stylized_flying_bee_bird_rigged.glb"),
+//   // },
+//   // {
+//   //   id: "14",
+//   //   name: "Abstract 1",
+//   //   source: require("../../../res/abstract_1/abstract_shape.glb"),
+//   // },
+//   // {
+//   //   id: "15",
+//   //   name: "Abstract 2",
+//   //   source: require("../../../res/abstract_2/abstract_design.glb"),
+//   // },
+//   // {
+//   //   id: "16",
+//   //   name: "Diamond",
+//   //   source: require("../../../res/diamond/diamond.glb"),
+//   // },
+//   {
+//     id: "17",
+//     name: "Manneken Pis",
+//     source: require("../../../res/manneken_pis/manneken_pis.glb"),
+//   },
+//   // {
+//   //   id: "18",
+//   //   name: "Kings Hall",
+//   //   source: require("../../../res/kings_hall/the_king_s_hall.glb"),
+//   // },
+// ];
 
 const ARScene = ({ sceneNavigator }) => {
   // const [objects, setObjects] = useState([]);
@@ -302,14 +302,19 @@ const AR = (route) => {
   const [objects, setObjects] = useState([]); // Manage objects in App
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
 
-  const { collectionId } = route.route.params; // Get collectionId from route params
+  const { collection } = route.route.params; // Get collectionId from route params
+
+  const objectList = collection?.objects.map((obj) => ({
+    id: obj._id,
+    name: obj.title,
+    source: { uri: obj.file.filePath }, // Assuming the image is a URL
+  }));
 
   useEffect(() => {
-    if (collectionId) {
-      console.log("Editing collection with ID:", collectionId);
-      // Perform any actions needed with the collectionId
+    if (collection) {
+      console.log("Editing collection with ID: ", collection._id);
     }
-  }, [collectionId]);
+  }, [collection]);
 
   // React Navigation Focus Effect
   useEffect(() => {

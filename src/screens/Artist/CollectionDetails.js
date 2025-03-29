@@ -166,7 +166,7 @@ const CollectionDetails = ({ navigation, route }) => {
           title={`Edit ${collectionDetailsData.type}`}
           onPress={() =>
             navigation.navigate("AR", {
-              collectionId: collectionDetailsData._id,
+              collection: collectionDetailsData,
             })
           }
           style={{}}
