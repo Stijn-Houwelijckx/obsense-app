@@ -15,6 +15,7 @@ import Geolocation from "@react-native-community/geolocation";
 // Import Styles
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
+import darkModeStyle from "../../styles/mapStyles";
 
 const Map = ({ navigation }) => {
   const [location, setLocation] = useState({
@@ -118,6 +119,7 @@ const Map = ({ navigation }) => {
       <MapView
         provider={PROVIDER_GOOGLE} // Use Google Maps as the provider
         style={styles.map}
+        customMapStyle={darkModeStyle}
         // region={location}
         showsUserLocation={true}
         followsUserLocation={true}
