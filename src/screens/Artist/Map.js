@@ -24,33 +24,6 @@ const Map = ({ navigation }) => {
     longitudeDelta: 0.0421,
   });
 
-  useEffect(() => {
-    requestLocationPermission();
-
-    // Start watching the user's location
-    const watchId = Geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation((prevLocation) => ({
-          ...prevLocation,
-          latitude,
-          longitude,
-        }));
-
-        console.log("Location updated: ", position.coords);
-      },
-      (error) => {
-        console.error("Error watching location: ", error);
-      },
-      { enableHighAccuracy: true, distanceFilter: 10 }
-    );
-
-    // Cleanup the watcher on component unmount
-    return () => {
-      Geolocation.clearWatch(watchId);
-    };
-  }, []);
-
   // Request location permission and get the user's location
   const requestLocationPermission = async () => {
     if (Platform.OS === "android") {
@@ -66,6 +39,7 @@ const Map = ({ navigation }) => {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        getCurrentLocation();
         console.log("Location permission granted");
       } else {
         console.log("Location permission denied");
@@ -89,23 +63,91 @@ const Map = ({ navigation }) => {
           ]
         );
       }
+    } else {
+      getCurrentLocation();
     }
   };
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation((prevLocation) => ({
+          ...prevLocation,
+          latitude,
+          longitude,
+        }));
+        console.log("Current location:", position.coords); // Log the current location
+      },
+      (error) => {
+        if (error.code === 2) {
+          // Show alert if location services are disabled
+          Alert.alert(
+            "Location Services Disabled",
+            "Please enable location services to use this feature.",
+            [
+              {
+                text: "Cancel",
+                style: "cancel",
+              },
+              {
+                text: "Open Settings",
+                onPress: () => {
+                  // Open device location settings
+                  if (Platform.OS === "android") {
+                    Linking.openSettings();
+                  }
+                },
+              },
+            ]
+          );
+        } else {
+          console.error("Error getting location: ", error);
+        }
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
+  };
+
+  useEffect(() => {
+    requestLocationPermission();
+  }, []);
 
   return (
     <View style={[globalStyles.container, styles.container]}>
       <MapView
         provider={PROVIDER_GOOGLE} // Use Google Maps as the provider
         style={styles.map}
-        region={location}
+        // region={location}
         showsUserLocation={true}
         followsUserLocation={true}
-      >
-        {/* Add a marker for the user's location */}
-        <Marker coordinate={location} title="You are here" />
-      </MapView>
+        // showsBuildings={true} // Optional: Show 3D buildings on the map
+        // showsMyLocationButton={true} // Optional: Show the "My Location" button
+        scrollEnabled={true} // Enable scrolling
+        // onPanDrag={() => {
+        //   console.log("Map is being dragged");
+        // }}
+        onUserLocationChange={(event) => {
+          const { latitude, longitude } = event.nativeEvent.coordinate;
+          setLocation((prevLocation) => ({
+            ...prevLocation,
+            latitude,
+            longitude,
+          }));
+          // console.log("User location updated:", latitude, longitude);
+        }}
+        initialCamera={{
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          pitch: 0, // Default pitch (tilt)
+          heading: 0, // Default heading (rotation)
+          zoom: 15, // Set your desired zoom level here
+          altitude: 0, // Optional: altitude (not commonly used)
+        }}
+      ></MapView>
 
-      {/* Display coordinates for debugging */}
       <View style={styles.coordinatesContainer}>
         <Text style={styles.coordinatesText}>
           Latitude: {location.latitude.toFixed(6)}
@@ -129,7 +171,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     left: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
     padding: 10,
     borderRadius: 8,
   },
