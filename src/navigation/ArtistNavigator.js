@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SystemNavigationBar from "react-native-system-navigation-bar";
+import { useIsFocused } from "@react-navigation/native";
 
 // Import Utils
 import { getCurrentUser } from "../utils/api";
@@ -119,27 +120,35 @@ const HomeStack = () => {
 };
 
 // Map Stack
-const MapStack = () => (
-  <Stack.Navigator
-    screenOptions={({ navigation, route }) => ({
-      // We use navigation.canGoBack() to check if there's a back action
-      header: () => {
-        const showBackButton =
-          route.name !== "MapScreen" && navigation.canGoBack();
+const MapStack = () => {
+  const isFocused = useIsFocused();
 
-        return (
-          <Header
-            title={route.name} // You can set dynamic title here if needed
-            showBackButton={showBackButton}
-          />
-        );
-      },
-    })}
-  >
-    <Stack.Screen name="MapScreen" component={Map} />
-    <Stack.Screen name="Details" component={Details} />
-  </Stack.Navigator>
-);
+  if (!isFocused) {
+    return null; // Do not render the stack if it is not focused
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        // We use navigation.canGoBack() to check if there's a back action
+        header: () => {
+          const showBackButton =
+            route.name !== "MapScreen" && navigation.canGoBack();
+
+          return (
+            <Header
+              title={route.name} // You can set dynamic title here if needed
+              showBackButton={showBackButton}
+            />
+          );
+        },
+      })}
+    >
+      <Stack.Screen name="MapScreen" component={Map} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
+  );
+};
 
 // Settings Stack (for settings pages like AccountSettings, ChangePassword, etc.)
 const SettingsStack = ({ handleAuthChangeSuccess }) => (
