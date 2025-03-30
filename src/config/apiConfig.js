@@ -24,6 +24,9 @@ const API_PATHS = {
   // Collection Endpoints
   // GET /collections -> Get all collections
   COLLECTIONS: `${API_BASE_URL}/collections`,
+
+  // Placed Object Endpoints
+  SAVE_PLACED_OBJECT: `${API_BASE_URL}/placedObjects`,
 };
 
 export default API_PATHS;
