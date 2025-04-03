@@ -10,6 +10,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  PermissionsAndroid,
+  Platform,
+  Linking,
 } from "react-native";
 import {
   ViroARScene,
@@ -19,6 +22,9 @@ import {
   ViroARPlane,
 } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import Geolocation from "@react-native-community/geolocation";
+import CompassHeading from "react-native-compass-heading";
+import merc from "mercator-projection";
 
 // Import Styles
 // Import Styles
@@ -35,99 +41,120 @@ import TrashIcon from "../../components/icons/TrashIcon";
 // Import Components
 import IconButton from "../../components/UI/IconButton";
 
-// List of available 3D objects with their names and sources
-// const objectList = [
-//   {
-//     id: "1",
-//     name: "Cyber Robot",
-//     source: require("../../../res/cyber_robot/cyber_robot.glb"),
-//   },
-//   {
-//     id: "2",
-//     name: "Predator",
-//     source: require("../../../res/predator_alien/predator_alien.glb"),
-//   },
-//   {
-//     id: "3",
-//     name: "Velociraptor",
-//     source: require("../../../res/velociraptor/velociraptor.glb"),
-//   },
-//   // {
-//   //   id: "4",
-//   //   name: "Zombie Head",
-//   //   source: require("../../../res/zombie_head/zombie_head.glb"),
-//   // },
-//   // {
-//   //   id: "5",
-//   //   name: "Abstract Ball",
-//   //   source: require("../../../res/abstract_ball/symmetrical_abstract_ball.glb"),
-//   // },
-//   // {
-//   //   id: "6",
-//   //   name: "Stonehenge",
-//   //   source: require("../../../res/stonehenge/stonehenge_england_-_vr.glb"),
-//   // },
-//   // {
-//   //   id: "7",
-//   //   name: "Nautilus",
-//   //   source: require("../../../res/nautilus/nautilus_concept.glb"),
-//   // },
-//   // {
-//   //   id: "8",
-//   //   name: "Black Castle",
-//   //   source: require("../../../res/black_castle/low_poly_black_castle.glb"),
-//   // },
-//   // {
-//   //   id: "9",
-//   //   name: "Golden Eagle",
-//   //   source: require("../../../res/golden_eagle/golden_eagle.glb"),
-//   // },
-//   // {
-//   //   id: "10",
-//   //   name: "Castle",
-//   //   source: require("../../../res/castle/corridor_castle.glb"),
-//   // },
-//   // {
-//   //   id: "11",
-//   //   name: "Layered Structure",
-//   //   source: require("../../../res/layered_structure/abstract_layered_architecture_structure_1.glb"),
-//   // },
-//   // {
-//   //   id: "12",
-//   //   name: "Iron Man",
-//   //   source: require("../../../res/iron_man/abstract_ironman.glb"),
-//   // },
-//   // {
-//   //   id: "13",
-//   //   name: "Flying Bee",
-//   //   source: require("../../../res/flying_bee/stylized_flying_bee_bird_rigged.glb"),
-//   // },
-//   // {
-//   //   id: "14",
-//   //   name: "Abstract 1",
-//   //   source: require("../../../res/abstract_1/abstract_shape.glb"),
-//   // },
-//   // {
-//   //   id: "15",
-//   //   name: "Abstract 2",
-//   //   source: require("../../../res/abstract_2/abstract_design.glb"),
-//   // },
-//   // {
-//   //   id: "16",
-//   //   name: "Diamond",
-//   //   source: require("../../../res/diamond/diamond.glb"),
-//   // },
-//   {
-//     id: "17",
-//     name: "Manneken Pis",
-//     source: require("../../../res/manneken_pis/manneken_pis.glb"),
-//   },
-//   // {
-//   //   id: "18",
-//   //   name: "Kings Hall",
-//   //   source: require("../../../res/kings_hall/the_king_s_hall.glb"),
-//   // },
-// ];
+// const requestLocationPermission = async () => {
+//   if (Platform.OS === "android") {
+//     const granted = await PermissionsAndroid.request(
+//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//       {
+//         title: "Location Permission",
+//         message:
+//           "This app needs access to your location to show it on the map.",
+//         buttonNeutral: "Ask Me Later",
+//         buttonNegative: "Cancel",
+//         buttonPositive: "OK",
+//       }
+//     );
+//     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//       console.log("Location permission granted");
+//       return true;
+//     } else {
+//       console.log("Location permission denied");
+//       Alert.alert(
+//         "Permission Denied",
+//         "Location permission is required to use this feature. Please enable it in your device settings.",
+//         [
+//           {
+//             text: "Cancel",
+//             style: "cancel",
+//           },
+//           {
+//             text: "Open Settings",
+//             onPress: () => {
+//               // Open device location settings
+//               if (Platform.OS === "android") {
+//                 Linking.openSettings();
+//               }
+//             },
+//           },
+//         ]
+//       );
+//       return false;
+//     }
+//   } else {
+//     // For iOS, we assume permission is granted
+//     return true;
+//   }
+// };
+
+// Reusable function: Calculate geographic coordinates from AR space position.
+// It gets the device's current geo position, projects it, adds the AR offset (using the X and Z values)
+// and then converts back to lat/lon.
+const calculateGeoCoordinates = (arPosition) => {
+  return new Promise((resolve, reject) => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        const devicePoint = merc.fromLatLngToPoint({
+          lat: latitude,
+          lng: longitude,
+        });
+
+        const objectPoint = {
+          x: devicePoint.x + arPosition[0],
+          y: devicePoint.y,
+          z: devicePoint.y + arPosition[2],
+        };
+
+        const objectGeo = merc.fromPointToLatLng(objectPoint);
+        resolve(objectGeo);
+      },
+      (error) => {
+        console.error("Error getting current position: ", error);
+        reject(error);
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  });
+};
+
+// Reusable function: Assemble the payload to save a placed object.
+const getPlacedObjectPayload = async (
+  objectId,
+  objects,
+  collection,
+  deviceHeading
+) => {
+  const currentObject = objects.find((obj) => obj.id === objectId);
+  if (!currentObject) return null;
+  // Calculate geographic coordinates from AR object's position.
+  const geoCoordinates = await calculateGeoCoordinates(currentObject.position);
+  return {
+    placedObject: {
+      placedObjectId: objectId, // for updates; leave null or omit for new objects
+      collectionId: collection._id,
+      objectId: currentObject.objectId || objectId, // adjust if your object model differs
+      position: {
+        lat: geoCoordinates.lat,
+        lon: geoCoordinates.lng,
+        x: currentObject.position[0],
+        y: currentObject.position[1] || 1, // default height if not set
+        z: currentObject.position[2],
+      },
+      scale: {
+        x: currentObject.scale[0],
+        y: currentObject.scale[1],
+        z: currentObject.scale[2],
+      },
+      rotation: {
+        x: currentObject.rotation[0],
+        y: currentObject.rotation[1],
+        z: currentObject.rotation[2],
+      },
+      deviceHeading, // use the latest heading from the device
+    },
+  };
+};
 
 const ARScene = ({ sceneNavigator }) => {
   // const [objects, setObjects] = useState([]);
@@ -301,8 +328,17 @@ const AR = (route) => {
     useState(null);
   const [objects, setObjects] = useState([]); // Manage objects in App
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
+  // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
+
+  const [logs, setLogs] = useState([]); // State to store logs
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
   const { collection } = route.route.params; // Get collectionId from route params
+
+  const addLog = (message) => {
+    setLogs((prevLogs) => [...prevLogs, message]); // Add new log to the state
+  };
 
   const objectList = collection?.objects.map((obj) => ({
     id: obj._id,
@@ -310,7 +346,28 @@ const AR = (route) => {
     source: { uri: obj.file.filePath }, // Assuming the image is a URL
   }));
 
+  // Watch location updates
   useEffect(() => {
+    const watchId = Geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude });
+      },
+      (error) => {
+        console.error("Error watching location: ", error);
+        addLog(`Error watching location: ${error.message}`);
+      },
+      { enableHighAccuracy: true, distanceFilter: 1 }
+    );
+
+    // Cleanup the watcher on unmount
+    return () => {
+      Geolocation.clearWatch(watchId);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Request location permission when the component mounts
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
     }
@@ -395,21 +452,55 @@ const AR = (route) => {
     setCurrentlySelectedObjectId(obj.id);
   };
 
-  const saveObject = (objectId) => {
+  const saveObject = async (objectId) => {
     if (!objectId) {
       console.log("No object selected to save.");
+      addLog("No object selected to save.");
       return;
     }
+    addLog(`Save object with ID: ${objectId}`);
     console.log("Save object with ID: ", objectId);
     console.log(
       "Position: ",
       objects.find((obj) => obj.id === objectId).position
     );
+    const currentObject = objects.find((obj) => obj.id === objectId);
+    addLog(`Position: ${JSON.stringify(currentObject.position)}`);
     console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
+    addLog(`Scale: ${JSON.stringify(currentObject.scale)}`);
     console.log(
       "Rotation: ",
       objects.find((obj) => obj.id === objectId).rotation
     );
+    addLog(`Rotation: ${JSON.stringify(currentObject.rotation)}`);
+
+    // Get the current heading
+    let heading = 0;
+    await new Promise((resolve) => {
+      CompassHeading.start(1, (headingData) => {
+        heading = headingData.heading;
+        addLog(`Device heading: ${heading}`);
+        console.log("Device heading: ", heading);
+        CompassHeading.stop(); // Stop listening after getting the heading
+        resolve();
+      });
+    });
+
+    // Get the payload for the object to be saved
+    const payload = await getPlacedObjectPayload(
+      objectId,
+      objects,
+      collection,
+      heading
+    );
+    if (!payload) {
+      addLog("No payload to save.");
+      console.log("No payload to save.");
+      return;
+    }
+    addLog(`Payload to save: ${JSON.stringify(payload)}`);
+    console.log("Payload to save: ", payload);
+
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
   };
 
@@ -437,6 +528,46 @@ const AR = (route) => {
           }}
         />
       )}
+
+      {/* Coordinates Display */}
+      <View style={styles.coordinatesContainer}>
+        <Text style={styles.coordinatesText}>
+          Latitude: {location.latitude.toFixed(6)}
+        </Text>
+        <Text style={styles.coordinatesText}>
+          Longitude: {location.longitude.toFixed(6)}
+        </Text>
+      </View>
+
+      {/* Button to Show Logs */}
+      <TouchableOpacity
+        style={styles.showLogsButton}
+        onPress={() => setIsLogsVisible(true)}
+      >
+        <Text style={styles.showLogsButtonText}>Show Logs</Text>
+      </TouchableOpacity>
+
+      {/* Logs Modal */}
+      <Modal
+        visible={isLogsVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsLogsVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Logs</Text>
+            <ScrollView style={styles.logContainer}>
+              {logs.map((log, index) => (
+                <Text key={index} style={styles.logText}>
+                  {log}
+                </Text>
+              ))}
+            </ScrollView>
+            <Button title="Close" onPress={() => setIsLogsVisible(false)} />
+          </View>
+        </View>
+      </Modal>
 
       {/* Button to go back */}
       <IconButton
@@ -618,6 +749,61 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     alignItems: "center",
+  },
+
+  coordinatesContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
+    padding: 10,
+    borderRadius: 8,
+  },
+  coordinatesText: {
+    color: "white",
+    fontSize: 14,
+  },
+  showLogsButton: {
+    position: "absolute",
+    bottom: 80,
+    left: 10,
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 8,
+  },
+  showLogsButtonText: {
+    color: "white",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    margin: 20,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  logContainer: {
+    maxHeight: 300,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    padding: 10,
+    borderRadius: 8,
+  },
+  logText: {
+    color: "black",
+    fontSize: 12,
+    marginBottom: 5,
   },
 });
 
