@@ -87,76 +87,6 @@ import IconButton from "../../components/UI/IconButton";
 //   }
 // };
 
-// Reusable function: Calculate geographic coordinates from AR space position.
-// It gets the device's current geo position, projects it, adds the AR offset (using the X and Z values)
-// and then converts back to lat/lon.
-const calculateGeoCoordinates = (arPosition) => {
-  return new Promise((resolve, reject) => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-
-        const devicePoint = merc.fromLatLngToPoint({
-          lat: latitude,
-          lng: longitude,
-        });
-
-        const objectPoint = {
-          x: devicePoint.x + arPosition[0],
-          y: devicePoint.y,
-          z: devicePoint.y + arPosition[2],
-        };
-
-        const objectGeo = merc.fromPointToLatLng(objectPoint);
-        resolve(objectGeo);
-      },
-      (error) => {
-        console.error("Error getting current position: ", error);
-        reject(error);
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-  });
-};
-
-// Reusable function: Assemble the payload to save a placed object.
-const getPlacedObjectPayload = async (
-  objectId,
-  objects,
-  collection,
-  deviceHeading
-) => {
-  const currentObject = objects.find((obj) => obj.id === objectId);
-  if (!currentObject) return null;
-  // Calculate geographic coordinates from AR object's position.
-  const geoCoordinates = await calculateGeoCoordinates(currentObject.position);
-  return {
-    placedObject: {
-      placedObjectId: objectId, // for updates; leave null or omit for new objects
-      collectionId: collection._id,
-      objectId: currentObject.objectId || objectId, // adjust if your object model differs
-      position: {
-        lat: geoCoordinates.lat,
-        lon: geoCoordinates.lng,
-        x: currentObject.position[0],
-        y: currentObject.position[1] || 1, // default height if not set
-        z: currentObject.position[2],
-      },
-      scale: {
-        x: currentObject.scale[0],
-        y: currentObject.scale[1],
-        z: currentObject.scale[2],
-      },
-      rotation: {
-        x: currentObject.rotation[0],
-        y: currentObject.rotation[1],
-        z: currentObject.rotation[2],
-      },
-      deviceHeading, // use the latest heading from the device
-    },
-  };
-};
-
 const ARScene = ({ sceneNavigator }) => {
   // const [objects, setObjects] = useState([]);
   const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
@@ -329,6 +259,7 @@ const AR = (route) => {
     useState(null);
   const [objects, setObjects] = useState([]); // Manage objects in App
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
+  const [arOriginGeoCoordinates, setAROriginGeoCoordinates] = useState(null); // Track AR origin coordinates
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
   const [logs, setLogs] = useState([]); // State to store logs
@@ -377,6 +308,8 @@ const AR = (route) => {
     // Request location permission when the component mounts
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
+      // Set the AR origin when the AR session starts
+      getAROriginGeoCoordinates();
     }
   }, [collection]);
 
@@ -388,6 +321,147 @@ const AR = (route) => {
       setIsARActive(false); // Deactivate AR scene when screen is blurred
     }
   }, [isFocused]);
+
+  const getAROriginGeoCoordinates = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setAROriginGeoCoordinates({
+            latitude: latitude,
+            longitude: longitude,
+          });
+
+          addLog(
+            `AR Origin Coordinates: \n lat: ${latitude.toFixed(
+              6
+            )} \n lon: ${longitude.toFixed(6)}`
+          );
+        },
+        (error) => {
+          console.error("Error getting AR origin position: ", error);
+          reject(error);
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      );
+    });
+  };
+
+  // Reusable function: Calculate geographic coordinates from AR space position.
+  // It gets the device's current geo position, projects it, adds the AR offset (using the X and Z values)
+  // and then converts back to lat/lon.
+  const calculateGeoCoordinates = (arPosition) => {
+    return new Promise((resolve, reject) => {
+      // Geolocation.getCurrentPosition(
+      //   (position) => {
+      //     const { latitude, longitude } = position.coords;
+
+      //     const devicePoint = merc.fromLatLngToPoint({
+      //       lat: latitude,
+      //       lng: longitude,
+      //     });
+
+      //     console.log("Device Point: ", devicePoint);
+      //     console.log("AR Position: ", arPosition);
+
+      //     // Calculate meters per pixel at the current latitude
+      //     const metersPerPixel =
+      //       (40075016.686 / 256) * Math.cos((latitude * Math.PI) / 180);
+
+      //     // Scale AR space offsets (in meters) to Mercator units
+      //     const scaledOffsetX = arPosition[0] / metersPerPixel; // X-axis in AR
+      //     const scaledOffsetY = arPosition[2] / metersPerPixel; // Z-axis in AR corresponds to Y in Mercator
+
+      //     // Add scaled offsets to the device's Mercator coordinates
+      //     const objectPoint = {
+      //       x: devicePoint.x + scaledOffsetX,
+      //       y: devicePoint.y + scaledOffsetY,
+      //     };
+
+      //     const objectGeo = merc.fromPointToLatLng(objectPoint);
+      //     resolve(objectGeo);
+      //   },
+      //   (error) => {
+      //     console.error("Error getting current position: ", error);
+      //     reject(error);
+      //   },
+      //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      // );
+
+      if (!arOriginGeoCoordinates) {
+        reject(new Error("AR origin coordinates are not set."));
+        return;
+      }
+
+      // Convert AR origin's geographic coordinates to Mercator
+      const arOriginPoint = merc.fromLatLngToPoint({
+        lat: arOriginGeoCoordinates.latitude,
+        lng: arOriginGeoCoordinates.longitude,
+      });
+
+      console.log("AR Origin Point: ", arOriginPoint);
+      console.log("AR Position: ", arPosition);
+
+      // Calculate meters per pixel at the AR origin's latitude
+      const metersPerPixel =
+        (40075016.686 / 256) *
+        Math.cos((arOriginGeoCoordinates.latitude * Math.PI) / 180);
+
+      // Scale AR space offsets (in meters) to Mercator units
+      const scaledOffsetX = arPosition[0] / metersPerPixel; // X-axis in AR
+      const scaledOffsetY = arPosition[2] / metersPerPixel; // Z-axis in AR corresponds to Y in Mercator
+
+      // Add scaled offsets to the AR origin's Mercator coordinates
+      const objectPoint = {
+        x: arOriginPoint.x + scaledOffsetX,
+        y: arOriginPoint.y + scaledOffsetY,
+      };
+
+      // Convert back to geographic coordinates (lat/lon)
+      const objectGeo = merc.fromPointToLatLng(objectPoint);
+      resolve(objectGeo);
+    });
+  };
+
+  // Reusable function: Assemble the payload to save a placed object.
+  const getPlacedObjectPayload = async (
+    objectId,
+    objects,
+    collection,
+    deviceHeading
+  ) => {
+    const currentObject = objects.find((obj) => obj.id === objectId);
+    if (!currentObject) return null;
+    // Calculate geographic coordinates from AR object's position.
+    const geoCoordinates = await calculateGeoCoordinates(
+      currentObject.position
+    );
+    return {
+      placedObject: {
+        placedObjectId: objectId, // for updates; leave null or omit for new objects
+        collectionId: collection._id,
+        objectId: currentObject.objectId || objectId, // adjust if your object model differs
+        position: {
+          lat: geoCoordinates.lat,
+          lon: geoCoordinates.lng,
+          x: currentObject.position[0],
+          y: currentObject.position[1] || 1, // default height if not set
+          z: currentObject.position[2],
+        },
+        scale: {
+          x: currentObject.scale[0],
+          y: currentObject.scale[1],
+          z: currentObject.scale[2],
+        },
+        rotation: {
+          x: currentObject.rotation[0],
+          y: currentObject.rotation[1],
+          z: currentObject.rotation[2],
+        },
+        deviceHeading, // use the latest heading from the device
+      },
+    };
+  };
 
   const handleBackPress = () => {
     if (currentlySelectedObjectId) {
