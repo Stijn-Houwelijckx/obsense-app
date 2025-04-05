@@ -25,6 +25,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
 import CompassHeading from "react-native-compass-heading";
 import merc from "mercator-projection";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 // Import Styles
 // Import Styles
@@ -340,6 +341,12 @@ const AR = (route) => {
     setLogs((prevLogs) => [...prevLogs, message]); // Add new log to the state
   };
 
+  const copyLogsToClipboard = () => {
+    const logsText = logs.join("\n"); // Combine logs into a single string
+    Clipboard.setString(logsText); // Copy logs to clipboard
+    Alert.alert("Logs Copied", "The logs have been copied to your clipboard.");
+  };
+
   const objectList = collection?.objects.map((obj) => ({
     id: obj._id,
     name: obj.title,
@@ -607,13 +614,21 @@ const AR = (route) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Logs</Text>
             <ScrollView style={styles.logContainer}>
-              {logs.map((log, index) => (
-                <Text key={index} style={styles.logText}>
-                  {log}
-                </Text>
-              ))}
+              {logs.length === 0 && (
+                <Text style={styles.logText}>No logs available.</Text>
+              )}
+              {logs.length > 0 &&
+                logs.map((log, index) => (
+                  <Text key={index} style={styles.logText}>
+                    {log}
+                  </Text>
+                ))}
             </ScrollView>
-            <Button title="Close" onPress={() => setIsLogsVisible(false)} />
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Button title="Copy" onPress={copyLogsToClipboard} />
+              <Button title="Close" onPress={() => setIsLogsVisible(false)} />
+              <Button title="Clear" onPress={() => setLogs([])} />
+            </View>
           </View>
         </View>
       </Modal>
