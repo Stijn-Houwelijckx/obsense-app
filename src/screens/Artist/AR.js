@@ -458,28 +458,47 @@ const AR = (route) => {
       addLog("No object selected to save.");
       return;
     }
-    addLog(`Save object with ID: ${objectId}`);
+    addLog(`===================`);
+    addLog(`Save object with ID: \n ${objectId}`);
     console.log("Save object with ID: ", objectId);
     console.log(
       "Position: ",
       objects.find((obj) => obj.id === objectId).position
     );
     const currentObject = objects.find((obj) => obj.id === objectId);
-    addLog(`Position: ${JSON.stringify(currentObject.position)}`);
+    addLog(
+      `Position: \n x: ${JSON.stringify(
+        currentObject.position[0].toFixed(6)
+      )}\n y: ${JSON.stringify(
+        currentObject.position[1].toFixed(6)
+      )}\n z: ${JSON.stringify(currentObject.position[2].toFixed(6))}`
+    );
     console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
-    addLog(`Scale: ${JSON.stringify(currentObject.scale)}`);
+    addLog(
+      `Scale: \n x: ${JSON.stringify(
+        currentObject.scale[0]
+      )} \n y: ${JSON.stringify(currentObject.scale[1])} \n z: ${JSON.stringify(
+        currentObject.scale[2]
+      )}`
+    );
     console.log(
       "Rotation: ",
       objects.find((obj) => obj.id === objectId).rotation
     );
-    addLog(`Rotation: ${JSON.stringify(currentObject.rotation)}`);
+    addLog(
+      `Rotation: \n x: ${JSON.stringify(
+        currentObject.rotation[0]
+      )} \n y: ${JSON.stringify(
+        currentObject.rotation[1]
+      )} \n z: ${JSON.stringify(currentObject.rotation[2])}`
+    );
 
     // Get the current heading
     let heading = 0;
     await new Promise((resolve) => {
       CompassHeading.start(1, (headingData) => {
         heading = headingData.heading;
-        addLog(`Device heading: ${heading}`);
+        addLog(`Device heading: \n ${heading} degrees`);
         console.log("Device heading: ", heading);
         CompassHeading.stop(); // Stop listening after getting the heading
         resolve();
@@ -498,7 +517,37 @@ const AR = (route) => {
       console.log("No payload to save.");
       return;
     }
-    addLog(`Payload to save: ${JSON.stringify(payload)}`);
+    addLog(
+      `Payload to save: \n { \n collectionId: \n ${JSON.stringify(
+        payload.placedObject.collectionId
+      )} \n deviceHeading: \n ${JSON.stringify(
+        payload.placedObject.deviceHeading
+      )} degrees \n\n objectId: \n ${JSON.stringify(
+        payload.placedObject.objectId
+      )} \n\n placedObjectId: \n ${JSON.stringify(
+        payload.placedObject.placedObjectId
+      )} \n\n position: \n { \n lat: ${JSON.stringify(
+        payload.placedObject.position.lat.toFixed(6)
+      )} \n lon: ${JSON.stringify(
+        payload.placedObject.position.lon.toFixed(6)
+      )} \n\n x: ${JSON.stringify(
+        payload.placedObject.position.x.toFixed(6)
+      )} \n y: ${JSON.stringify(
+        payload.placedObject.position.y.toFixed(6)
+      )} \n z: ${JSON.stringify(
+        payload.placedObject.position.z.toFixed(6)
+      )} \n } \n\n rotation: \n { \n x: ${JSON.stringify(
+        payload.placedObject.rotation.x
+      )} \n y: ${JSON.stringify(
+        payload.placedObject.rotation.y
+      )} \n z: ${JSON.stringify(
+        payload.placedObject.rotation.z
+      )} \n } \n\n scale: \n { \n x: ${JSON.stringify(
+        payload.placedObject.scale.x
+      )} \n y: ${JSON.stringify(
+        payload.placedObject.scale.y
+      )} \n z: ${JSON.stringify(payload.placedObject.scale.z)} \n } \n } \n`
+    );
     console.log("Payload to save: ", payload);
 
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
@@ -799,6 +848,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     padding: 10,
     borderRadius: 8,
+    marginBottom: 8,
   },
   logText: {
     color: "black",
