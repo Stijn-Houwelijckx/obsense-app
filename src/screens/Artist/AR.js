@@ -26,6 +26,7 @@ import Geolocation from "@react-native-community/geolocation";
 import CompassHeading from "react-native-compass-heading";
 import merc from "mercator-projection";
 import Clipboard from "@react-native-clipboard/clipboard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Styles
 // Import Styles
@@ -308,10 +309,21 @@ const AR = (route) => {
     // Request location permission when the component mounts
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
+
+      setActiveCollectionId(collection._id); // Set the active collection ID in AsyncStorage
+
       // Set the AR origin when the AR session starts
       getAROriginGeoCoordinates();
     }
   }, [collection]);
+
+  setActiveCollectionId = async (collectionId) => {
+    try {
+      await AsyncStorage.setItem("activeCollectionId", collectionId);
+    } catch (error) {
+      console.error("Error setting active collection ID: ", error);
+    }
+  };
 
   // React Navigation Focus Effect
   useEffect(() => {
@@ -488,7 +500,8 @@ const AR = (route) => {
     }
   };
 
-  const cleanupAndGoBack = () => {
+  const cleanupAndGoBack = async () => {
+    await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
     setCurrentlySelectedObjectId(null); // Reset selected object
     navigation.goBack(); // Go back to the previous screen

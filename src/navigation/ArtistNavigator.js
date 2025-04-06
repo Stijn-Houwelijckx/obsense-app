@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SystemNavigationBar from "react-native-system-navigation-bar";
 import { useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getCurrentUser } from "../utils/api";
@@ -183,88 +185,129 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
 );
 
 // Main Artist Tab Navigator
-const ArtistNavigator = ({ handleAuthChangeSuccess }) => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarStyle:
-        route.name === "AR"
-          ? { display: "none" }
-          : {
-              backgroundColor: COLORS.primaryNeutral[800],
-              borderTopWidth: 0, // Ensure no actual border
-              elevation: 0, // Removes shadow on Android
-              shadowOpacity: 0, // Removes shadow on iOS
-            }, // Hide tab bar on AR screen
-      tabBarLabelStyle: {
-        fontSize: FONT_SIZES.label.sm,
-        lineHeight: LINE_HEIGHT.label.sm,
-        letterSpacing: LETTER_SPACING.label.sm,
-        fontFamily: "Nunito-Medium",
-      },
-      tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
-      tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
-    })}
-  >
-    <Tab.Screen
-      name="Home"
-      component={HomeStack}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <HomeIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="AR"
-      component={AR}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <CameraIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Map"
-      component={MapStack}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <MapIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Settings"
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <CogIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
+const ArtistNavigator = ({ handleAuthChangeSuccess }) => {
+  const [isARDisabled, setIsARDisabled] = useState(true); // State to track if AR tab should be disabled
+
+  useEffect(() => {
+    // set activeCollectionId to something for testing purposes
+    const checkActiveCollection = async () => {
+      const activeCollectionId = await AsyncStorage.getItem(
+        "activeCollectionId"
+      );
+      setIsARDisabled(!activeCollectionId); // Disable AR tab if no activeCollectionId is set
+    };
+
+    checkActiveCollection();
+
+    // Optionally, you can add a listener to re-check when AsyncStorage changes
+  }, []);
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle:
+          route.name === "AR"
+            ? { display: "none" }
+            : {
+                backgroundColor: COLORS.primaryNeutral[800],
+                borderTopWidth: 0, // Ensure no actual border
+                elevation: 0, // Removes shadow on Android
+                shadowOpacity: 0, // Removes shadow on iOS
+              }, // Hide tab bar on AR screen
+        tabBarLabelStyle: {
+          fontSize: FONT_SIZES.label.sm,
+          lineHeight: LINE_HEIGHT.label.sm,
+          letterSpacing: LETTER_SPACING.label.sm,
+          fontFamily: "Nunito-Medium",
+        },
+        tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
+        tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
+      })}
     >
-      {(props) => (
-        <SettingsStack
-          {...props}
-          handleAuthChangeSuccess={handleAuthChangeSuccess}
-        />
-      )}
-    </Tab.Screen>
-  </Tab.Navigator>
-);
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <HomeIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AR"
+        component={AR}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <CameraIcon
+              size={24}
+              stroke={
+                focused && !isARDisabled
+                  ? COLORS.primary[500]
+                  : COLORS.neutral[300]
+              }
+              strokeWidth="1.5"
+            />
+          ),
+          tabBarLabel: "AR", // Ensure the label is displayed
+          tabBarButton: (props) =>
+            isARDisabled ? (
+              <TouchableOpacity
+                disabled
+                style={{
+                  opacity: 0.5, // Reduce opacity to indicate it's disabled
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginTop: 5,
+                  flex: 1,
+                }}
+              >
+                {/* Render the button with the same layout */}
+                {props.children}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity {...props} />
+            ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <MapIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <CogIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      >
+        {(props) => (
+          <SettingsStack
+            {...props}
+            handleAuthChangeSuccess={handleAuthChangeSuccess}
+          />
+        )}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+};
 
 export default ArtistNavigator;
