@@ -261,6 +261,7 @@ const AR = (route) => {
   const [objects, setObjects] = useState([]); // Manage objects in App
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
   const [arOriginGeoCoordinates, setAROriginGeoCoordinates] = useState(null); // Track AR origin coordinates
+  const [initialHeading, setInitialHeading] = useState(0); // Track initial heading
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
   const [logs, setLogs] = useState([]); // State to store logs
@@ -316,6 +317,15 @@ const AR = (route) => {
       getAROriginGeoCoordinates();
     }
   }, [collection]);
+
+  useEffect(() => {
+    // Get the device's heading when the AR session starts
+    CompassHeading.start(1, (headingData) => {
+      setInitialHeading(headingData.heading); // Save the initial heading
+      addLog(`Initial heading: \n ${headingData.heading} degrees`);
+      CompassHeading.stop(); // Stop listening after getting the heading
+    });
+  }, []);
 
   setActiveCollectionId = async (collectionId) => {
     try {
@@ -419,9 +429,18 @@ const AR = (route) => {
         (40075016.686 / 256) *
         Math.cos((arOriginGeoCoordinates.latitude * Math.PI) / 180);
 
+      const headingRad = (initialHeading * Math.PI) / 180;
+
+      // Adjust AR position based on the initial heading
+      const cosH = Math.cos(-headingRad);
+      const sinH = Math.sin(-headingRad);
+
+      const adjustedX = arPosition[0] * cosH - arPosition[2] * sinH;
+      const adjustedZ = arPosition[0] * sinH + arPosition[2] * cosH;
+
       // Scale AR space offsets (in meters) to Mercator units
-      const scaledOffsetX = arPosition[0] / metersPerPixel; // X-axis in AR
-      const scaledOffsetY = arPosition[2] / metersPerPixel; // Z-axis in AR corresponds to Y in Mercator
+      const scaledOffsetX = adjustedX / metersPerPixel; // Adjusted X-axis in AR
+      const scaledOffsetY = adjustedZ / metersPerPixel; // Adjusted Z-axis in AR corresponds to Y in Mercator
 
       // Add scaled offsets to the AR origin's Mercator coordinates
       const objectPoint = {
