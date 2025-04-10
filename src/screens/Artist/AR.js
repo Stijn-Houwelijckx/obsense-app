@@ -377,42 +377,6 @@ const AR = (route) => {
   // and then converts back to lat/lon.
   const calculateGeoCoordinates = (arPosition) => {
     return new Promise((resolve, reject) => {
-      // Geolocation.getCurrentPosition(
-      //   (position) => {
-      //     const { latitude, longitude } = position.coords;
-
-      //     const devicePoint = merc.fromLatLngToPoint({
-      //       lat: latitude,
-      //       lng: longitude,
-      //     });
-
-      //     console.log("Device Point: ", devicePoint);
-      //     console.log("AR Position: ", arPosition);
-
-      //     // Calculate meters per pixel at the current latitude
-      //     const metersPerPixel =
-      //       (40075016.686 / 256) * Math.cos((latitude * Math.PI) / 180);
-
-      //     // Scale AR space offsets (in meters) to Mercator units
-      //     const scaledOffsetX = arPosition[0] / metersPerPixel; // X-axis in AR
-      //     const scaledOffsetY = arPosition[2] / metersPerPixel; // Z-axis in AR corresponds to Y in Mercator
-
-      //     // Add scaled offsets to the device's Mercator coordinates
-      //     const objectPoint = {
-      //       x: devicePoint.x + scaledOffsetX,
-      //       y: devicePoint.y + scaledOffsetY,
-      //     };
-
-      //     const objectGeo = merc.fromPointToLatLng(objectPoint);
-      //     resolve(objectGeo);
-      //   },
-      //   (error) => {
-      //     console.error("Error getting current position: ", error);
-      //     reject(error);
-      //   },
-      //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-      // );
-
       if (!arOriginGeoCoordinates) {
         reject(new Error("AR origin coordinates are not set."));
         return;
