@@ -311,20 +311,20 @@ const savePlacedObject = async (placedObject) => {
       return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
     }
 
-    const response = await axios.post(
-      API_PATHS.SAVE_PLACED_OBJECT,
-      placedObject,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
-      }
-    );
+    const payload = { placedObject };
+
+    const response = await axios.post(API_PATHS.SAVE_PLACED_OBJECT, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+    });
 
     // Handle success response
     if (response.status === 200) {
       return { status: "success", data: response.data.data };
+    } else if (response.status === 201) {
+      return { status: "created", data: response.data.data };
     }
 
     // Handle other errors
