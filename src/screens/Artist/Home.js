@@ -34,7 +34,7 @@ const Home = ({ navigation }) => {
       if (result.status === "success") {
         // setUser(result.data.data.user); // Set user data
         setCollectionData(result.data.collections); // Set collection data
-        console.log(result.data.collections); // Log collection data
+        // console.log(result.data.collections); // Log collection data
       } else {
         console.log("Error getting collection data:", result.message); // Log error message
       }

@@ -42,8 +42,8 @@ const CollectionDetails = ({ navigation, route }) => {
       if (result.status === "success") {
         // setUser(result.data.data.user); // Set user data
         setCollectionDetailsData(result.data.collection); // Set collection data
-        console.log("========================="); // Log collection data
-        console.log(result.data.collection); // Log collection data
+        // console.log("========================="); // Log collection data
+        // console.log(result.data.collection); // Log collection data
       } else {
         console.log("Error getting user data:", result.message); // Log error message
       }
