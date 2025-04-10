@@ -28,7 +28,9 @@ import merc from "mercator-projection";
 import Clipboard from "@react-native-clipboard/clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Import Styles
+// Import Utils
+import { savePlacedObject } from "../../utils/api";
+
 // Import Styles
 import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
@@ -105,6 +107,7 @@ const ARScene = ({ sceneNavigator }) => {
       ...prevObjects,
       {
         ...selectedObject,
+        objectId: selectedObject.id,
         position: [0, 0, -0.5],
         scale: [0.1, 0.1, 0.1],
         rotation: [0, 0, 0],
@@ -463,15 +466,16 @@ const AR = (route) => {
   ) => {
     const currentObject = objects.find((obj) => obj.id === objectId);
     if (!currentObject) return null;
+
     // Calculate geographic coordinates from AR object's position.
     const geoCoordinates = await calculateGeoCoordinates(
       currentObject.position
     );
     return {
       placedObject: {
-        placedObjectId: objectId, // for updates; leave null or omit for new objects
+        placedObjectId: String(objectId), // for updates; leave null or omit for new objects
         collectionId: collection._id,
-        objectId: currentObject.objectId || objectId, // adjust if your object model differs
+        objectId: currentObject.objectId,
         position: {
           lat: geoCoordinates.lat,
           lon: geoCoordinates.lng,
@@ -573,11 +577,11 @@ const AR = (route) => {
     }
     addLog(`===================`);
     addLog(`Save object with ID: \n ${objectId}`);
-    console.log("Save object with ID: ", objectId);
-    console.log(
-      "Position: ",
-      objects.find((obj) => obj.id === objectId).position
-    );
+    // console.log("Save object with ID: ", objectId);
+    // console.log(
+    //   "Position: ",
+    //   objects.find((obj) => obj.id === objectId).position
+    // );
     const currentObject = objects.find((obj) => obj.id === objectId);
     addLog(
       `Position: \n x: ${JSON.stringify(
@@ -586,7 +590,7 @@ const AR = (route) => {
         currentObject.position[1].toFixed(6)
       )}\n z: ${JSON.stringify(currentObject.position[2].toFixed(6))}`
     );
-    console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
+    // console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
     addLog(
       `Scale: \n x: ${JSON.stringify(
         currentObject.scale[0]
@@ -594,10 +598,10 @@ const AR = (route) => {
         currentObject.scale[2]
       )}`
     );
-    console.log(
-      "Rotation: ",
-      objects.find((obj) => obj.id === objectId).rotation
-    );
+    // console.log(
+    //   "Rotation: ",
+    //   objects.find((obj) => obj.id === objectId).rotation
+    // );
     addLog(
       `Rotation: \n x: ${JSON.stringify(
         currentObject.rotation[0]
@@ -612,7 +616,7 @@ const AR = (route) => {
       CompassHeading.start(1, (headingData) => {
         heading = headingData.heading;
         addLog(`Device heading: \n ${heading} degrees`);
-        console.log("Device heading: ", heading);
+        // console.log("Device heading: ", heading);
         CompassHeading.stop(); // Stop listening after getting the heading
         resolve();
       });
@@ -625,11 +629,13 @@ const AR = (route) => {
       collection,
       heading
     );
+
     if (!payload) {
       addLog("No payload to save.");
       console.log("No payload to save.");
       return;
     }
+
     addLog(
       `Payload to save: \n { \n collectionId: \n ${JSON.stringify(
         payload.placedObject.collectionId
@@ -661,7 +667,38 @@ const AR = (route) => {
         payload.placedObject.scale.y
       )} \n z: ${JSON.stringify(payload.placedObject.scale.z)} \n } \n } \n`
     );
-    console.log("Payload to save: ", payload);
+
+    // Post the payload to the API
+    try {
+      const response = await savePlacedObject(payload.placedObject);
+
+      if (response.status === "success") {
+        console.log("Object updated successfully:", response.data);
+        addLog("Object saved successfully.");
+      } else if (response.status === "created") {
+        console.log("Object created successfully:", response.data);
+        addLog("Object created successfully.");
+
+        // Update the placedObjectId with the new _id from the response
+        const newPlacedObjectId = response.data.placedObject._id;
+        setObjects((prevObjects) =>
+          prevObjects.map((obj) =>
+            obj.id === objectId ? { ...obj, id: newPlacedObjectId } : obj
+          )
+        );
+
+        console.log(
+          `Updated placedObjectId for object ${objectId} to ${newPlacedObjectId}`
+        );
+      } else {
+        console.error("Failed to save object:", response.message);
+        console.log(response);
+        addLog(`Failed to save object: ${response.message}`);
+      }
+    } catch (error) {
+      console.error("Error saving object:", error.message);
+      addLog(`Error saving object: ${error.message}`);
+    }
 
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
   };
