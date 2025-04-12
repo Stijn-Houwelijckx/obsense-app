@@ -28,8 +28,12 @@ import merc from "mercator-projection";
 import Clipboard from "@react-native-clipboard/clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Import Contexts
+import { useActiveCollection } from "../../context/ActiveCollectionContext";
+
 // Import Utils
 import { savePlacedObject } from "../../utils/api";
+import { getArtistCollectionDetails } from "../../utils/api";
 
 // Import Styles
 import { COLORS } from "../../styles/theme";
@@ -41,6 +45,7 @@ import SaveIcon from "../../components/icons/SaveIcon";
 import PlusIcon from "../../components/icons/PlusIcon";
 import DotsVerticalIcon from "../../components/icons/DotsVerticalIcon";
 import TrashIcon from "../../components/icons/TrashIcon";
+import MapIcon from "../../components/icons/MapIcon";
 
 // Import Components
 import IconButton from "../../components/UI/IconButton";
@@ -255,6 +260,10 @@ const ARScene = ({ sceneNavigator }) => {
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
   const isFocused = useIsFocused(); // React Navigation hook to track focus
+  const { activeCollectionId, clearActiveCollection } = useActiveCollection();
+  const [collection, setCollection] = useState(null);
+  const [objectList, setObjectList] = useState([]);
+
   const [selectedObject, setSelectedObject] = useState(null);
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
   const [isObjectModalVisible, setIsObjectModalVisible] = useState(false);
@@ -271,7 +280,7 @@ const AR = (route) => {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
-  const { collection } = route.route.params; // Get collectionId from route params
+  // const { collection } = route.route.params; // Get collectionId from route params
 
   const addLog = (message) => {
     setLogs((prevLogs) => [...prevLogs, message]); // Add new log to the state
@@ -283,11 +292,19 @@ const AR = (route) => {
     Alert.alert("Logs Copied", "The logs have been copied to your clipboard.");
   };
 
-  const objectList = collection?.objects.map((obj) => ({
-    id: obj._id,
-    name: obj.title,
-    source: { uri: obj.file.filePath }, // Assuming the image is a URL
-  }));
+  useEffect(() => {
+    if (collection?.objects) {
+      setObjectList(
+        collection.objects.map((obj) => ({
+          id: obj._id,
+          name: obj.title,
+          source: { uri: obj.file.filePath }, // Assuming the image is a URL
+        }))
+      );
+    } else {
+      setObjectList([]); // Reset to an empty array if no objects are available
+    }
+  }, [collection]);
 
   // Watch location updates
   useEffect(() => {
@@ -310,11 +327,38 @@ const AR = (route) => {
   }, []);
 
   useEffect(() => {
+    const fetchActiveCollection = async () => {
+      if (route.route?.params?.collection) {
+        setCollection(route.route.params.collection); // Set collection from route params
+      } else if (activeCollectionId) {
+        try {
+          const result = await getArtistCollectionDetails(
+            activeCollectionId._id
+          ); // Fetch collection details
+          if (result.status === "success") {
+            setCollection(result.data.collection); // Set collection from API response
+          } else {
+            console.log("Error getting collection data:", result.message);
+            console.log(
+              "ActiveCollectionID on fetch: ",
+              activeCollectionId._id
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching collection data:", error.message);
+        }
+      }
+    };
+
+    fetchActiveCollection(); // Call the function to fetch collection
+  }, [activeCollectionId, route.route?.params]);
+
+  useEffect(() => {
     // Request location permission when the component mounts
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
 
-      setActiveCollectionId(collection._id); // Set the active collection ID in AsyncStorage
+      // setActiveCollectionId(collection._id); // Set the active collection ID in AsyncStorage
 
       // Set the AR origin when the AR session starts
       getAROriginGeoCoordinates();
@@ -330,13 +374,13 @@ const AR = (route) => {
     });
   }, []);
 
-  setActiveCollectionId = async (collectionId) => {
-    try {
-      await AsyncStorage.setItem("activeCollectionId", collectionId);
-    } catch (error) {
-      console.error("Error setting active collection ID: ", error);
-    }
-  };
+  // const setActiveCollectionId = async (collectionId) => {
+  //   try {
+  //     await AsyncStorage.setItem("activeCollectionId", collectionId);
+  //   } catch (error) {
+  //     console.error("Error setting active collection ID: ", error);
+  //   }
+  // };
 
   // React Navigation Focus Effect
   useEffect(() => {
@@ -488,9 +532,11 @@ const AR = (route) => {
   };
 
   const cleanupAndGoBack = async () => {
-    await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
+    clearActiveCollection();
+    // await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
     setCurrentlySelectedObjectId(null); // Reset selected object
+    setLogs([]); // Clear logs when navigating away
     navigation.goBack(); // Go back to the previous screen
   };
 
@@ -849,6 +895,26 @@ const AR = (route) => {
           </Text>
         </View>
       )}
+
+      {!currentlySelectedObjectId && (
+        <View style={styles.mapButton}>
+          <IconButton
+            icon={MapIcon}
+            onPress={async () => {
+              console.log("Navigating to Map screen");
+              // Navigate to the map screen
+              navigation.navigate("Map", {});
+            }}
+            buttonSize={40}
+            iconSize={20}
+          />
+          <Text
+            style={[globalStyles.labelSmallSemiBold, styles.iconButtonText]}
+          >
+            Map
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -910,6 +976,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   deleteButton: {
+    position: "absolute",
+    bottom: 16,
+    right: 20,
+    alignItems: "center",
+  },
+  mapButton: {
     position: "absolute",
     bottom: 16,
     right: 20,
