@@ -3,8 +3,11 @@ import { TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SystemNavigationBar from "react-native-system-navigation-bar";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Import Contexts
+import { useActiveCollection } from "../context/ActiveCollectionContext";
 
 // Import Utils
 import { getCurrentUser } from "../utils/api";
@@ -66,7 +69,7 @@ const HomeStack = () => {
   }, []);
 
   if (!isLoading) {
-    console.log(user); // Log user data
+    // console.log(user); // Log user data:
 
     const profilePicture = user?.profilePicture
       ? require("../../assets/profileImages/Stijn.png")
@@ -119,6 +122,25 @@ const HomeStack = () => {
       </Stack.Navigator>
     );
   }
+};
+
+// AR Stack
+const ARStack = () => {
+  const isFocused = useIsFocused();
+
+  if (!isFocused) {
+    return null; // Do not render the AR screen if it is not focused
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false, // Hide the header for the AR screen
+      }}
+    >
+      <Stack.Screen name="ARScreen" component={AR} />
+    </Stack.Navigator>
+  );
 };
 
 // Map Stack
@@ -187,20 +209,32 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
 // Main Artist Tab Navigator
 const ArtistNavigator = ({ handleAuthChangeSuccess }) => {
   const [isARDisabled, setIsARDisabled] = useState(true); // State to track if AR tab should be disabled
+  const { activeCollectionId } = useActiveCollection();
 
-  useEffect(() => {
-    // set activeCollectionId to something for testing purposes
-    const checkActiveCollection = async () => {
+  // set activeCollectionId to something for testing purposes
+  const checkActiveCollection = async () => {
+    try {
       const activeCollectionId = await AsyncStorage.getItem(
         "activeCollectionId"
       );
-      setIsARDisabled(!activeCollectionId); // Disable AR tab if no activeCollectionId is set
-    };
 
-    checkActiveCollection();
+      if (!activeCollectionId || activeCollectionId === "null") {
+        setIsARDisabled(true); // Disable AR tab if no activeCollectionId is set
+      } else {
+        setIsARDisabled(false); // Enable AR tab if activeCollectionId is set
+      }
+    } catch (error) {
+      console.error("Error checking active collection:", error);
+      setIsARDisabled(true); // Default to disabling AR tab on error
+    }
+  };
 
-    // Optionally, you can add a listener to re-check when AsyncStorage changes
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      checkActiveCollection(); // Check active collection when the component is focused
+      console.log("Checking active collection..."); // Log for debugging
+    }, [])
+  );
 
   return (
     <Tab.Navigator
@@ -240,13 +274,13 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => {
       />
       <Tab.Screen
         name="AR"
-        component={AR}
+        component={ARStack}
         options={{
           tabBarIcon: ({ focused }) => (
             <CameraIcon
               size={24}
               stroke={
-                focused && !isARDisabled
+                focused && activeCollectionId
                   ? COLORS.primary[500]
                   : COLORS.neutral[300]
               }
@@ -255,7 +289,7 @@ const ArtistNavigator = ({ handleAuthChangeSuccess }) => {
           ),
           tabBarLabel: "AR", // Ensure the label is displayed
           tabBarButton: (props) =>
-            isARDisabled ? (
+            !activeCollectionId ? (
               <TouchableOpacity
                 disabled
                 style={{
