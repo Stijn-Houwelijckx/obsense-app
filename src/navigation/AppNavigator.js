@@ -8,6 +8,9 @@ import UserNavigator from "./UserNavigator";
 import AuthNavigator from "./AuthNavigator";
 import RoleSelection from "../screens/Auth/RoleSelection";
 
+// Import Contexts
+import ContextProvider from "../context/ContexProvider";
+
 import { COLORS } from "../styles/theme";
 
 const AppNavigator = () => {
@@ -47,30 +50,36 @@ const AppNavigator = () => {
   };
 
   return (
-    <NavigationContainer>
-      <StatusBar
-        barStyle="light-content" // Makes the status bar text white
-        backgroundColor={COLORS.primaryNeutral[900]} // Sets the background color of the status bar
-      />
-      {/* If the user is not logged in, show AuthNavigator */}
-      {isLoggedIn ? (
-        isArtist ? (
-          selectedRole === "artist" ? (
-            <ArtistNavigator
-              handleAuthChangeSuccess={handleAuthChangeSuccess}
-            />
-          ) : selectedRole === "user" ? (
-            <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+    <ContextProvider>
+      <NavigationContainer>
+        <StatusBar
+          barStyle="light-content" // Makes the status bar text white
+          backgroundColor={COLORS.primaryNeutral[900]} // Sets the background color of the status bar
+        />
+        {/* If the user is not logged in, show AuthNavigator */}
+        {isLoggedIn ? (
+          isArtist ? (
+            selectedRole === "artist" ? (
+              <ArtistNavigator
+                handleAuthChangeSuccess={handleAuthChangeSuccess}
+              />
+            ) : selectedRole === "user" ? (
+              <UserNavigator
+                handleAuthChangeSuccess={handleAuthChangeSuccess}
+              />
+            ) : (
+              <RoleSelection
+                handleAuthChangeSuccess={handleAuthChangeSuccess}
+              />
+            )
           ) : (
-            <RoleSelection handleAuthChangeSuccess={handleAuthChangeSuccess} />
+            <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
           )
         ) : (
-          <UserNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
-        )
-      ) : (
-        <AuthNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
-      )}
-    </NavigationContainer>
+          <AuthNavigator handleAuthChangeSuccess={handleAuthChangeSuccess} />
+        )}
+      </NavigationContainer>
+    </ContextProvider>
   );
 };
 
