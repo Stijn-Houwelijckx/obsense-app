@@ -280,8 +280,6 @@ const AR = (route) => {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
-  // const { collection } = route.route.params; // Get collectionId from route params
-
   const addLog = (message) => {
     setLogs((prevLogs) => [...prevLogs, message]); // Add new log to the state
   };
@@ -358,8 +356,6 @@ const AR = (route) => {
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
 
-      // setActiveCollectionId(collection._id); // Set the active collection ID in AsyncStorage
-
       // Set the AR origin when the AR session starts
       getAROriginGeoCoordinates();
     }
@@ -373,14 +369,6 @@ const AR = (route) => {
       CompassHeading.stop(); // Stop listening after getting the heading
     });
   }, []);
-
-  // const setActiveCollectionId = async (collectionId) => {
-  //   try {
-  //     await AsyncStorage.setItem("activeCollectionId", collectionId);
-  //   } catch (error) {
-  //     console.error("Error setting active collection ID: ", error);
-  //   }
-  // };
 
   // React Navigation Focus Effect
   useEffect(() => {
