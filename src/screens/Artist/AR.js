@@ -590,7 +590,7 @@ const AR = (route) => {
             <View style={{ flexDirection: "row", gap: 10 }}>
               <Button title="Copy" onPress={copyLogsToClipboard} />
               <Button title="Close" onPress={() => setIsLogsVisible(false)} />
-              <Button title="Clear" onPress={() => clearLogs} />
+              <Button title="Clear" onPress={clearLogs} />
             </View>
           </View>
         </View>
