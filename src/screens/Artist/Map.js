@@ -14,8 +14,12 @@ import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import FastImage from "react-native-fast-image";
 
+// Import Contexts
+import { useActiveCollection } from "../../context/ActiveCollectionContext";
+
 // Import Utils
 import { getCollectionsForCurrentArtist } from "../../utils/api";
+import { getPlacedObjectsByCollection } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -25,6 +29,8 @@ import CustomButton from "../../components/UI/CustomButton";
 
 const Map = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data
+  const { activeCollectionId } = useActiveCollection();
+  const [placedObjects, setPlacedObjects] = useState([]); // State to store placed objects
   const [location, setLocation] = useState({
     latitude: 51.09284609, // Default latitude
     longitude: 4.52385715, // Default longitude
@@ -47,6 +53,29 @@ const Map = ({ navigation }) => {
 
     getCollectionData(); // Call the function
   }, []);
+
+  useEffect(() => {
+    const fetchPlacedObjects = async () => {
+      if (activeCollectionId) {
+        try {
+          const result = await getPlacedObjectsByCollection(
+            activeCollectionId._id
+          );
+          if (result.status === "success") {
+            setPlacedObjects(result.data.placedObjects || []); // Set placed objects
+          } else {
+            console.error("Error fetching placed objects:", result.message);
+          }
+        } catch (error) {
+          console.error("Error fetching placed objects:", error.message);
+        }
+      } else {
+        setPlacedObjects([]); // Clear placed objects if no active collection
+      }
+    };
+
+    fetchPlacedObjects();
+  }, [activeCollectionId]);
 
   // Request location permission and get the user's location
   const requestLocationPermission = async () => {
@@ -184,6 +213,7 @@ const Map = ({ navigation }) => {
       >
         {/* Render markers for collections with valid locations */}
         {zoomLevel >= 7 &&
+          !activeCollectionId &&
           collectionData
             .filter(
               (collection) =>
@@ -231,6 +261,28 @@ const Map = ({ navigation }) => {
                 </Callout>
               </Marker>
             ))}
+
+        {/* Render markers for placed objects with valid locations */}
+        {zoomLevel >= 7 &&
+          activeCollectionId &&
+          placedObjects.map((object) => (
+            <Marker
+              key={object._id}
+              coordinate={{
+                latitude: object.position.lat,
+                longitude: object.position.lon,
+              }}
+              anchor={{ x: 0.5, y: 0.5 }}
+              calloutAnchor={{ x: 0.5, y: 0 }}
+            >
+              {/* Custom Callout */}
+              <Callout tooltip>
+                <View style={styles.calloutContainer}>
+                  <Text style={styles.calloutTitle}>{object.object.title}</Text>
+                </View>
+              </Callout>
+            </Marker>
+          ))}
       </MapView>
 
       <View style={styles.coordinatesContainer}>
