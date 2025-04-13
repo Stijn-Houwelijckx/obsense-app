@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Alert } from "react-native";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 const useLogs = () => {
   const [logs, setLogs] = useState([]);
