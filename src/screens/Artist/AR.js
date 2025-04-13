@@ -17,9 +17,8 @@ import {
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
-import CompassHeading from "react-native-compass-heading";
+// import CompassHeading from "react-native-compass-heading";
 import merc from "mercator-projection";
-import Clipboard from "@react-native-clipboard/clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import ARScene
@@ -31,6 +30,7 @@ import { useActiveCollection } from "../../context/ActiveCollectionContext";
 // Import Utils
 import { savePlacedObject } from "../../utils/api";
 import { getArtistCollectionDetails } from "../../utils/api";
+import { getDeviceHeading } from "../../utils/headingUtils";
 
 // Import Hooks
 import useLogs from "../../hooks/useLogs";
@@ -191,11 +191,13 @@ const AR = (route) => {
 
   useEffect(() => {
     // Get the device's heading when the AR session starts
-    CompassHeading.start(1, (headingData) => {
-      setInitialHeading(headingData.heading); // Save the initial heading
-      addLog(`Initial heading: \n ${headingData.heading} degrees`);
-      CompassHeading.stop(); // Stop listening after getting the heading
-    });
+    const fetchHeading = async () => {
+      const heading = await getDeviceHeading(); // Get the device's heading
+      setInitialHeading(heading); // Save the initial heading
+      addLog(`Initial heading: \n ${heading} degrees`);
+    };
+
+    fetchHeading(); // Call the function to fetch heading
   }, []);
 
   // React Navigation Focus Effect
@@ -437,16 +439,8 @@ const AR = (route) => {
     );
 
     // Get the current heading
-    let heading = 0;
-    await new Promise((resolve) => {
-      CompassHeading.start(1, (headingData) => {
-        heading = headingData.heading;
-        addLog(`Device heading: \n ${heading} degrees`);
-        // console.log("Device heading: ", heading);
-        CompassHeading.stop(); // Stop listening after getting the heading
-        resolve();
-      });
-    });
+    const heading = await getDeviceHeading();
+    addLog(`Device heading: \n ${heading} degrees`);
 
     // Get the payload for the object to be saved
     const payload = await getPlacedObjectPayload(
