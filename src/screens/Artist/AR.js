@@ -32,6 +32,9 @@ import { useActiveCollection } from "../../context/ActiveCollectionContext";
 import { savePlacedObject } from "../../utils/api";
 import { getArtistCollectionDetails } from "../../utils/api";
 
+// Import Hooks
+import useLogs from "../../hooks/useLogs";
+
 // Import Styles
 import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
@@ -111,19 +114,9 @@ const AR = (route) => {
   const [initialHeading, setInitialHeading] = useState(0); // Track initial heading
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
-  const [logs, setLogs] = useState([]); // State to store logs
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
-
-  const addLog = (message) => {
-    setLogs((prevLogs) => [...prevLogs, message]); // Add new log to the state
-  };
-
-  const copyLogsToClipboard = () => {
-    const logsText = logs.join("\n"); // Combine logs into a single string
-    Clipboard.setString(logsText); // Copy logs to clipboard
-    Alert.alert("Logs Copied", "The logs have been copied to your clipboard.");
-  };
 
   useEffect(() => {
     if (collection?.objects) {
@@ -359,7 +352,7 @@ const AR = (route) => {
     // await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
     setCurrentlySelectedObjectId(null); // Reset selected object
-    setLogs([]); // Clear logs when navigating away
+    clearLogs(); // Clear logs when navigating away
     navigation.goBack(); // Go back to the previous screen
   };
 
@@ -603,7 +596,7 @@ const AR = (route) => {
             <View style={{ flexDirection: "row", gap: 10 }}>
               <Button title="Copy" onPress={copyLogsToClipboard} />
               <Button title="Close" onPress={() => setIsLogsVisible(false)} />
-              <Button title="Clear" onPress={() => setLogs([])} />
+              <Button title="Clear" onPress={() => clearLogs} />
             </View>
           </View>
         </View>
