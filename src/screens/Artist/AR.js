@@ -14,13 +14,7 @@ import {
   Platform,
   Linking,
 } from "react-native";
-import {
-  ViroARScene,
-  ViroARSceneNavigator,
-  Viro3DObject,
-  ViroAmbientLight,
-  ViroARPlane,
-} from "@reactvision/react-viro";
+import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import Geolocation from "@react-native-community/geolocation";
 import CompassHeading from "react-native-compass-heading";
