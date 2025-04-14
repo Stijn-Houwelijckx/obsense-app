@@ -31,6 +31,7 @@ import { useActiveCollection } from "../../context/ActiveCollectionContext";
 import { savePlacedObject } from "../../utils/api";
 import { getArtistCollectionDetails } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
+import { getPlacedObjectPayload } from "../../utils/payloadUtils";
 
 // Import Hooks
 import useLogs from "../../hooks/useLogs";
@@ -283,47 +284,6 @@ const AR = (route) => {
     });
   };
 
-  // Reusable function: Assemble the payload to save a placed object.
-  const getPlacedObjectPayload = async (
-    objectId,
-    objects,
-    collection,
-    deviceHeading
-  ) => {
-    const currentObject = objects.find((obj) => obj.id === objectId);
-    if (!currentObject) return null;
-
-    // Calculate geographic coordinates from AR object's position.
-    const geoCoordinates = await calculateGeoCoordinates(
-      currentObject.position
-    );
-    return {
-      placedObject: {
-        placedObjectId: String(objectId), // for updates; leave null or omit for new objects
-        collectionId: collection._id,
-        objectId: currentObject.objectId,
-        position: {
-          lat: geoCoordinates.lat,
-          lon: geoCoordinates.lng,
-          x: currentObject.position[0],
-          y: currentObject.position[1] || 1, // default height if not set
-          z: currentObject.position[2],
-        },
-        scale: {
-          x: currentObject.scale[0],
-          y: currentObject.scale[1],
-          z: currentObject.scale[2],
-        },
-        rotation: {
-          x: currentObject.rotation[0],
-          y: currentObject.rotation[1],
-          z: currentObject.rotation[2],
-        },
-        deviceHeading, // use the latest heading from the device
-      },
-    };
-  };
-
   const handleBackPress = () => {
     if (currentlySelectedObjectId) {
       Alert.alert(
@@ -447,6 +407,7 @@ const AR = (route) => {
       objectId,
       objects,
       collection,
+      calculateGeoCoordinates,
       heading
     );
 
