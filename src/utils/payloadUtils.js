@@ -1,15 +1,10 @@
 export const getPlacedObjectPayload = async (
   objectId,
-  objects,
+  currentObject,
   collection,
-  calculateGeoCoordinates,
+  geoCoordinates,
   deviceHeading
 ) => {
-  const currentObject = objects.find((obj) => obj.id === objectId);
-  if (!currentObject) return null;
-
-  const geoCoordinates = await calculateGeoCoordinates(currentObject.position);
-
   return {
     placedObject: {
       placedObjectId: String(objectId),
