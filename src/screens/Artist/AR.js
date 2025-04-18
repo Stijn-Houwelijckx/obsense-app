@@ -117,7 +117,8 @@ const AR = (route) => {
   const [initialHeading, setInitialHeading] = useState(0); // Track initial heading
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
-  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  // const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const { location } = useLocation(); // Get location from custom hook
   const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
@@ -134,26 +135,6 @@ const AR = (route) => {
       setObjectList([]); // Reset to an empty array if no objects are available
     }
   }, [collection]);
-
-  // Watch location updates
-  useEffect(() => {
-    const watchId = Geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-      },
-      (error) => {
-        console.error("Error watching location: ", error);
-        addLog(`Error watching location: ${error.message}`);
-      },
-      { enableHighAccuracy: true, distanceFilter: 1 }
-    );
-
-    // Cleanup the watcher on unmount
-    return () => {
-      Geolocation.clearWatch(watchId);
-    };
-  }, []);
 
   useEffect(() => {
     const fetchActiveCollection = async () => {
