@@ -32,6 +32,7 @@ import { savePlacedObject } from "../../utils/api";
 import { getArtistCollectionDetails } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
 import { getPlacedObjectPayload } from "../../utils/payloadUtils";
+import { getCurrentLocation } from "../../utils/locationUtils";
 
 // Import Hooks
 import useLogs from "../../hooks/useLogs";
@@ -210,30 +211,49 @@ const AR = (route) => {
     }
   }, [isFocused]);
 
-  const getAROriginGeoCoordinates = () => {
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setAROriginGeoCoordinates({
-            latitude: latitude,
-            longitude: longitude,
-          });
-
-          addLog(
-            `AR Origin Coordinates: \n lat: ${latitude.toFixed(
-              6
-            )} \n lon: ${longitude.toFixed(6)}`
-          );
-        },
-        (error) => {
-          console.error("Error getting AR origin position: ", error);
-          reject(error);
-        },
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+  const getAROriginGeoCoordinates = async () => {
+    try {
+      const currentLocation = await getCurrentLocation(); // Get the current location
+      addLog(
+        `AR Origin Coordinates: \n lat: ${currentLocation.latitude.toFixed(
+          6
+        )} \n lon: ${currentLocation.longitude.toFixed(6)}`
       );
-    });
+
+      setAROriginGeoCoordinates({
+        latitude: currentLocation.latitude,
+
+        longitude: currentLocation.longitude,
+      });
+    } catch (error) {
+      console.error("Error getting AR origin position: ", error);
+    }
   };
+
+  // const getAROriginGeoCoordinates = () => {
+  //   return new Promise((resolve, reject) => {
+  //     Geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         setAROriginGeoCoordinates({
+  //           latitude: latitude,
+  //           longitude: longitude,
+  //         });
+
+  //         addLog(
+  //           `AR Origin Coordinates: \n lat: ${latitude.toFixed(
+  //             6
+  //           )} \n lon: ${longitude.toFixed(6)}`
+  //         );
+  //       },
+  //       (error) => {
+  //         console.error("Error getting AR origin position: ", error);
+  //         reject(error);
+  //       },
+  //       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+  //     );
+  //   });
+  // };
 
   // Reusable function: Calculate geographic coordinates from AR space position.
   // It gets the device's current geo position, projects it, adds the AR offset (using the X and Z values)
