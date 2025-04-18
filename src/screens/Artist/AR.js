@@ -53,51 +53,6 @@ import MapIcon from "../../components/icons/MapIcon";
 // Import Components
 import IconButton from "../../components/UI/IconButton";
 
-// const requestLocationPermission = async () => {
-//   if (Platform.OS === "android") {
-//     const granted = await PermissionsAndroid.request(
-//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-//       {
-//         title: "Location Permission",
-//         message:
-//           "This app needs access to your location to show it on the map.",
-//         buttonNeutral: "Ask Me Later",
-//         buttonNegative: "Cancel",
-//         buttonPositive: "OK",
-//       }
-//     );
-//     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-//       console.log("Location permission granted");
-//       return true;
-//     } else {
-//       console.log("Location permission denied");
-//       Alert.alert(
-//         "Permission Denied",
-//         "Location permission is required to use this feature. Please enable it in your device settings.",
-//         [
-//           {
-//             text: "Cancel",
-//             style: "cancel",
-//           },
-//           {
-//             text: "Open Settings",
-//             onPress: () => {
-//               // Open device location settings
-//               if (Platform.OS === "android") {
-//                 Linking.openSettings();
-//               }
-//             },
-//           },
-//         ]
-//       );
-//       return false;
-//     }
-//   } else {
-//     // For iOS, we assume permission is granted
-//     return true;
-//   }
-// };
-
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
   const isFocused = useIsFocused(); // React Navigation hook to track focus
