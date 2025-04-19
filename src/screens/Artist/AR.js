@@ -28,12 +28,18 @@ import ARScene from "./ARScene";
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
-import { savePlacedObject } from "../../utils/api";
-import { getArtistCollectionDetails } from "../../utils/api";
+import {
+  savePlacedObject,
+  getArtistCollectionDetails,
+  getPlacedObjectsByCollection,
+} from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
 import { getPlacedObjectPayload } from "../../utils/payloadUtils";
 import { getCurrentLocation } from "../../utils/locationUtils";
-import { calculateGeoCoordinates } from "../../utils/geoUtils";
+import {
+  calculateARCoordinates,
+  calculateGeoCoordinates,
+} from "../../utils/geoUtils";
 
 // Import Hooks
 import useLogs from "../../hooks/useLogs";
@@ -78,6 +84,8 @@ const AR = (route) => {
   const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
+  const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     if (collection?.objects) {
       setObjectList(
@@ -120,6 +128,128 @@ const AR = (route) => {
   }, [activeCollectionId, route.route?.params]);
 
   useEffect(() => {
+    if (
+      activeCollectionId &&
+      collection &&
+      arOriginGeoCoordinates &&
+      initialHeading
+    ) {
+      console.log("All dependencies are ready.");
+      setIsReady(true);
+    } else {
+      console.log("Waiting for dependencies...");
+      setIsReady(false);
+    }
+  }, [activeCollectionId, collection, arOriginGeoCoordinates, initialHeading]);
+
+  const getFinalARPosition = async ({
+    modelPosition, // { lat, lon }
+    savedOrigin, // { lat, lon, heading } -> from DB
+    currentOrigin, // { lat, lon, heading } -> device now
+  }) => {
+    // 1. Calculate offset between current AR origin and saved AR origin
+    const originDelta = await calculateARCoordinates(
+      { lat: savedOrigin.lat, lng: savedOrigin.lon },
+      { latitude: currentOrigin.lat, longitude: currentOrigin.lon },
+      currentOrigin.heading
+    );
+
+    console.log("Origin delta: ", originDelta); // Debug log
+
+    // 2. Get model's position relative to the saved origin
+    const modelOffset = await calculateARCoordinates(
+      { lat: modelPosition.lat, lng: modelPosition.lon },
+      { latitude: savedOrigin.lat, longitude: savedOrigin.lon },
+      savedOrigin.heading
+    );
+
+    console.log("Model offset: ", modelOffset); // Debug log
+
+    // 3. Subtract the origin delta to convert to new AR session's space
+    const finalPosition = [
+      modelOffset[0] - originDelta[0],
+      modelOffset[1] - originDelta[1], // usually 0
+      modelOffset[2] - originDelta[2],
+    ];
+
+    return finalPosition;
+  };
+
+  const fetchAndPlaceObjects = async () => {
+    console.log("Fetching and placing objects..."); // Debug log
+
+    if (collection) {
+      try {
+        const response = await getPlacedObjectsByCollection(collection._id); // Fetch placed objects by collection ID
+
+        console.log("Response from API: ", response); // Debug log
+
+        if (response.status === "success") {
+          const placedObjects = response.data.placedObjects;
+
+          const arObjects = await Promise.all(
+            placedObjects.map(async (obj) => {
+              // console.log("Object: ", obj); // Debug log
+              // const geoCoordinates = await calculateARCoordinates(
+              //   { lat: obj.position.lat, lng: obj.position.lon },
+              //   { latitude: obj.origin.lat, longitude: obj.origin.lon },
+              //   obj.origin.heading
+              // );
+
+              const geoCoordinates = await getFinalARPosition({
+                modelPosition: {
+                  lat: obj.position.lat,
+                  lon: obj.position.lon,
+                },
+                savedOrigin: {
+                  lat: obj.origin.lat,
+                  lon: obj.origin.lon,
+                  heading: obj.origin.heading,
+                },
+                currentOrigin: {
+                  lat: arOriginGeoCoordinates.latitude,
+                  lon: arOriginGeoCoordinates.longitude,
+                  heading: initialHeading,
+                },
+              });
+
+              console.log("Object id: " + obj._id); // Debug log
+              console.log("AR Coordinates: ", geoCoordinates);
+
+              return {
+                id: obj._id,
+                objectId: obj.object._id,
+                source: { uri: obj.object.file.filePath },
+                position: [
+                  geoCoordinates[0],
+                  geoCoordinates[1],
+                  geoCoordinates[2],
+                ],
+                scale: [obj.scale.x, obj.scale.y, obj.scale.z],
+                rotation: [obj.rotation.x, obj.rotation.y, obj.rotation.z],
+              };
+            })
+          );
+
+          setObjects(arObjects); // Set the objects in AR
+        } else {
+          console.log("Error fetching objects:", response.message);
+        }
+      } catch (error) {
+        console.error("Error fetching objects:", error.message);
+      }
+    }
+  };
+
+  // Fetch AR origin and placed objects when the component mounts
+  useEffect(() => {
+    if (isReady) {
+      console.log("Fetching and placing objects...");
+      fetchAndPlaceObjects();
+    }
+  }, [isReady]);
+
+  useEffect(() => {
     // Request location permission when the component mounts
     if (collection) {
       console.log("Editing collection with ID: ", collection._id);
@@ -160,7 +290,6 @@ const AR = (route) => {
 
       setAROriginGeoCoordinates({
         latitude: currentLocation.latitude,
-
         longitude: currentLocation.longitude,
       });
     } catch (error) {
@@ -300,7 +429,9 @@ const AR = (route) => {
       currentObject,
       collection,
       geoCoordinates,
-      heading
+      heading,
+      arOriginGeoCoordinates,
+      initialHeading
     );
 
     if (!payload) {
