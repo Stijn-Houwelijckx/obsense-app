@@ -3,7 +3,9 @@ export const getPlacedObjectPayload = async (
   currentObject,
   collection,
   geoCoordinates,
-  deviceHeading
+  deviceHeading,
+  arOriginGeoCoordinates,
+  arOriginHeading
 ) => {
   return {
     placedObject: {
@@ -28,6 +30,11 @@ export const getPlacedObjectPayload = async (
         z: currentObject.rotation[2],
       },
       deviceHeading,
+      origin: {
+        lat: arOriginGeoCoordinates.latitude,
+        lon: arOriginGeoCoordinates.longitude,
+        heading: arOriginHeading,
+      },
     },
   };
 };
