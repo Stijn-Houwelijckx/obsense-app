@@ -11,7 +11,7 @@ import Home from "../screens/User/Home";
 import Explore from "../screens/User/Explore";
 import AR from "../screens/User/AR";
 import Map from "../screens/Shared/Map";
-import Settings from "../screens/User/Settings";
+import Settings from "../screens/Shared/SettingsScreens/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";

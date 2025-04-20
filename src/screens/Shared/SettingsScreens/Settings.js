@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useActiveCollection } from "../../context/ActiveCollectionContext";
+import { useActiveCollection } from "../../../context/ActiveCollectionContext";
 
 const Settings = ({ navigation, handleAuthChangeSuccess }) => {
   const { clearActiveCollection } = useActiveCollection();
