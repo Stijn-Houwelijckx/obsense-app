@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, ActivityIndicator, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SystemNavigationBar from "react-native-system-navigation-bar";
@@ -32,6 +32,7 @@ import {
   LINE_HEIGHT,
   LETTER_SPACING,
 } from "../styles/theme";
+import { globalStyles } from "../styles/global";
 
 // Import Icons
 import HomeIcon from "../components/icons/HomeIcon";
@@ -68,54 +69,58 @@ const HomeStack = () => {
     getUser(); // Call the function
   }, []);
 
-  if (!isLoading) {
+  if (isLoading) {
     return (
-      <Stack.Navigator
-        screenOptions={({ navigation, route }) => ({
-          // We use navigation.canGoBack() to check if there's a back action
-          header: () => {
-            const showBackButton =
-              route.name !== "HomeScreen" && navigation.canGoBack();
-
-            if (route.name === "HomeScreen") {
-              return (
-                <Header
-                  type="profile"
-                  profileImage={user?.profilePicture.filePath}
-                  text="Welcome Back!"
-                  userName={user?.username}
-                  onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
-                />
-              );
-            }
-
-            return (
-              <Header
-                title={route.name} // You can set dynamic title here if needed
-                showBackButton={showBackButton}
-              />
-            );
-          },
-        })}
-      >
-        <Stack.Screen name="HomeScreen" component={Home} />
-        <Stack.Screen
-          name="CollectionDetails"
-          component={CollectionDetails}
-          options={({ route }) => ({
-            header: () => (
-              <Header title={route.params?.title || "Loading..."} />
-            ),
-          })}
-        />
-        <Stack.Screen
-          name="Published Collections"
-          component={PublishedCollections}
-        />
-        <Stack.Screen name="Draft Collections" component={DraftCollections} />
-      </Stack.Navigator>
+      <View style={globalStyles.container}>
+        <ActivityIndicator size="large" color={COLORS.primary[500]} />
+      </View>
     );
   }
+
+  return (
+    <Stack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        // We use navigation.canGoBack() to check if there's a back action
+        header: () => {
+          const showBackButton =
+            route.name !== "HomeScreen" && navigation.canGoBack();
+
+          if (route.name === "HomeScreen") {
+            return (
+              <Header
+                type="profile"
+                profileImage={user?.profilePicture.filePath}
+                text="Welcome Back!"
+                userName={user?.username}
+                onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
+              />
+            );
+          }
+
+          return (
+            <Header
+              title={route.name} // You can set dynamic title here if needed
+              showBackButton={showBackButton}
+            />
+          );
+        },
+      })}
+    >
+      <Stack.Screen name="HomeScreen" component={Home} />
+      <Stack.Screen
+        name="CollectionDetails"
+        component={CollectionDetails}
+        options={({ route }) => ({
+          header: () => <Header title={route.params?.title || "Loading..."} />,
+        })}
+      />
+      <Stack.Screen
+        name="Published Collections"
+        component={PublishedCollections}
+      />
+      <Stack.Screen name="Draft Collections" component={DraftCollections} />
+    </Stack.Navigator>
+  );
 };
 
 // AR Stack
