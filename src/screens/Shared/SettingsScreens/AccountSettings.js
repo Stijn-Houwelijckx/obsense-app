@@ -40,6 +40,13 @@ const AccountSettings = ({ navigation }) => {
 
       if (result.status === "success") {
         setUser(result.data.user); // Set user data
+
+        setFirstName(result.data.user.firstName); // Set first name
+        setLastName(result.data.user.lastName); // Set last name
+
+        setUsername(result.data.user.username); // Set username
+
+        setEmail(result.data.user.email); // Set email
       } else {
         console.log("Error getting user data:", result.message); // Log error message
       }
