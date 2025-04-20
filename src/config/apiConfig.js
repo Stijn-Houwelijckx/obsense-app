@@ -8,6 +8,7 @@ const API_PATHS = {
   // Current User Endpoints
   // GET /users/me -> Get current user
   ME: `${API_BASE_URL}/users/me`,
+  ME_PROFILE_PICTURE: `${API_BASE_URL}/users/me/profile-picture`,
 
   // Artist Endpoints
   // GET /artists -> Get all artists
