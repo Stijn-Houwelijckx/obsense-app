@@ -8,22 +8,27 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useActiveCollection } from "../../../context/ActiveCollectionContext";
 import FastImage from "react-native-fast-image";
+import { launchImageLibrary } from "react-native-image-picker";
 
 // Import Utils
-import { getCurrentUser, updateCurrentUser } from "../../../utils/api";
+import {
+  getCurrentUser,
+  updateCurrentUser,
+  updateCurrentUserProfilePicture,
+} from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Import Icons
+import PencilSquareIcon from "../../../components/icons/PencilSquareIcon";
 
 // Custom Components
 import InputField from "../../../components/UI/InputField";
 import CustomButton from "../../../components/UI/CustomButton";
+import IconButton from "../../../components/UI/IconButton";
 
 const AccountSettings = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data
@@ -84,6 +89,60 @@ const AccountSettings = ({ navigation }) => {
     }
   };
 
+  const handleImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: "photo",
+        maxWidth: 300,
+        maxHeight: 300,
+        quality: 0.8,
+      },
+      (response) => {
+        if (response.didCancel) {
+          console.log("User cancelled image picker");
+        } else if (response.errorCode) {
+          console.log("Image picker error:", response.errorMessage);
+        } else {
+          const selectedImage = response.assets[0].uri;
+          console.log("Selected image:", selectedImage); // Log selected image URI
+
+          // Update the profile picture using the API
+
+          const formData = new FormData();
+          formData.append("profilePicture", {
+            uri: selectedImage,
+            type: response.assets[0].type,
+            name: response.assets[0].fileName,
+          });
+
+          updateCurrentUserProfilePicture(formData)
+            .then((result) => {
+              if (result.status === "success") {
+                setUser(result.data.user); // Update user data
+
+                console.log(
+                  "Profile picture updated successfully:",
+                  result.data.user
+                ); // Log success message
+
+                setMessage("Image updated"); // Set success message
+
+                // Clear the message after 2 seconds
+                setTimeout(() => {
+                  setMessage("");
+                }, 2000);
+              } else {
+                console.log("Error updating profile picture:", result.message); // Log error message
+              }
+            })
+            .catch((error) => {
+              console.log("Error updating profile picture:", error.message); // Log error message
+            });
+        }
+      }
+    );
+  };
+
   if (isLoading) {
     return (
       <View style={globalStyles.container}>
@@ -97,12 +156,25 @@ const AccountSettings = ({ navigation }) => {
       <View style={[globalStyles.container, styles.container]}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.profileHeader}>
-            <FastImage
-              source={{
-                uri: user.profilePicture.filePath,
-              }}
-              style={styles.profilePicture}
-            />
+            <View style={styles.profilePictureContainer}>
+              <FastImage
+                source={{
+                  uri: user.profilePicture.filePath,
+                }}
+                style={styles.profilePicture}
+              />
+
+              <IconButton
+                icon={PencilSquareIcon}
+                onPress={() => {
+                  handleImagePicker(); // Open image picker
+                }}
+                buttonSize={48}
+                iconSize={24}
+                iconColor={COLORS.neutral[950]}
+                style={styles.editIconButton}
+              />
+            </View>
             <Text style={[globalStyles.headingH6Medium, styles.profileName]}>
               {user.firstName} {user.lastName}
             </Text>
@@ -217,6 +289,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     alignItems: "center",
+  },
+  profilePictureContainer: {
+    position: "relative",
+  },
+  editIconButton: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    backgroundColor: COLORS.primary[500],
+    borderRadius: 9999,
   },
 });
 
