@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     color: COLORS.neutral[100],
   },
   logoutButton: {
-    justifyContent: "flex-start",
+    alignSelf: "flex-start",
   },
 });
 
