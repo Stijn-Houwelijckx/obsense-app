@@ -13,7 +13,7 @@ import { useActiveCollection } from "../../../context/ActiveCollectionContext";
 import FastImage from "react-native-fast-image";
 
 // Import Utils
-import { getCurrentUser } from "../../../utils/api";
+import { getCurrentUser, updateCurrentUser } from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";
@@ -28,6 +28,7 @@ import CustomButton from "../../../components/UI/CustomButton";
 const AccountSettings = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const [message, setMessage] = useState(""); // State to manage message
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -56,6 +57,32 @@ const AccountSettings = ({ navigation }) => {
 
     getUser(); // Call the function
   }, []);
+
+  const handleSaveChanges = async () => {
+    const updatedUser = {
+      user: {
+        firstName,
+        lastName,
+        username,
+        email,
+      },
+    };
+
+    const result = await updateCurrentUser(updatedUser);
+    if (result.status === "success") {
+      setUser(result.data.user); // Update user data
+      console.log("User updated successfully:", result.data.user); // Log success message
+
+      setMessage("Saved"); // Set success message
+
+      // Clear the message after 2 seconds
+      setTimeout(() => {
+        setMessage("");
+      }, 2000);
+    } else {
+      console.log("Error updating user data:", result.message); // Log error message
+    }
+  };
 
   if (isLoading) {
     return (
@@ -118,13 +145,25 @@ const AccountSettings = ({ navigation }) => {
                 autoCapitalize="none"
               />
             </View>
-            <CustomButton
-              variant="filled"
-              size="large"
-              title="Save Changes"
-              onPress={() => console.log("Save Changes")}
-              style={{ alignSelf: "flex-start", marginTop: 12 }}
-            />
+            <View style={styles.buttonContainer}>
+              <CustomButton
+                variant="filled"
+                size="large"
+                title="Save Changes"
+                onPress={() => handleSaveChanges()}
+                style={{ alignSelf: "flex-start", marginTop: 12 }}
+              />
+              {message && (
+                <Text
+                  style={[
+                    globalStyles.bodyMediumRegular,
+                    { color: COLORS.neutral[500], marginTop: 12 },
+                  ]}
+                >
+                  {message}
+                </Text>
+              )}
+            </View>
           </View>
           <CustomButton
             variant="outlinedError"
@@ -173,6 +212,11 @@ const styles = StyleSheet.create({
   },
   inputField: {
     flex: 1,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
   },
 });
 
