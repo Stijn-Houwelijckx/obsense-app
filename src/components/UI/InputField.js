@@ -26,6 +26,7 @@ const InputField = ({
   label, // Label for the input
   helperText, // Helper text to show below input
   error, // Error state flag
+  style, // Custom styles for the input field
   ...props
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] =
@@ -60,7 +61,7 @@ const InputField = ({
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {label && <Text style={labelStyle}>{label}</Text>}
 
       <View style={inputContainerStyle}>
