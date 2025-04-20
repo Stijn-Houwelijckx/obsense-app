@@ -183,9 +183,17 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
         const showBackButton =
           route.name !== "SettingsScreen" && navigation.canGoBack();
 
+        let routeName = route.name; // Default to the route name
+
+        if (route.name === "SettingsScreen") {
+          routeName = route.name.replace(/Screen$/, ""); // Remove "Screen" from the name
+        } else {
+          routeName = route.name.replace(/([A-Z])/g, " $1").trim(); // Convert camelCase to spaced words
+        }
+
         return (
           <Header
-            title={route.name} // You can set dynamic title here if needed
+            title={routeName} // You can set dynamic title here if needed
             showBackButton={showBackButton}
           />
         );
