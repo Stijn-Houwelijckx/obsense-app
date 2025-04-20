@@ -15,7 +15,7 @@ import { getCurrentUser } from "../utils/api";
 // Import Screens
 import Home from "../screens/Artist/Home";
 import AR from "../screens/Artist/AR";
-import Map from "../screens/Artist/Map";
+import Map from "../screens/Shared/Map";
 import Settings from "../screens/Artist/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
