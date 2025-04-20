@@ -154,6 +154,7 @@ const MapStack = () => {
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => ({
+        headerShown: false,
         // We use navigation.canGoBack() to check if there's a back action
         header: () => {
           const showBackButton =
