@@ -194,7 +194,6 @@ const MapStack = () => {
       })}
     >
       <Stack.Screen name="MapScreen" component={Map} />
-      <Stack.Screen name="Details" component={Details} />
     </Stack.Navigator>
   );
 };
