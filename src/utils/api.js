@@ -73,6 +73,37 @@ const updateCurrentUser = async (userData) => {
   }
 };
 
+// Function to update the current user profile picture from the API
+const updateCurrentUserProfilePicture = async (formData) => {
+  try {
+    const token = await AsyncStorage.getItem("userToken");
+    if (!token) {
+      return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
+    }
+
+    const response = await axios.put(API_PATHS.ME_PROFILE_PICTURE, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+    });
+
+    // Handle success response
+    if (response.status === 200) {
+      return { status: "success", data: response.data.data };
+    }
+
+    // Handle other errors
+    return {
+      status: "fail",
+      message: response.data?.data?.message || "Something went wrong",
+    };
+  } catch (error) {
+    return { status: "fail", message: error.message };
+  }
+};
+
 // Function to get all artists from the API
 const getArtists = async (page = 1, limit = 20) => {
   try {
@@ -426,6 +457,7 @@ const getPlacedObjectsByCollection = async (collectionId) => {
 export {
   getCurrentUser,
   updateCurrentUser,
+  updateCurrentUserProfilePicture,
   getArtists,
   getArtistDetails,
   getCollectionsForCurrentArtist,
