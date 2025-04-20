@@ -8,6 +8,7 @@ const IconButton = ({
   buttonSize = 48, // Default button size (height & width)
   onPress, // Handle on press event
   style, // Custom styles
+  iconColor = COLORS.neutral[200], // Custom styles for the icon
 }) => {
   return (
     <TouchableOpacity
@@ -15,7 +16,7 @@ const IconButton = ({
       onPress={onPress}
     >
       <View style={styles.iconContainer}>
-        <Icon size={iconSize} stroke={COLORS.neutral[200]} />
+        <Icon size={iconSize} stroke={iconColor} />
       </View>
     </TouchableOpacity>
   );
