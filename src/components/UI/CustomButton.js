@@ -68,6 +68,15 @@ const styles = StyleSheet.create({
     color: COLORS.primary[500],
   },
 
+  // Outlined Error Button Styles
+  outlinedError: {
+    borderWidth: 1,
+    borderColor: COLORS.error[600],
+  },
+  text_outlinedError: {
+    color: COLORS.error[500],
+  },
+
   // Text Button Styles
   text: {
     backgroundColor: "transparent",
