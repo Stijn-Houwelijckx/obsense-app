@@ -69,12 +69,6 @@ const HomeStack = () => {
   }, []);
 
   if (!isLoading) {
-    // console.log(user); // Log user data:
-
-    const profilePicture = user?.profilePicture
-      ? require("../../assets/profileImages/Stijn.png")
-      : require("../../assets/profileImages/Leen.jpg");
-
     return (
       <Stack.Navigator
         screenOptions={({ navigation, route }) => ({
@@ -87,7 +81,7 @@ const HomeStack = () => {
               return (
                 <Header
                   type="profile"
-                  profileImage={profilePicture}
+                  profileImage={user?.profilePicture.filePath}
                   text="Welcome Back!"
                   userName={user?.username}
                   onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
