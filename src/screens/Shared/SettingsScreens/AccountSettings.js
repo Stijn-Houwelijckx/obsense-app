@@ -33,6 +33,7 @@ import IconButton from "../../../components/UI/IconButton";
 const AccountSettings = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const [error, setError] = useState(""); // State to manage error
   const [message, setMessage] = useState(""); // State to manage message
 
   const [firstName, setFirstName] = useState("");
@@ -78,6 +79,7 @@ const AccountSettings = ({ navigation }) => {
       setUser(result.data.user); // Update user data
       console.log("User updated successfully:", result.data.user); // Log success message
 
+      setError(""); // Reset error state
       setMessage("Saved"); // Set success message
 
       // Clear the message after 2 seconds
@@ -86,6 +88,7 @@ const AccountSettings = ({ navigation }) => {
       }, 2000);
     } else {
       console.log("Error updating user data:", result.message); // Log error message
+      setError(result.message); // Set error message
     }
   };
 
@@ -217,6 +220,16 @@ const AccountSettings = ({ navigation }) => {
                 autoCapitalize="none"
               />
             </View>
+            {error && (
+              <Text
+                style={[
+                  globalStyles.bodyMediumRegular,
+                  { color: COLORS.error[500], marginTop: 12 },
+                ]}
+              >
+                {error}
+              </Text>
+            )}
             <View style={styles.buttonContainer}>
               <CustomButton
                 variant="filled"
