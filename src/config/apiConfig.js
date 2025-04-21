@@ -4,6 +4,7 @@ const API_PATHS = {
   // Auth Endpoints
   SIGNUP: `${API_BASE_URL}/users/signup`,
   LOGIN: `${API_BASE_URL}/users/login`,
+  CHANGE_PASSWORD: `${API_BASE_URL}/users/change-password`,
 
   // Current User Endpoints
   // GET /users/me -> Get current user
