@@ -107,7 +107,7 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
           <NavListItem
             title="My Tokens"
             icon={EuroCircleIcon}
-            onPress={() => console.log("My Tokens")}
+            onPress={() => navigation.navigate("Wallet")}
           />
           <NavListItem
             title="Change Password"
