@@ -32,6 +32,10 @@ const API_PATHS = {
   SAVE_PLACED_OBJECT: `${API_BASE_URL}/placedObjects/save`,
   // GET /placedObjects -> Get all placed objects for the current user
   PLACED_OBJECTS: `${API_BASE_URL}/placedObjects`,
+
+  // Token Endpoints
+  // GET /tokens -> Get all tokens for the current user
+  TOKENS: `${API_BASE_URL}/tokens`,
 };
 
 export default API_PATHS;
