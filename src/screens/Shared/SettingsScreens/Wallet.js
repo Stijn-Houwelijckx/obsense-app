@@ -12,11 +12,7 @@ import FastImage from "react-native-fast-image";
 import { launchImageLibrary } from "react-native-image-picker";
 
 // Import Utils
-import {
-  getCurrentUser,
-  updateCurrentUser,
-  updateCurrentUserProfilePicture,
-} from "../../../utils/api";
+import { getCurrentUser, updateTokens } from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";
@@ -33,6 +29,7 @@ const Wallet = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [message, setMessage] = useState(""); // State to manage message
+  const [error, setError] = useState(""); // State to manage error
 
   const [selectedNumber, setSelectedNumber] = useState(null); // State to track the selected number
 
@@ -59,6 +56,29 @@ const Wallet = ({ navigation }) => {
 
     getUser(); // Call the function
   }, []);
+
+  const handleBuyTokens = async () => {
+    const result = await updateTokens(selectedNumber); // Call the API to update tokens
+
+    if (result.status === "success") {
+      setUser((prevUser) => ({
+        ...prevUser,
+        tokens: result.data.tokens, // Update user tokens
+      }));
+
+      setSelectedNumber(null); // Reset selected number
+      setError(""); // Reset error message
+      setMessage("Purchase successfull!"); // Set success message
+
+      // Clear the message after 3 seconds
+      setTimeout(() => {
+        setMessage(""); // Clear message after 3 seconds
+      }, 2000);
+    } else {
+      setMessage(""); // Reset success message
+      setError(result.message); // Set error message
+    }
+  };
 
   if (isLoading) {
     return (
@@ -125,14 +145,35 @@ const Wallet = ({ navigation }) => {
               label="Custom Amount"
               placeholder="Enter amount"
               keyboardType="numeric"
-              onChangeText={(text) => setSelectedNumber()}
+              value={selectedNumber}
+              onChangeText={(text) => setSelectedNumber(text)}
               style={styles.InputField}
             />
+            {message && (
+              <Text
+                style={[
+                  globalStyles.bodyMediumRegular,
+                  { color: COLORS.success[500], marginBottom: 12 },
+                ]}
+              >
+                {message}
+              </Text>
+            )}
+            {error && (
+              <Text
+                style={[
+                  globalStyles.bodyMediumRegular,
+                  { color: COLORS.error[500], marginBottom: 12 },
+                ]}
+              >
+                {error}
+              </Text>
+            )}
             <CustomButton
               variant="filled"
               size="large"
               title="Buy"
-              onPress={() => console.log("Buy Tokens")}
+              onPress={() => handleBuyTokens()}
             />
           </View>
         </ScrollView>
