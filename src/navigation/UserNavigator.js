@@ -13,8 +13,11 @@ import AR from "../screens/User/AR";
 import Map from "../screens/Shared/Map";
 import Settings from "../screens/Shared/SettingsScreens/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
+import Wallet from "../screens/Shared/SettingsScreens/Wallet";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
+import PrivacyCookies from "../screens/Shared/SettingsScreens/PrivacyCookies";
+import TermsConditions from "../screens/Shared/SettingsScreens/TermsConditions";
 import CollectionDetails from "../screens/User/CollectionDetails";
 import Collections from "../screens/User/Collections";
 import PurchasedCollections from "../screens/User/PurchasedCollections";
@@ -225,8 +228,27 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
       )}
     </Stack.Screen>
     <Stack.Screen name="AccountSettings" component={AccountSettings} />
+    <Stack.Screen name="Wallet" component={Wallet} />
     <Stack.Screen name="ChangePassword" component={ChangePassword} />
     <Stack.Screen name="Notification" component={Notification} />
+    <Stack.Screen
+      name="PrivacyCookies"
+      component={PrivacyCookies}
+      options={{
+        header: () => (
+          <Header title="Privacy & Cookies" showBackButton={true} />
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="TermsConditions"
+      component={TermsConditions}
+      options={{
+        header: () => (
+          <Header title="Terms & Conditions" showBackButton={true} />
+        ),
+      }}
+    />
   </Stack.Navigator>
 );
 
