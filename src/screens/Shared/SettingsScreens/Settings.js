@@ -122,12 +122,12 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
           <NavListItem
             title="Privacy & Cookies"
             icon={LockClosedIcon}
-            onPress={() => console.log("Privacy & Cookies")}
+            onPress={() => navigation.navigate("PrivacyCookies")}
           />
           <NavListItem
             title="Terms and Conditions"
             icon={ShieldCheckIcon}
-            onPress={() => console.log("Security & Login")}
+            onPress={() => navigation.navigate("TermsConditions")}
           />
         </NavList>
 

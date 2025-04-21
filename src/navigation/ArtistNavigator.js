@@ -20,6 +20,8 @@ import Settings from "../screens/Shared/SettingsScreens/Settings";
 import AccountSettings from "../screens/Shared/SettingsScreens/AccountSettings";
 import ChangePassword from "../screens/Shared/SettingsScreens/ChangePassword";
 import Notification from "../screens/Shared/SettingsScreens/Notification";
+import PrivacyCookies from "../screens/Shared/SettingsScreens/PrivacyCookies";
+import TermsConditions from "../screens/Shared/SettingsScreens/TermsConditions";
 import CollectionDetails from "../screens/Artist/CollectionDetails";
 import PublishedCollections from "../screens/Artist/PublishedCollections";
 import DraftCollections from "../screens/Artist/DraftCollections";
@@ -210,6 +212,24 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
     <Stack.Screen name="AccountSettings" component={AccountSettings} />
     <Stack.Screen name="ChangePassword" component={ChangePassword} />
     <Stack.Screen name="Notification" component={Notification} />
+    <Stack.Screen
+      name="PrivacyCookies"
+      component={PrivacyCookies}
+      options={{
+        header: () => (
+          <Header title="Privacy & Cookies" showBackButton={true} />
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="TermsConditions"
+      component={TermsConditions}
+      options={{
+        header: () => (
+          <Header title="Terms & Conditions" showBackButton={true} />
+        ),
+      }}
+    />
   </Stack.Navigator>
 );
 
