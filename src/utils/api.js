@@ -493,6 +493,42 @@ const getPlacedObjectsByCollection = async (collectionId) => {
   }
 };
 
+// Updat tokens for the current user from the API
+const updateTokens = async (tokenAmount) => {
+  try {
+    const token = await AsyncStorage.getItem("userToken");
+    if (!token) {
+      return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
+    }
+
+    const payload = {
+      tokens: {
+        tokenAmount,
+      },
+    };
+
+    const response = await axios.put(API_PATHS.TOKENS, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+    });
+
+    // Handle success response
+    if (response.status === 200) {
+      return { status: "success", data: response.data.data };
+    }
+
+    // Handle other errors
+    return {
+      status: "fail",
+      message: response.data?.data?.message || "Something went wrong",
+    };
+  } catch (error) {
+    return { status: "fail", message: error.message };
+  }
+};
+
 export {
   changeCurrentUserPassword,
   getCurrentUser,
@@ -507,4 +543,5 @@ export {
   getCollections,
   savePlacedObject,
   getPlacedObjectsByCollection,
+  updateTokens,
 };
