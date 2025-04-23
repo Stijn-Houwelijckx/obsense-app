@@ -35,6 +35,7 @@ import CustomButton from "../../../components/UI/CustomButton";
 const Settings = ({ navigation, handleAuthChangeSuccess }) => {
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const [isArtist, setIsArtist] = useState(false);
   const { clearActiveCollection } = useActiveCollection();
 
   useEffect(() => {
@@ -47,11 +48,37 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
         console.log("Error getting user data:", result.message); // Log error message
       }
 
+      // Check if the user is an artist
+      const artistStatus = (await AsyncStorage.getItem("isArtist")) === "true";
+      setIsArtist(artistStatus);
+
       setIsLoading(false); // Set loading state to false
     };
 
     getUser(); // Call the function
   }, []);
+
+  const handleRoleSwitch = async () => {
+    try {
+      // Get the current role
+      const currentRole = await AsyncStorage.getItem("selectedRole");
+
+      // Toggle the role
+      const newRole = currentRole === "artist" ? "user" : "artist";
+
+      // Update AsyncStorage
+      await AsyncStorage.setItem("selectedRole", newRole);
+
+      // Trigger re-check in AppNavigator
+      handleAuthChangeSuccess();
+
+      navigation.navigate("Home");
+
+      console.log(`Switched role to: ${newRole}`);
+    } catch (error) {
+      console.error("Failed to switch roles:", error.message);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -130,6 +157,17 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
             onPress={() => navigation.navigate("TermsConditions")}
           />
         </NavList>
+
+        {/* Add Role Switch Button if isArtist is true */}
+        {isArtist && (
+          <CustomButton
+            variant="text"
+            size="large"
+            title="Switch Role"
+            onPress={handleRoleSwitch}
+            style={styles.switchRoleButton}
+          />
+        )}
 
         <CustomButton
           variant="text"
