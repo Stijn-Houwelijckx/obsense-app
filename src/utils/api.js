@@ -407,6 +407,40 @@ const getOwnedCollections = async () => {
   }
 };
 
+// Function to purchase a collection from the API
+const purchaseCollection = async (collectionId) => {
+  try {
+    const token = await AsyncStorage.getItem("userToken");
+    if (!token) {
+      return { status: "fail", message: "Unauthorized" }; // No token, unauthorized
+    }
+
+    const response = await axios.post(
+      `${API_PATHS.PURCHASE}/${collectionId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+      }
+    );
+
+    // Handle success response
+    if (response.status === 200 || response.status === 201) {
+      return { status: "success", data: response.data.data };
+    }
+
+    // Handle other errors
+    return {
+      status: "fail",
+      message: response.data?.data?.message || "Something went wrong",
+    };
+  } catch (error) {
+    return { status: "fail", message: error.message };
+  }
+};
+
 // Function to get all collections from the API
 const getCollections = async (page = 1, limit = 20) => {
   try {
@@ -580,6 +614,7 @@ export {
   getArtistCollectionDetails,
   getCollectionDetails,
   getOwnedCollections,
+  purchaseCollection,
   getCollections,
   savePlacedObject,
   getPlacedObjectsByCollection,
