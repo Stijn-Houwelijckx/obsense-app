@@ -7,12 +7,13 @@ import {
   ActivityIndicator,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FastImage from "react-native-fast-image";
 
 // Import Utils
-import { getCollectionDetails } from "../../utils/api";
+import { getCollectionDetails, purchaseCollection } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -57,6 +58,41 @@ const CollectionDetails = ({ navigation, route }) => {
       navigation.setParams({ title: collectionDetailsData.title });
     }
   }, [collectionDetailsData, navigation]);
+
+  const handlePurchaseConfirmation = () => {
+    Alert.alert(
+      "Confirm Purchase",
+      `Are you sure you want to purchase ${collectionDetailsData.title} for ${collectionDetailsData.price} tokens?`,
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Purchase cancelled"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => handlePurchase(), // Call purchase function
+        },
+      ]
+    );
+  };
+
+  const handlePurchase = async () => {
+    try {
+      const result = await purchaseCollection(collectionId);
+      if (result.status === "success") {
+        console.log("Purchase successful:", result.data); // Log purchase data
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+      } else {
+        console.log("Error purchasing collection:", result.message); // Log error message
+      }
+    } catch (error) {
+      console.error("Error during purchase:", error); // Log error message
+    }
+  };
 
   if (isLoading) {
     return (
@@ -139,7 +175,7 @@ const CollectionDetails = ({ navigation, route }) => {
               variant="filled"
               size="large"
               title={`Buy ${collectionDetailsData.type} - ${collectionDetailsData.price} tokens`}
-              onPress={() => console.log("Buy button pressed")}
+              onPress={handlePurchaseConfirmation}
               style={{ width: "100%" }}
             />
           )}
