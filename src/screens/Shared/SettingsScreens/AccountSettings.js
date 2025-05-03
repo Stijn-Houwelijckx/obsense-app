@@ -7,15 +7,20 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import FastImage from "react-native-fast-image";
 import { launchImageLibrary } from "react-native-image-picker";
+
+import { useActiveCollection } from "../../../context/ActiveCollectionContext";
 
 // Import Utils
 import {
   getCurrentUser,
   updateCurrentUser,
   updateCurrentUserProfilePicture,
+  deleteCurrentUserAccount,
 } from "../../../utils/api";
 
 // Import Styles
@@ -30,7 +35,9 @@ import InputField from "../../../components/UI/InputField";
 import CustomButton from "../../../components/UI/CustomButton";
 import IconButton from "../../../components/UI/IconButton";
 
-const AccountSettings = ({ navigation }) => {
+const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
+  const { clearActiveCollection } = useActiveCollection();
+
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [error, setError] = useState(""); // State to manage error
@@ -146,6 +153,54 @@ const AccountSettings = ({ navigation }) => {
     );
   };
 
+  const handleDeleteAccountConfirmation = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => handleDeleteAccount(), // Call the delete account function
+          style: "destructive",
+        },
+      ],
+      { cancelable: true } // Allow canceling the alert
+    );
+  };
+
+  const handleDeleteAccount = () => {
+    deleteCurrentUserAccount()
+      .then(async (result) => {
+        if (result.status === "success") {
+          console.log("Account deleted successfully"); // Log success message
+
+          // Remove user-related data from AsyncStorage
+          await AsyncStorage.removeItem("userToken");
+          await AsyncStorage.removeItem("userId");
+          await AsyncStorage.removeItem("isArtist");
+          await AsyncStorage.removeItem("selectedRole");
+          await AsyncStorage.clear(); // Clear all AsyncStorage data
+
+          // Clear the active AR collection
+          clearActiveCollection();
+
+          // Trigger re-check in AppNavigator
+          handleAuthChangeSuccess(); // This will notify AppNavigator to update
+        } else {
+          console.log("Error deleting account:", result.message); // Log error message
+        }
+      })
+      .catch((error) => {
+        console.log("Error deleting account:", error.message); // Log error message
+      });
+  };
+
   if (isLoading) {
     return (
       <View style={globalStyles.container}>
@@ -254,7 +309,7 @@ const AccountSettings = ({ navigation }) => {
             variant="outlinedError"
             size="large"
             title="Delete Account"
-            onPress={() => console.log("Delete Account")}
+            onPress={() => handleDeleteAccountConfirmation()}
             style={{ alignSelf: "flex-start" }}
           />
         </ScrollView>
