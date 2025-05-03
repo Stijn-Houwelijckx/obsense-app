@@ -210,7 +210,14 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
         />
       )}
     </Stack.Screen>
-    <Stack.Screen name="AccountSettings" component={AccountSettings} />
+    <Stack.Screen name="AccountSettings">
+      {(props) => (
+        <AccountSettings
+          {...props}
+          handleAuthChangeSuccess={handleAuthChangeSuccess} // Pass it here
+        />
+      )}
+    </Stack.Screen>
     <Stack.Screen name="Wallet" component={Wallet} />
     <Stack.Screen name="ChangePassword" component={ChangePassword} />
     <Stack.Screen name="Notification" component={Notification} />
