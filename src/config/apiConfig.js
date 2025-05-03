@@ -22,6 +22,8 @@ const API_PATHS = {
   // Purchase Endpoints
   // GET /purchases -> Get all purchases for the current user
   OWNED_COLLECTIONS: `${API_BASE_URL}/purchases`,
+  // GET /purchases/:id -> Get purchase by ID
+  PURCHASE: `${API_BASE_URL}/purchases`,
 
   // Collection Endpoints
   // GET /collections -> Get all collections
