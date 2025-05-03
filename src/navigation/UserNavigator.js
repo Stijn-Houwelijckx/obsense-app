@@ -90,7 +90,10 @@ const HomeStack = () => {
             return (
               <Header
                 type="profile"
-                profileImage={user?.profilePicture.filePath}
+                profileImage={
+                  user?.profilePicture?.filePath ||
+                  require("../../assets/profileImages/Default.jpg")
+                }
                 text="Welcome Back!"
                 userName={user?.username}
                 tokens={user?.tokens}

@@ -216,9 +216,11 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
           <View style={styles.profileHeader}>
             <View style={styles.profilePictureContainer}>
               <FastImage
-                source={{
-                  uri: user.profilePicture.filePath,
-                }}
+                source={
+                  user?.profilePicture?.filePath
+                    ? { uri: user.profilePicture.filePath } // Use the URI if it exists
+                    : require("../../../../assets/profileImages/Default.jpg") // Fallback to Default.jpg
+                }
                 style={styles.profilePicture}
               />
 

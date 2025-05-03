@@ -112,9 +112,11 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.profileHeader}>
           <FastImage
-            source={{
-              uri: user.profilePicture.filePath,
-            }}
+            source={
+              user?.profilePicture?.filePath
+                ? { uri: user.profilePicture.filePath } // Use the URI if it exists
+                : require("../../../../assets/profileImages/Default.jpg") // Fallback to Default.jpg
+            }
             style={styles.profilePicture}
           />
           <Text style={[globalStyles.headingH6Medium, styles.profileName]}>
