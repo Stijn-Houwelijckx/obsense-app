@@ -65,13 +65,12 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
       console.log("Response data:", response.data.status);
 
       if (response.data.status === "success") {
-        const { _id, isArtist, token } = response.data.data;
+        const { isArtist, token } = response.data.data;
 
         console.log("Token:", token);
 
         // Save token and user type in AsyncStorage
         await AsyncStorage.setItem("userToken", token);
-        await AsyncStorage.setItem("userId", _id);
         await AsyncStorage.setItem("isArtist", isArtist.toString());
 
         // Notify AppNavigator that sign-up was successful
