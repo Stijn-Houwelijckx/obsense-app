@@ -32,6 +32,7 @@ import {
   savePlacedObject,
   getArtistCollectionDetails,
   getPlacedObjectsByCollection,
+  deletePlacedObject,
 } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
 import { getPlacedObjectPayload } from "../../utils/payloadUtils";
@@ -507,7 +508,26 @@ const AR = (route) => {
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
   };
 
+  const handleDeleteObject = async (objectId) => {
+    // API call to delete the object
+    try {
+      const response = await deletePlacedObject(objectId);
+      if (response.status === "success" || response.data.code === 404) {
+        console.log("Object deleted successfully:", response.data);
+        addLog("Object deleted successfully.");
+      } else {
+        console.error("Failed to delete object:", response.message);
+        addLog(`Failed to delete object: ${response.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting object:", error.message);
+      addLog(`Error deleting object: ${error.message}`);
+    }
+  };
+
   const deleteSelectedObject = () => {
+    handleDeleteObject(currentlySelectedObjectId);
+
     setObjects((prevObjects) =>
       prevObjects.filter((obj) => obj.id !== currentlySelectedObjectId)
     );
