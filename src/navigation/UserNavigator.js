@@ -9,7 +9,7 @@ import { getCurrentUser } from "../utils/api";
 
 // Import Screens
 import Home from "../screens/User/Home";
-import Explore from "../screens/User/Explore";
+import Explore from "../screens/User/ExploreScreens/Explore";
 import AR from "../screens/User/AR";
 import Map from "../screens/Shared/Map";
 import Settings from "../screens/Shared/SettingsScreens/Settings";
