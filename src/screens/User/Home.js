@@ -75,7 +75,7 @@ const Home = ({ navigation }) => {
 
     // Function to get all artists
     const getArtistsData = async () => {
-      const result = await getArtists();
+      const result = await getArtists(1, 3);
 
       if (result.status === "success") {
         setArtists(result.data.artists); // Set artists data
@@ -87,7 +87,7 @@ const Home = ({ navigation }) => {
 
     // Function to get all collections
     const getCollectionsData = async () => {
-      const result = await getCollections();
+      const result = await getCollections(1, 3);
 
       if (result.status === "success") {
         setCollections(result.data.collections); // Set collections data
@@ -197,7 +197,7 @@ const Home = ({ navigation }) => {
 
         {/* Display owned collections */}
         <FlatList
-          data={artists.slice(0, 3)}
+          data={artists}
           renderItem={({ item }) => (
             <ArtistItem
               id={item._id}
@@ -244,7 +244,7 @@ const Home = ({ navigation }) => {
 
         {/* Display trending collections */}
         <FlatList
-          data={collections.slice(0, 3)}
+          data={collections}
           renderItem={({ item }) => (
             <CollectionListItem
               id={item._id}
