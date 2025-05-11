@@ -38,6 +38,9 @@ const API_PATHS = {
   // Token Endpoints
   // GET /tokens -> Get all tokens for the current user
   TOKENS: `${API_BASE_URL}/tokens`,
+
+  // Genre Endpoints
+  GENRES: `${API_BASE_URL}/genres`,
 };
 
 export default API_PATHS;
