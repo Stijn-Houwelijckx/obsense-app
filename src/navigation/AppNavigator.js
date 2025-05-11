@@ -34,6 +34,9 @@ const AppNavigator = () => {
         if (isArtist) {
           const savedRole = await AsyncStorage.getItem("selectedRole");
           setSelectedRole(savedRole);
+        } else {
+          const savedRole = await AsyncStorage.setItem("selectedRole", "user");
+          setSelectedRole(savedRole);
         }
       } else {
         setIsLoggedIn(false);
