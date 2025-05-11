@@ -251,6 +251,7 @@ const Map = ({ navigation }) => {
                     screen: "CollectionDetails",
                     params: {
                       collectionId: collection._id,
+                      owned: true,
                     },
                   })
                 }
