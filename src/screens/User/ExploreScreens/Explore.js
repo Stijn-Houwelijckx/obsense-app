@@ -159,7 +159,7 @@ const Explore = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Artists
           </Text>
-          <TouchableOpacity onPress={() => console.log("See all artists")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}
@@ -205,9 +205,7 @@ const Explore = ({ navigation }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Tours & Expositions
           </Text>
-          <TouchableOpacity
-            onPress={() => console.log("See all Tours & Expositions")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("Collections")}>
             <View style={styles.linkContainer}>
               <Text
                 style={[globalStyles.labelSmallRegular, styles.sectionLink]}

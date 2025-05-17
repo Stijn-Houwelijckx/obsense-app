@@ -151,6 +151,16 @@ const ExploreStack = () => (
     })}
   >
     <Stack.Screen name="ExploreScreen" component={Explore} />
+    <Stack.Screen
+      name="CollectionDetails"
+      component={CollectionDetails}
+      options={({ route }) => ({
+        header: () => <Header title={route.params?.title || "Loading..."} />,
+      })}
+    />
+    <Stack.Screen name="Collections" component={Collections} />
+    <Stack.Screen name="Artists" component={Artists} />
+    <Stack.Screen name="Artist Profile" component={ArtistProfile} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
