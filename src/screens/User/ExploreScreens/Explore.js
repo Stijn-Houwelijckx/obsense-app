@@ -39,8 +39,6 @@ const Explore = ({ navigation }) => {
   const [collections, setCollections] = useState([]); // State to store collections
   const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections
 
-  const [searchText, setSearchText] = useState(""); // State to manage search text
-
   const screenWidth = Dimensions.get("window").width; // Get screen width
   const cardWidth = (screenWidth - 48) / 2; // Calculate card width
 
@@ -108,9 +106,6 @@ const Explore = ({ navigation }) => {
           {/* Search Bar */}
           <SearchInput
             placeholder="Search..."
-            onChangeText={setSearchText}
-            onClear={() => setSearchText("")}
-            value={searchText}
             onClick={() => console.log("Search clicked")}
           />
 
