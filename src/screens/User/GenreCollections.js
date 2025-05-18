@@ -23,7 +23,7 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import CollectionCard from "../../components/UI/CollectionCard";
-import GenreItem from "../../components/UI/GenreItem";
+import GenreBadge from "../../components/UI/GenreBadge";
 
 const GenreCollections = ({ navigation, route }) => {
   const { genreId } = route.params; // Get genreId from route params
@@ -90,7 +90,7 @@ const GenreCollections = ({ navigation, route }) => {
           <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
             Tours & Expositions
           </Text>
-          {genre && <GenreItem title={genre} />}
+          {genre && <GenreBadge title={genre} />}
         </View>
         {/* Empty State */}
         {collections.length === 0 && !isLoading && (
