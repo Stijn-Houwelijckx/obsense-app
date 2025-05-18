@@ -21,6 +21,7 @@ import PrivacyCookies from "../screens/Shared/SettingsScreens/PrivacyCookies";
 import TermsConditions from "../screens/Shared/SettingsScreens/TermsConditions";
 import CollectionDetails from "../screens/User/CollectionDetails";
 import Collections from "../screens/User/Collections";
+import GenreCollections from "../screens/User/GenreCollections";
 import PurchasedCollections from "../screens/User/PurchasedCollections";
 import Artists from "../screens/User/Artists";
 import ArtistProfile from "../screens/User/ArtistProfile";
@@ -161,6 +162,7 @@ const ExploreStack = () => (
     <Stack.Screen name="Collections" component={Collections} />
     <Stack.Screen name="Artists" component={Artists} />
     <Stack.Screen name="Artist Profile" component={ArtistProfile} />
+    <Stack.Screen name="GenreCollections" component={GenreCollections} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );

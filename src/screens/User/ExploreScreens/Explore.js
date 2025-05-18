@@ -133,7 +133,11 @@ const Explore = ({ navigation }) => {
                   key={item._id}
                   id={item._id}
                   title={item.name}
-                  onPress={(id) => console.log("Genre ID:", id)}
+                  onPress={() =>
+                    navigation.navigate("GenreCollections", {
+                      genreId: item._id,
+                    })
+                  }
                 />
               ))}
             </View>
@@ -145,7 +149,11 @@ const Explore = ({ navigation }) => {
                   key={item._id}
                   id={item._id}
                   title={item.name}
-                  onPress={(id) => console.log("Genre ID:", id)}
+                  onPress={() =>
+                    navigation.navigate("GenreCollections", {
+                      genreId: item._id,
+                    })
+                  }
                 />
               ))}
             </View>
