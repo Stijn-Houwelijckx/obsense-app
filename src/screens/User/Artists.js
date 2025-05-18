@@ -7,6 +7,8 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -22,6 +24,7 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import ArtistCard from "../../components/UI/ArtistCard";
+import SearchInput from "../../components/UI/SearchInput";
 
 const Artists = ({ navigation }) => {
   const [artists, setArtists] = useState([]); // State to store artists data
@@ -63,55 +66,63 @@ const Artists = ({ navigation }) => {
   }, [loadArtists]);
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      {/* Artists Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Artists
-          </Text>
-        </View>
-
-        {/* Empty State */}
-        {artists.length === 0 && !isLoading && (
-          <Text style={[globalStyles.bodyText, styles.emptyText]}>
-            No tours or expositions found.
-          </Text>
-        )}
-
-        {/* If not empty */}
-        <FlatList
-          data={artists}
-          renderItem={({ item }) => (
-            <ArtistCard
-              id={item._id}
-              imageUrl={item.profilePicture.filePath}
-              username={item.username}
-              numCollections={item.collectionCount}
-              onPress={(id) =>
-                navigation.navigate("Artist Profile", {
-                  artistId: id,
-                })
-              }
-              style={{ width: cardWidth }}
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
-          numColumns={1} // Show 2 cards in a row
-          onEndReached={() => {
-            loadArtists();
-          }} // Load more data when end is reached
-          onEndReachedThreshold={0.1} // Load more data when 10% is left
-          ListFooterComponent={
-            isLoading ? (
-              <ActivityIndicator size="small" color={COLORS.primary[500]} />
-            ) : null
-          } // Show loading indicator at the end of the list
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={[globalStyles.container, styles.container]}>
+        {/* Search Bar */}
+        <SearchInput
+          placeholder="Search..."
+          onClick={() => console.log("Search clicked")}
         />
+
+        {/* Artists Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Artists
+            </Text>
+          </View>
+
+          {/* Empty State */}
+          {artists.length === 0 && !isLoading && (
+            <Text style={[globalStyles.bodyText, styles.emptyText]}>
+              No tours or expositions found.
+            </Text>
+          )}
+
+          {/* If not empty */}
+          <FlatList
+            data={artists}
+            renderItem={({ item }) => (
+              <ArtistCard
+                id={item._id}
+                imageUrl={item.profilePicture.filePath}
+                username={item.username}
+                numCollections={item.collectionCount}
+                onPress={(id) =>
+                  navigation.navigate("Artist Profile", {
+                    artistId: id,
+                  })
+                }
+                style={{ width: cardWidth }}
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
+            numColumns={1} // Show 2 cards in a row
+            onEndReached={() => {
+              loadArtists();
+            }} // Load more data when end is reached
+            onEndReachedThreshold={0.1} // Load more data when 10% is left
+            ListFooterComponent={
+              isLoading ? (
+                <ActivityIndicator size="small" color={COLORS.primary[500]} />
+              ) : null
+            } // Show loading indicator at the end of the list
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -120,6 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     gap: 20,
+    paddingBottom: 70,
   },
   section: {
     width: "100%",

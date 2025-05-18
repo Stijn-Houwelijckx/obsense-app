@@ -7,6 +7,8 @@ import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -23,6 +25,7 @@ import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import CollectionCard from "../../components/UI/CollectionCard";
+import SearchInput from "../../components/UI/SearchInput";
 
 const Collections = ({ navigation }) => {
   const [collections, setCollections] = useState([]); // State to store collection data
@@ -78,65 +81,73 @@ const Collections = ({ navigation }) => {
   }, [loadCollections]);
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      {/* Collections Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Tours & Expositions
-          </Text>
-        </View>
-        {/* Empty State */}
-        {collections.length === 0 && !isLoading && (
-          <Text style={[globalStyles.bodyText, styles.emptyText]}>
-            No tours or expositions found.
-          </Text>
-        )}
-
-        {/* If not empty */}
-        <FlatList
-          data={collections}
-          renderItem={({ item }) => {
-            const isOwned = ownedCollections.some(
-              (c) => c.collectionRef._id === item._id
-            );
-            return (
-              <CollectionCard
-                id={item._id}
-                imageUrl={item.coverImage.filePath}
-                title={item.title}
-                creator={item.createdBy.username}
-                price={item.price}
-                owned={isOwned}
-                category={item.type}
-                onPress={(id) =>
-                  navigation.navigate("CollectionDetails", {
-                    collectionId: id,
-                    owned: isOwned,
-                  })
-                }
-                style={{ width: cardWidth }}
-              />
-            );
-          }}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          numColumns={2} // Show 2 cards in a row
-          columnWrapperStyle={{
-            gap: 16,
-          }} // Space between columns
-          onEndReached={() => {
-            loadCollections();
-          }} // Load more data when end is reached
-          onEndReachedThreshold={0.1} // Load more data when 10% is left
-          ListFooterComponent={
-            isLoading ? (
-              <ActivityIndicator size="small" color={COLORS.primary[500]} />
-            ) : null
-          } // Show loading indicator at the end of the list
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={[globalStyles.container, styles.container]}>
+        {/* Search Bar */}
+        <SearchInput
+          placeholder="Search..."
+          onClick={() => console.log("Search clicked")}
         />
+
+        {/* Collections Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Tours & Expositions
+            </Text>
+          </View>
+          {/* Empty State */}
+          {collections.length === 0 && !isLoading && (
+            <Text style={[globalStyles.bodyText, styles.emptyText]}>
+              No tours or expositions found.
+            </Text>
+          )}
+
+          {/* If not empty */}
+          <FlatList
+            data={collections}
+            renderItem={({ item }) => {
+              const isOwned = ownedCollections.some(
+                (c) => c.collectionRef._id === item._id
+              );
+              return (
+                <CollectionCard
+                  id={item._id}
+                  imageUrl={item.coverImage.filePath}
+                  title={item.title}
+                  creator={item.createdBy.username}
+                  price={item.price}
+                  owned={isOwned}
+                  category={item.type}
+                  onPress={(id) =>
+                    navigation.navigate("CollectionDetails", {
+                      collectionId: id,
+                      owned: isOwned,
+                    })
+                  }
+                  style={{ width: cardWidth }}
+                />
+              );
+            }}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            numColumns={2} // Show 2 cards in a row
+            columnWrapperStyle={{
+              gap: 16,
+            }} // Space between columns
+            onEndReached={() => {
+              loadCollections();
+            }} // Load more data when end is reached
+            onEndReachedThreshold={0.1} // Load more data when 10% is left
+            ListFooterComponent={
+              isLoading ? (
+                <ActivityIndicator size="small" color={COLORS.primary[500]} />
+              ) : null
+            } // Show loading indicator at the end of the list
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -145,6 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     gap: 20,
+    paddingBottom: 70,
   },
   section: {
     width: "100%",
