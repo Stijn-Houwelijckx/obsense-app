@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   Dimensions,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -28,6 +30,7 @@ import ChevronRightIcon from "../../../components/icons/ChevronRightIcon";
 import GenreItem from "../../../components/UI/GenreItem";
 import ArtistItem from "../../../components/UI/ArtistItem";
 import CollectionCard from "../../../components/UI/CollectionCard";
+import SearchInput from "../../../components/UI/SearchInput";
 
 const Explore = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
@@ -35,6 +38,8 @@ const Explore = ({ navigation }) => {
   const [artists, setArtists] = useState([]); // State to store artists
   const [collections, setCollections] = useState([]); // State to store collections
   const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections
+
+  const [searchText, setSearchText] = useState(""); // State to manage search text
 
   const screenWidth = Dimensions.get("window").width; // Get screen width
   const cardWidth = (screenWidth - 48) / 2; // Calculate card width
@@ -97,176 +102,191 @@ const Explore = ({ navigation }) => {
   }
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      {/* Genres */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Genres
-          </Text>
-          <TouchableOpacity onPress={() => console.log("See all genres")}>
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView>
+        <View style={[globalStyles.container, styles.container]}>
+          {/* Search Bar */}
+          <SearchInput
+            placeholder="Search..."
+            onChangeText={setSearchText}
+            onClear={() => setSearchText("")}
+            value={searchText}
+            onClick={() => console.log("Search clicked")}
+          />
+
+          {/* Genres */}
+          <View style={styles.section}>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+                Genres
               </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              <TouchableOpacity onPress={() => console.log("See all genres")}>
+                <View style={styles.linkContainer}>
+                  <Text
+                    style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                  >
+                    See all
+                  </Text>
+                  <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </View>
 
-        {genres.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No genres found
-            </Text>
+            {genres.length === 0 && !isLoading && (
+              <View>
+                <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                  No genres found
+                </Text>
+              </View>
+            )}
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.horizontalContainer}>
+                {/* First Row: Items 1-10 */}
+                <View style={styles.row}>
+                  {genres.slice(0, 10).map((item) => (
+                    <GenreItem
+                      key={item._id}
+                      id={item._id}
+                      title={item.name}
+                      onPress={() =>
+                        navigation.navigate("GenreCollections", {
+                          genreId: item._id,
+                        })
+                      }
+                    />
+                  ))}
+                </View>
+
+                {/* Second Row: Items 11-20 */}
+                <View style={styles.row}>
+                  {genres.slice(10, 20).map((item) => (
+                    <GenreItem
+                      key={item._id}
+                      id={item._id}
+                      title={item.name}
+                      onPress={() =>
+                        navigation.navigate("GenreCollections", {
+                          genreId: item._id,
+                        })
+                      }
+                    />
+                  ))}
+                </View>
+              </View>
+            </ScrollView>
           </View>
-        )}
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.horizontalContainer}>
-            {/* First Row: Items 1-10 */}
-            <View style={styles.row}>
-              {genres.slice(0, 10).map((item) => (
-                <GenreItem
-                  key={item._id}
+          {/* Artists */}
+          <View style={styles.section}>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+                Artists
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
+                <View style={styles.linkContainer}>
+                  <Text
+                    style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                  >
+                    See all
+                  </Text>
+                  <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {artists.length === 0 && !isLoading && (
+              <View>
+                <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                  No artists found
+                </Text>
+              </View>
+            )}
+
+            <FlatList
+              data={artists}
+              renderItem={({ item }) => (
+                <ArtistItem
                   id={item._id}
-                  title={item.name}
-                  onPress={() =>
-                    navigation.navigate("GenreCollections", {
-                      genreId: item._id,
-                    })
+                  profileImage={item.profilePicture.filePath}
+                  username={item.username}
+                  collectionCount={item.collectionCount}
+                  onPress={(id) =>
+                    navigation.navigate("Artist Profile", { artistId: id })
                   }
                 />
-              ))}
-            </View>
-
-            {/* Second Row: Items 11-20 */}
-            <View style={styles.row}>
-              {genres.slice(10, 20).map((item) => (
-                <GenreItem
-                  key={item._id}
-                  id={item._id}
-                  title={item.name}
-                  onPress={() =>
-                    navigation.navigate("GenreCollections", {
-                      genreId: item._id,
-                    })
-                  }
-                />
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-
-      {/* Artists */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Artists
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
-              </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {artists.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No artists found
-            </Text>
-          </View>
-        )}
-
-        <FlatList
-          data={artists}
-          renderItem={({ item }) => (
-            <ArtistItem
-              id={item._id}
-              profileImage={item.profilePicture.filePath}
-              username={item.username}
-              collectionCount={item.collectionCount}
-              onPress={(id) =>
-                navigation.navigate("Artist Profile", { artistId: id })
-              }
+              )}
+              keyExtractor={(item) => item._id} // Unique key for each card
+              contentContainerStyle={styles.cardsContainer} // Apply container styles
+              horizontal // Optional: if you want to display the cards horizontally
+              showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
             />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
-
-      {/* Collections */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Tours & Expositions
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Collections")}>
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
-              </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {collections.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No tours or expositions found
-            </Text>
           </View>
-        )}
 
-        {/* If not empty */}
+          {/* Collections */}
+          <View style={styles.section}>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+                Tours & Expositions
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Collections")}
+              >
+                <View style={styles.linkContainer}>
+                  <Text
+                    style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                  >
+                    See all
+                  </Text>
+                  <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+                </View>
+              </TouchableOpacity>
+            </View>
 
-        <FlatList
-          data={collections}
-          renderItem={({ item }) => {
-            const isOwned = ownedCollections.some(
-              (c) => c.collectionRef._id === item._id
-            );
-            return (
-              <CollectionCard
-                id={item._id}
-                imageUrl={item.coverImage.filePath}
-                title={item.title}
-                creator={item.createdBy.username}
-                price={item.price}
-                owned={isOwned}
-                category={item.type}
-                onPress={(id) =>
-                  navigation.navigate("CollectionDetails", {
-                    collectionId: id,
-                    owned: isOwned,
-                  })
-                }
-                style={{ width: cardWidth }}
-              />
-            );
-          }}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
-    </View>
+            {collections.length === 0 && !isLoading && (
+              <View>
+                <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                  No tours or expositions found
+                </Text>
+              </View>
+            )}
+
+            {/* If not empty */}
+
+            <FlatList
+              data={collections}
+              renderItem={({ item }) => {
+                const isOwned = ownedCollections.some(
+                  (c) => c.collectionRef._id === item._id
+                );
+                return (
+                  <CollectionCard
+                    id={item._id}
+                    imageUrl={item.coverImage.filePath}
+                    title={item.title}
+                    creator={item.createdBy.username}
+                    price={item.price}
+                    owned={isOwned}
+                    category={item.type}
+                    onPress={(id) =>
+                      navigation.navigate("CollectionDetails", {
+                        collectionId: id,
+                        owned: isOwned,
+                      })
+                    }
+                    style={{ width: cardWidth }}
+                  />
+                );
+              }}
+              keyExtractor={(item) => item._id} // Unique key for each card
+              contentContainerStyle={styles.cardsContainer} // Apply container styles
+              horizontal // Optional: if you want to display the cards horizontally
+              showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </TouchableWithoutFeedback>
   );
 };
 
