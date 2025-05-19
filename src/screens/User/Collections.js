@@ -86,7 +86,12 @@ const Collections = ({ navigation }) => {
         {/* Search Bar */}
         <SearchInput
           placeholder="Search..."
-          onClick={() => navigation.navigate("Explore", { screen: "Search" })} // Navigate to Search screen
+          onClick={() =>
+            navigation.navigate("Explore", {
+              screen: "Search",
+              params: { searchType: "collections" },
+            })
+          } // Navigate to Search screen
         />
 
         {/* Collections Section */}

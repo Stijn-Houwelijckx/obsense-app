@@ -71,7 +71,12 @@ const Artists = ({ navigation }) => {
         {/* Search Bar */}
         <SearchInput
           placeholder="Search..."
-          onClick={() => navigation.navigate("Explore", { screen: "Search" })} // Navigate to Search screen
+          onClick={() =>
+            navigation.navigate("Explore", {
+              screen: "Search",
+              params: { searchType: "artist" },
+            })
+          } // Navigate to Search screen
         />
 
         {/* Artists Section */}

@@ -28,7 +28,11 @@ import CollectionCard from "../../../components/UI/CollectionCard";
 import Header from "../../../components/UI/Header";
 import SearchInput from "../../../components/UI/SearchInput";
 
-const Search = ({ navigation }) => {
+const Search = ({ navigation, route }) => {
+  const searchType = route.params?.searchType; // Get searchType from route params
+
+  console.log("searchType: " + searchType); // Log searchType
+
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {

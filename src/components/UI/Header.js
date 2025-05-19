@@ -88,7 +88,12 @@ const Header = ({
           {/* Search Button */}
           <IconButton
             icon={MagnifyingGlassIcon}
-            onPress={() => navigation.navigate("Explore", { screen: "Search" })} // Navigate to Search screen
+            onPress={() =>
+              navigation.navigate("Explore", {
+                screen: "Search",
+                params: { searchType: "all" },
+              })
+            } // Navigate to Search screen
             buttonSize={48}
             iconSize={24}
           />
