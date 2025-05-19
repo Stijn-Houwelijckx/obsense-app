@@ -110,6 +110,7 @@ const Header = ({
             onChangeText={onSearchChange}
             placeholder="Search..."
             onClear={onSearchClear}
+            autoFocus={true}
             style={{ flex: 1, marginLeft: 16 }}
           />
         </>
