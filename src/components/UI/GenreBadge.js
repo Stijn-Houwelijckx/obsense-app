@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
-const GenreItem = ({ title, style }) => {
+const GenreBadge = ({ title, style }) => {
   return (
     <View style={[styles.container, style]}>
       <Text style={[globalStyles.labelSmallBold, styles.title]}>{title}</Text>
@@ -26,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GenreItem;
+export default GenreBadge;
