@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryNeutral[800],
     borderRadius: 8,
     gap: 12,
+    justifyContent: "space-between",
 
     maxHeight: 91,
   },
