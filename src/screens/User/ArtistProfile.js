@@ -18,7 +18,6 @@ import { COLORS } from "../../styles/theme";
 // Import Icons
 
 // Import Components
-// import CollectionListItem from "../../components/UI/CollectionListItem";
 import { CollectionListItem } from "../../components/UI";
 
 const ArtistProfile = ({ navigation, route }) => {
