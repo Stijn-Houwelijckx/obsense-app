@@ -317,6 +317,16 @@ const UserNavigator = ({ handleAuthChangeSuccess }) => (
     <Tab.Screen
       name="Explore"
       component={ExploreStack}
+      listeners={({ navigation }) => ({
+        tabPress: (e) => {
+          // Prevent default action
+          e.preventDefault();
+          // Navigate to the Explore screen
+          navigation.navigate("Explore", {
+            screen: "ExploreScreen",
+          });
+        },
+      })}
       options={{
         tabBarIcon: ({ focused }) => (
           <CompassIcon
