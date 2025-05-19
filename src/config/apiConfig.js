@@ -41,6 +41,10 @@ const API_PATHS = {
 
   // Genre Endpoints
   GENRES: `${API_BASE_URL}/genres`,
+
+  // Search Endpoints
+  SEARCH_ARTISTS: `${API_BASE_URL}/search/artists`,
+  SEARCH_COLLECTIONS: `${API_BASE_URL}/search/collections`,
 };
 
 export default API_PATHS;
