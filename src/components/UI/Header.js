@@ -17,16 +17,20 @@ import MagnifyingGlassIcon from "../icons/MagnifyingGlassIcon";
 
 // Import Components
 import IconButton from "./IconButton";
+import SearchInput from "./SearchInput";
 
 const Header = ({
   title,
   showBackButton = true,
-  type = "default", // "default" or "profile"
+  type = "default", // "default", "profile" or "search"
   profileImage,
   text,
   userName,
   tokens,
   onProfilePress,
+  searchValue,
+  onSearchChange,
+  onSearchClear,
 }) => {
   const navigation = useNavigation();
   const imageSource =
@@ -39,7 +43,7 @@ const Header = ({
 
   return (
     <View style={styles.headerContainer}>
-      {type === "default" ? (
+      {type === "default" && (
         <>
           {showBackButton && (
             <IconButton
@@ -54,7 +58,9 @@ const Header = ({
           </Text>
           {showBackButton && <View style={styles.spacer} />}
         </>
-      ) : (
+      )}
+
+      {type === "profile" && (
         <>
           {/* Profile Section */}
           <TouchableOpacity
@@ -85,6 +91,26 @@ const Header = ({
             onPress={() => navigation.navigate("Explore", { screen: "Search" })} // Navigate to Search screen
             buttonSize={48}
             iconSize={24}
+          />
+        </>
+      )}
+
+      {type === "search" && (
+        <>
+          {showBackButton && (
+            <IconButton
+              icon={ArrowLeftIcon}
+              onPress={handleBack}
+              buttonSize={48}
+              iconSize={24}
+            />
+          )}
+          <SearchInput
+            value={searchValue}
+            onChangeText={onSearchChange}
+            placeholder="Search..."
+            onClear={onSearchClear}
+            style={{ flex: 1, marginLeft: 16 }}
           />
         </>
       )}
