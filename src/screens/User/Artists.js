@@ -74,7 +74,7 @@ const Artists = ({ navigation }) => {
           onClick={() =>
             navigation.navigate("Explore", {
               screen: "Search",
-              params: { searchType: "artist" },
+              params: { searchType: "artists" },
             })
           } // Navigate to Search screen
         />
