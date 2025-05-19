@@ -25,19 +25,28 @@ import ChevronRightIcon from "../../../components/icons/ChevronRightIcon";
 
 // Import Components
 import CollectionCard from "../../../components/UI/CollectionCard";
+import Header from "../../../components/UI/Header";
 import SearchInput from "../../../components/UI/SearchInput";
 
 const Search = ({ navigation }) => {
+  const [searchValue, setSearchValue] = useState("");
+
+  useEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <Header
+          type="search"
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          onSearchClear={() => setSearchValue("")}
+        />
+      ),
+    });
+  }, [navigation, searchValue]);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[globalStyles.container, styles.container]}>
-        {/* Search Bar */}
-        <SearchInput
-          placeholder="Search..."
-          autoFocus={true}
-          onClick={() => console.log("Search clicked")}
-        />
-      </View>
+      <View style={[globalStyles.container, styles.container]}></View>
     </TouchableWithoutFeedback>
   );
 };
