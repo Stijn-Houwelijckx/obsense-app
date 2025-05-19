@@ -71,7 +71,7 @@ const Artists = ({ navigation }) => {
         {/* Search Bar */}
         <SearchInput
           placeholder="Search..."
-          onClick={() => console.log("Search clicked")}
+          onClick={() => navigation.navigate("Explore", { screen: "Search" })} // Navigate to Search screen
         />
 
         {/* Artists Section */}

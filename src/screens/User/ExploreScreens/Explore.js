@@ -106,7 +106,7 @@ const Explore = ({ navigation }) => {
           {/* Search Bar */}
           <SearchInput
             placeholder="Search..."
-            onClick={() => console.log("Search clicked")}
+            onClick={() => navigation.navigate("Search")}
           />
 
           {/* Genres */}

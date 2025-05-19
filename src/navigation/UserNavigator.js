@@ -10,6 +10,7 @@ import { getCurrentUser } from "../utils/api";
 // Import Screens
 import Home from "../screens/User/Home";
 import Explore from "../screens/User/ExploreScreens/Explore";
+import Search from "../screens/User/ExploreScreens/Search";
 import AR from "../screens/User/AR";
 import Map from "../screens/Shared/Map";
 import Settings from "../screens/Shared/SettingsScreens/Settings";
@@ -163,6 +164,7 @@ const ExploreStack = () => (
     <Stack.Screen name="Artists" component={Artists} />
     <Stack.Screen name="Artist Profile" component={ArtistProfile} />
     <Stack.Screen name="GenreCollections" component={GenreCollections} />
+    <Stack.Screen name="Search" component={Search} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
