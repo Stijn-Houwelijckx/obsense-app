@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getCollectionsForCurrentArtist } from "../../utils/api";

@@ -3,14 +3,12 @@ import { Dimensions } from "react-native";
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   ActivityIndicator,
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getCollections } from "../../utils/api";
@@ -19,9 +17,6 @@ import { getOwnedCollections } from "../../utils/api";
 // Import Styles
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
-
-// Import Icons
-import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import CollectionCard from "../../components/UI/CollectionCard";

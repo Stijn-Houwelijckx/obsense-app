@@ -26,7 +26,6 @@ import TermsConditions from "../screens/Shared/SettingsScreens/TermsConditions";
 import CollectionDetails from "../screens/Artist/CollectionDetails";
 import PublishedCollections from "../screens/Artist/PublishedCollections";
 import DraftCollections from "../screens/Artist/DraftCollections";
-import Details from "../screens/Shared/Details";
 
 // Import Styles
 import {

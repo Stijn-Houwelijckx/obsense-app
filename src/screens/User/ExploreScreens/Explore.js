@@ -11,7 +11,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";

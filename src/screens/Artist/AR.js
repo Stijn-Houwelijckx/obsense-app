@@ -10,16 +10,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  PermissionsAndroid,
-  Platform,
-  Linking,
 } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
-import Geolocation from "@react-native-community/geolocation";
-// import CompassHeading from "react-native-compass-heading";
-import merc from "mercator-projection";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import ARScene
 import ARScene from "./ARScene";

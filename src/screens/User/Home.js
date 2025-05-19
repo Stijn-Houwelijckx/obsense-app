@@ -4,11 +4,8 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator,
   StyleSheet,
-  Image,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getOwnedCollections } from "../../utils/api";

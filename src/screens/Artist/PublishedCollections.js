@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Utils
 import { getCollectionsForCurrentArtist } from "../../utils/api";
@@ -15,9 +13,6 @@ import { getCollectionsForCurrentArtist } from "../../utils/api";
 // Import Styles
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
-
-// Import Icons
-import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
 import ArtistCollectionCard from "../../components/UI/ArtistCollectionCard";
