@@ -237,40 +237,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 20,
   },
-  section: {
-    width: "100%",
-    marginTop: 4,
-    gap: 20,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-  },
-  sectionTitleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  sectionTitle: {
-    color: COLORS.neutral[50],
-  },
-  linkContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingLeft: 5.5,
-    height: 28,
-  },
-  sectionLink: {
-    color: COLORS.neutral[50],
-  },
   cardsContainer: {
     flexDirection: "column",
     gap: 16,
     paddingBottom: 60,
-  },
-  emptyText: {
-    color: COLORS.neutral[300],
-    fontStyle: "italic",
   },
 });
 
