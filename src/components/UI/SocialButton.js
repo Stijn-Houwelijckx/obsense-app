@@ -6,9 +6,7 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Icon components
-import AppleIcon from "../icons/AppleIcon";
-import GoogleIcon from "../icons/GoogleIcon";
-import FacebookIcon from "../icons/FacebookIcon";
+import { AppleIcon, GoogleIcon, FacebookIcon } from "../icons";
 
 const ICONS = {
   apple: <AppleIcon size={24} fill="black" />,

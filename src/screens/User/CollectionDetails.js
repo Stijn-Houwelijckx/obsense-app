@@ -17,10 +17,12 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Icons
-import LocationPinIcon from "../../components/icons/LocationPinIcon";
-import BoxDashIcon from "../../components/icons/BoxDashIcon";
-import EyeIcon from "../../components/icons/EyeIcon";
-import HearthIcon from "../../components/icons/HearthIcon";
+import {
+  LocationPinIcon,
+  BoxDashIcon,
+  EyeIcon,
+  HearthIcon,
+} from "../../components/icons";
 
 // Import Components
 import { DescriptionTextBox, Badge, CustomButton } from "../../components/UI";

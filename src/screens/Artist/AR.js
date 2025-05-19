@@ -44,12 +44,14 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import ArrowLeftIcon from "../../components/icons/ArrowLeftIcon";
-import SaveIcon from "../../components/icons/SaveIcon";
-import PlusIcon from "../../components/icons/PlusIcon";
-import DotsVerticalIcon from "../../components/icons/DotsVerticalIcon";
-import TrashIcon from "../../components/icons/TrashIcon";
-import MapIcon from "../../components/icons/MapIcon";
+import {
+  ArrowLeftIcon,
+  SaveIcon,
+  PlusIcon,
+  DotsVerticalIcon,
+  TrashIcon,
+  MapIcon,
+} from "../../components/icons";
 
 // Import Components
 import { IconButton } from "../../components/UI";

@@ -7,8 +7,8 @@ import {
   LETTER_SPACING,
 } from "../../styles/theme";
 
-import XIcon from "../icons/XIcon";
-import MagnifyingGlassIcon from "../icons/MagnifyingGlassIcon";
+// Import Styles
+import { XIcon, MagnifyingGlassIcon } from "../icons";
 
 const SearchInput = ({
   value,

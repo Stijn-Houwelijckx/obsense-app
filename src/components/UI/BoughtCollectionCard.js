@@ -7,8 +7,7 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import CheckIcon from "../icons/CheckIcon";
-import ClockIcon from "../icons/ClockIcon";
+import { CheckIcon, ClockIcon } from "../icons";
 
 // Import Components
 import Badge from "./Badge";

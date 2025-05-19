@@ -18,13 +18,15 @@ import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Import Icons
-import UserCircleIcon from "../../../components/icons/UserCircleIcon";
-import EuroCircleIcon from "../../../components/icons/EuroCircleIcon";
-import KeyIcon from "../../../components/icons/KeyIcon";
-import BellIcon from "../../../components/icons/BellIcon";
-import LockClosedIcon from "../../../components/icons/LockClosedIcon";
-import ShieldCheckIcon from "../../../components/icons/ShieldCheckIcon";
-import LogoutIcon from "../../../components/icons/LogoutIcon";
+import {
+  UserCircleIcon,
+  EuroCircleIcon,
+  KeyIcon,
+  BellIcon,
+  LockClosedIcon,
+  ShieldCheckIcon,
+  LogoutIcon,
+} from "../../../components/icons";
 
 // Custom Components
 import { NavList, NavListItem, CustomButton } from "../../../components/UI";

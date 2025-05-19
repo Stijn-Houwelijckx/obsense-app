@@ -17,7 +17,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Icons
-import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
+import { ChevronRightIcon } from "../../components/icons";
 
 // Import Components
 import { ArtistCollectionCard } from "../../components/UI";

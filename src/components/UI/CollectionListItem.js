@@ -7,7 +7,7 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import ArrowRightIcon from "../icons/ArrowRightIcon";
+import { ArrowRightIcon } from "../icons";
 
 // Import Components
 import CustomButton from "./CustomButton";

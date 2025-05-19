@@ -23,7 +23,7 @@ import { getOwnedCollections } from "../../../utils/api";
 import { getGenres } from "../../../utils/api";
 
 // Import Icons
-import ChevronRightIcon from "../../../components/icons/ChevronRightIcon";
+import { ChevronRightIcon } from "../../../components/icons";
 
 // Import Components
 import {

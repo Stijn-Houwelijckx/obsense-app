@@ -16,9 +16,7 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import LockClosedIcon from "../../components/icons/LockClosedIcon";
-import EyeIcon from "../../components/icons/EyeIcon";
-import EyeSlashIcon from "../../components/icons/EyeSlashIcon";
+import { LockClosedIcon, EyeIcon, EyeSlashIcon } from "../../components/icons";
 
 // Import Components
 import { InputField, CustomButton, SocialButton } from "../../components/UI";

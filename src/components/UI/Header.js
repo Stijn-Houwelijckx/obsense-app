@@ -12,8 +12,7 @@ import {
 import { globalStyles } from "../../styles/global";
 
 // Import icons
-import ArrowLeftIcon from "../icons/ArrowLeftIcon";
-import MagnifyingGlassIcon from "../icons/MagnifyingGlassIcon";
+import { ArrowLeftIcon, MagnifyingGlassIcon } from "../icons";
 
 // Import Components
 import IconButton from "./IconButton";

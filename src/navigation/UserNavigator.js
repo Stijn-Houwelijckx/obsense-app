@@ -37,12 +37,14 @@ import {
 } from "../styles/theme";
 import { globalStyles } from "../styles/global";
 
-// Import custom icons
-import HomeIcon from "../components/icons/HomeIcon";
-import CompassIcon from "../components/icons/CompassIcon";
-import CameraIcon from "../components/icons/CameraIcon";
-import MapIcon from "../components/icons/MapIcon";
-import CogIcon from "../components/icons/CogIcon";
+// Import Icons
+import {
+  HomeIcon,
+  CompassIcon,
+  CameraIcon,
+  MapIcon,
+  CogIcon,
+} from "../components/icons";
 
 // Custom Components
 import { Header } from "../components/UI";

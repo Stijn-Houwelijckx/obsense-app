@@ -7,7 +7,9 @@ import {
   LETTER_SPACING,
 } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
-import ChevronRightIcon from "../icons/ChevronRightIcon";
+
+// Import Icons
+import { ChevronRightIcon } from "../icons";
 
 const NavListItem = ({ title, icon, onPress, style }) => {
   return (

@@ -28,7 +28,7 @@ import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Import Icons
-import PencilSquareIcon from "../../../components/icons/PencilSquareIcon";
+import { PencilSquareIcon } from "../../../components/icons";
 
 // Custom Components
 import { InputField, CustomButton, IconButton } from "../../../components/UI";

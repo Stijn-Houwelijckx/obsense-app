@@ -37,10 +37,7 @@ import {
 import { globalStyles } from "../styles/global";
 
 // Import Icons
-import HomeIcon from "../components/icons/HomeIcon";
-import CameraIcon from "../components/icons/CameraIcon";
-import MapIcon from "../components/icons/MapIcon";
-import CogIcon from "../components/icons/CogIcon";
+import { HomeIcon, CameraIcon, MapIcon, CogIcon } from "../components/icons";
 
 // Custom Components
 import { Header } from "../components/UI";
