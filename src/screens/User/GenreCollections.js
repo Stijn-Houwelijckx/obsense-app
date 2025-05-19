@@ -9,8 +9,7 @@ import {
 } from "react-native";
 
 // Import Utils
-import { getCollectionsByGenre } from "../../utils/api";
-import { getOwnedCollections } from "../../utils/api";
+import { getCollectionsByGenre, getOwnedCollections } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";

@@ -17,10 +17,12 @@ import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Import Utils
-import { getArtists } from "../../../utils/api";
-import { getCollections } from "../../../utils/api";
-import { getOwnedCollections } from "../../../utils/api";
-import { getGenres } from "../../../utils/api";
+import {
+  getArtists,
+  getCollections,
+  getOwnedCollections,
+  getGenres,
+} from "../../../utils/api";
 
 // Import Icons
 import { ChevronRightIcon } from "../../../components/icons";

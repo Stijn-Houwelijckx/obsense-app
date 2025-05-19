@@ -10,9 +10,11 @@ import {
 } from "react-native";
 
 // Import Utils
-import { searchArtists } from "../../../utils/api";
-import { searchCollections } from "../../../utils/api";
-import { getOwnedCollections } from "../../../utils/api";
+import {
+  searchArtists,
+  searchCollections,
+  getOwnedCollections,
+} from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";

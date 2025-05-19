@@ -17,9 +17,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
-import { getCollectionsForCurrentArtist } from "../../utils/api";
-import { getOwnedCollections } from "../../utils/api";
-import { getPlacedObjectsByCollection } from "../../utils/api";
+import {
+  getCollectionsForCurrentArtist,
+  getOwnedCollections,
+  getPlacedObjectsByCollection,
+} from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";

@@ -11,8 +11,7 @@ import {
 } from "react-native";
 
 // Import Utils
-import { getCollections } from "../../utils/api";
-import { getOwnedCollections } from "../../utils/api";
+import { getCollections, getOwnedCollections } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
