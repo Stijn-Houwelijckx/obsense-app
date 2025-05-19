@@ -13,7 +13,7 @@ import ClockIcon from "../icons/ClockIcon";
 // Import Components
 import Badge from "./Badge";
 
-const ArtistCollectionCard = ({
+const BoughtCollectionCard = ({
   id,
   imageUrl,
   title,
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArtistCollectionCard;
+export default BoughtCollectionCard;
