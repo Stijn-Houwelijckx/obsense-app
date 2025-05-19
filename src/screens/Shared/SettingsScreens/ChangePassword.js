@@ -21,8 +21,7 @@ import EyeIcon from "../../../components/icons/EyeIcon";
 import EyeSlashIcon from "../../../components/icons/EyeSlashIcon";
 
 // Custom Components
-import InputField from "../../../components/UI/InputField";
-import CustomButton from "../../../components/UI/CustomButton";
+import { InputField, CustomButton } from "../../../components/UI";
 
 const ChangePassword = ({ navigation }) => {
   const [error, setError] = useState(""); // State to manage error

@@ -7,7 +7,7 @@ import SignUp from "../screens/Auth/SignUp";
 import RoleSelection from "../screens/Auth/RoleSelection";
 
 // Custom Components
-import Header from "../components/UI/Header";
+import { Header } from "../components/UI";
 
 const AuthNavigator = ({ handleAuthChangeSuccess }) => {
   const Stack = createNativeStackNavigator();

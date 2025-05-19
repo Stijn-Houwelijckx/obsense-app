@@ -23,9 +23,7 @@ import EyeIcon from "../../components/icons/EyeIcon";
 import HearthIcon from "../../components/icons/HearthIcon";
 
 // Import Components
-import DescriptionTextBox from "../../components/UI/DescriptionTextBox";
-import Badge from "../../components/UI/Badge";
-import CustomButton from "../../components/UI/CustomButton";
+import { DescriptionTextBox, Badge, CustomButton } from "../../components/UI";
 
 const CollectionDetails = ({ navigation, route }) => {
   const { collectionId, owned } = route.params;

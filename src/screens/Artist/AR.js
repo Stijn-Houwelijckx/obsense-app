@@ -52,7 +52,7 @@ import TrashIcon from "../../components/icons/TrashIcon";
 import MapIcon from "../../components/icons/MapIcon";
 
 // Import Components
-import IconButton from "../../components/UI/IconButton";
+import { IconButton } from "../../components/UI";
 
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation

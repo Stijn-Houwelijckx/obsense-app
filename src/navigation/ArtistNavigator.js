@@ -43,7 +43,7 @@ import MapIcon from "../components/icons/MapIcon";
 import CogIcon from "../components/icons/CogIcon";
 
 // Custom Components
-import Header from "../components/UI/Header";
+import { Header } from "../components/UI";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

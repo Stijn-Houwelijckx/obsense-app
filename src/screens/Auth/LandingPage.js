@@ -7,7 +7,7 @@ import { globalStyles } from "../../styles/global";
 
 // Import Components
 import LogoSmallText from "../../components/logo/LogoSmallText";
-import CustomButton from "../../components/UI/CustomButton";
+import { CustomButton } from "../../components/UI";
 
 const LandingPage = ({ navigation }) => {
   return (

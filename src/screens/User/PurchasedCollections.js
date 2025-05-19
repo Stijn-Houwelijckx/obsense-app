@@ -16,7 +16,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Components
-import BoughtCollectionCard from "../../components/UI/BoughtCollectionCard";
+import { BoughtCollectionCard } from "../../components/UI";
 
 const PurchasedCollections = ({ navigation }) => {
   const [collections, setCollections] = useState([]); // State to store collection data

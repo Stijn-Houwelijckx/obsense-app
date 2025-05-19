@@ -19,9 +19,7 @@ import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Import Components
-import Header from "../../../components/UI/Header";
-import ArtistCard from "../../../components/UI/ArtistCard";
-import CollectionListItem from "../../../components/UI/CollectionListItem";
+import { Header, ArtistCard, CollectionListItem } from "../../../components/UI";
 
 const Search = ({ navigation, route }) => {
   const searchType = route.params?.searchType || "all";

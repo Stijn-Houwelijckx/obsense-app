@@ -27,9 +27,7 @@ import ShieldCheckIcon from "../../../components/icons/ShieldCheckIcon";
 import LogoutIcon from "../../../components/icons/LogoutIcon";
 
 // Custom Components
-import NavList from "../../../components/UI/NavList";
-import NavListItem from "../../../components/UI/NavListItem";
-import CustomButton from "../../../components/UI/CustomButton";
+import { NavList, NavListItem, CustomButton } from "../../../components/UI";
 
 const Settings = ({ navigation, handleAuthChangeSuccess }) => {
   const [user, setUser] = useState(null); // State to store user data

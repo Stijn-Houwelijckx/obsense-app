@@ -20,7 +20,7 @@ import { COLORS } from "../../styles/theme";
 import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
-import ArtistCollectionCard from "../../components/UI/ArtistCollectionCard";
+import { ArtistCollectionCard } from "../../components/UI";
 
 const Home = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data

@@ -22,10 +22,12 @@ import EyeIcon from "../../components/icons/EyeIcon";
 import EyeSlashIcon from "../../components/icons/EyeSlashIcon";
 
 // Import Components
-import ProgressIndicator from "../../components/UI/ProgressIndicator";
-import InputField from "../../components/UI/InputField";
-import CustomButton from "../../components/UI/CustomButton";
-import SocialButton from "../../components/UI/SocialButton";
+import {
+  ProgressIndicator,
+  InputField,
+  CustomButton,
+  SocialButton,
+} from "../../components/UI";
 
 const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
   // Step state

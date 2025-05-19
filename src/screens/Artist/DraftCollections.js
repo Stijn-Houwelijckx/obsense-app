@@ -15,7 +15,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Components
-import ArtistCollectionCard from "../../components/UI/ArtistCollectionCard";
+import { ArtistCollectionCard } from "../../components/UI";
 
 const DraftCollections = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data

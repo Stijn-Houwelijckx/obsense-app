@@ -21,9 +21,7 @@ import EyeIcon from "../../components/icons/EyeIcon";
 import EyeSlashIcon from "../../components/icons/EyeSlashIcon";
 
 // Import Components
-import InputField from "../../components/UI/InputField";
-import CustomButton from "../../components/UI/CustomButton";
-import SocialButton from "../../components/UI/SocialButton";
+import { InputField, CustomButton, SocialButton } from "../../components/UI";
 
 const Login = ({ navigation, handleAuthChangeSuccess }) => {
   const [email, setEmail] = useState("");

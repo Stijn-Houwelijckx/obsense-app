@@ -17,10 +17,12 @@ import { globalStyles } from "../../../styles/global";
 import { COLORS } from "../../../styles/theme";
 
 // Custom Components
-import InputField from "../../../components/UI/InputField";
-import CustomButton from "../../../components/UI/CustomButton";
-import WalletCard from "../../../components/UI/WalletCard";
-import NumberSelector from "../../../components/UI/NumberSelector";
+import {
+  InputField,
+  CustomButton,
+  WalletCard,
+  NumberSelector,
+} from "../../../components/UI";
 
 const Wallet = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data

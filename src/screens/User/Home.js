@@ -20,9 +20,11 @@ import { COLORS } from "../../styles/theme";
 import ChevronRightIcon from "../../components/icons/ChevronRightIcon";
 
 // Import Components
-import BoughtCollectionCard from "../../components/UI/BoughtCollectionCard";
-import ArtistItem from "../../components/UI/ArtistItem";
-import CollectionListItem from "../../components/UI/CollectionListItem";
+import {
+  BoughtCollectionCard,
+  ArtistItem,
+  CollectionListItem,
+} from "../../components/UI";
 
 const Home = ({ navigation }) => {
   const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collections

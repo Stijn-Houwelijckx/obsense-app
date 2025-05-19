@@ -25,7 +25,9 @@ import { getPlacedObjectsByCollection } from "../../utils/api";
 import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 import darkModeStyle from "../../styles/mapStyles";
-import CustomButton from "../../components/UI/CustomButton";
+
+// Import Components
+import { CustomButton } from "../../components/UI";
 
 const Map = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data

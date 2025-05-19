@@ -17,8 +17,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Components
-import CollectionCard from "../../components/UI/CollectionCard";
-import GenreBadge from "../../components/UI/GenreBadge";
+import { CollectionCard, GenreBadge } from "../../components/UI";
 
 const GenreCollections = ({ navigation, route }) => {
   const { genreId } = route.params; // Get genreId from route params

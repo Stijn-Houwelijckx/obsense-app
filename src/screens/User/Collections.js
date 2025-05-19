@@ -19,8 +19,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Components
-import CollectionCard from "../../components/UI/CollectionCard";
-import SearchInput from "../../components/UI/SearchInput";
+import { CollectionCard, SearchInput } from "../../components/UI";
 
 const Collections = ({ navigation }) => {
   const [collections, setCollections] = useState([]); // State to store collection data

@@ -26,10 +26,12 @@ import { getGenres } from "../../../utils/api";
 import ChevronRightIcon from "../../../components/icons/ChevronRightIcon";
 
 // Import Components
-import GenreItem from "../../../components/UI/GenreItem";
-import ArtistItem from "../../../components/UI/ArtistItem";
-import CollectionCard from "../../../components/UI/CollectionCard";
-import SearchInput from "../../../components/UI/SearchInput";
+import {
+  GenreItem,
+  ArtistItem,
+  CollectionCard,
+  SearchInput,
+} from "../../../components/UI";
 
 const Explore = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state

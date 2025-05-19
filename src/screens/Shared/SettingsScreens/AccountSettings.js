@@ -31,9 +31,7 @@ import { COLORS } from "../../../styles/theme";
 import PencilSquareIcon from "../../../components/icons/PencilSquareIcon";
 
 // Custom Components
-import InputField from "../../../components/UI/InputField";
-import CustomButton from "../../../components/UI/CustomButton";
-import IconButton from "../../../components/UI/IconButton";
+import { InputField, CustomButton, IconButton } from "../../../components/UI";
 
 const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
   const { clearActiveCollection } = useActiveCollection();

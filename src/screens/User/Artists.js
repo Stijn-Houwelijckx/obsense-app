@@ -18,8 +18,7 @@ import { globalStyles } from "../../styles/global";
 import { COLORS } from "../../styles/theme";
 
 // Import Components
-import ArtistCard from "../../components/UI/ArtistCard";
-import SearchInput from "../../components/UI/SearchInput";
+import { ArtistCard, SearchInput } from "../../components/UI";
 
 const Artists = ({ navigation }) => {
   const [artists, setArtists] = useState([]); // State to store artists data
