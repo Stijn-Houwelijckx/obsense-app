@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Button,
   ActivityIndicator,
   StyleSheet,
   ScrollView,

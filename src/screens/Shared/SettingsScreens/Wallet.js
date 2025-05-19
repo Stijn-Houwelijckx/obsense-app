@@ -8,8 +8,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import FastImage from "react-native-fast-image";
-import { launchImageLibrary } from "react-native-image-picker";
 
 // Import Utils
 import { getCurrentUser, updateTokens } from "../../../utils/api";
@@ -21,7 +19,6 @@ import { COLORS } from "../../../styles/theme";
 // Custom Components
 import InputField from "../../../components/UI/InputField";
 import CustomButton from "../../../components/UI/CustomButton";
-import IconButton from "../../../components/UI/IconButton";
 import WalletCard from "../../../components/UI/WalletCard";
 import NumberSelector from "../../../components/UI/NumberSelector";
 
