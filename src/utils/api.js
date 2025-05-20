@@ -1,6 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API_PATHS from "../config/apiConfig";
+const API_BASE_URL = "https://obsense-api.onrender.com/api/v1";
 
 // Function to change the current user's password from the API
 const changeCurrentUserPassword = async (oldPassword, newPassword) => {
@@ -813,6 +814,48 @@ const searchCollections = async (query, page = 1, limit = 20) => {
   }
 };
 
+const apiRequest = async ({
+  method = "GET",
+  endpoint,
+  data = null,
+  params = {},
+  requiresAuth = true,
+}) => {
+  try {
+    console.log("API request data:", {
+      method,
+      endpoint,
+      data,
+      params,
+      requiresAuth,
+    }); // Log the request for debugging
+
+    const token = requiresAuth ? await AsyncStorage.getItem("userToken") : null;
+
+    if (requiresAuth && !token) {
+      return { status: "fail", code: 401, message: "Unauthorized" }; // No token, unauthorized
+    }
+
+    const response = await axios({
+      method,
+      url: `${API_BASE_URL}${endpoint}`,
+      headers: {
+        ...(requiresAuth && token && { Authorization: `Bearer ${token}` }),
+      },
+      data,
+      params,
+      validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx or 4xx status as valid
+    });
+
+    console.log("API response:", response.data); // Log the response for debugging
+
+    return response.data;
+  } catch (error) {
+    console.error("API request error:", error);
+    throw error;
+  }
+};
+
 export {
   changeCurrentUserPassword,
   getCurrentUser,
@@ -835,4 +878,5 @@ export {
   getGenres,
   searchArtists,
   searchCollections,
+  apiRequest,
 };
