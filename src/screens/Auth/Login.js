@@ -77,13 +77,12 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
         // Handle "fail" response here
         // The error messages are inside the "data" object
         setErrorMessage(
-          response.data.data.message ||
-            "Something went wrong. Please try again."
+          response.data.message || "Something went wrong. Please try again."
         );
       }
     } catch (error) {
       // If response is available, extract error message or details
-      const errorMsg = error.response?.data?.message || error.message;
+      const errorMsg = error.response?.message || error.message;
       const errorDetails = error.response?.data?.details;
 
       // Combine both message and details if available

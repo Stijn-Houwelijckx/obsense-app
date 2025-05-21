@@ -35,7 +35,7 @@ const changeCurrentUserPassword = async (oldPassword, newPassword) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -65,7 +65,7 @@ const getCurrentUser = async () => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -106,7 +106,7 @@ const updateCurrentUser = async (userData) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -129,7 +129,7 @@ const deleteCurrentUserAccount = async () => {
 
     // Handle success response
     if (response.status === 200) {
-      return { status: "success", data: response.data.data };
+      return { status: "success", data: response.data };
     }
 
     // Handle 404 error
@@ -145,7 +145,7 @@ const deleteCurrentUserAccount = async () => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -176,7 +176,7 @@ const updateCurrentUserProfilePicture = async (formData) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -222,7 +222,7 @@ const getArtists = async (page = 1, limit = 20) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -252,7 +252,7 @@ const getArtistDetails = async (artistId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -280,12 +280,13 @@ const getCollectionsForCurrentArtist = async () => {
     }
 
     // Handle 404 error
-    if (response.status === 404) {
+    if (response.status === 204) {
       return {
-        status: "fail",
+        status: "success",
         data: {
-          code: 404,
+          code: 204,
           message: "No collections found",
+          collections: [],
         },
       };
     }
@@ -293,7 +294,7 @@ const getCollectionsForCurrentArtist = async () => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -326,7 +327,7 @@ const getArtistCollectionDetails = async (collectionId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -359,7 +360,7 @@ const getCollectionDetails = async (collectionId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -401,7 +402,7 @@ const getOwnedCollections = async () => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -435,7 +436,7 @@ const purchaseCollection = async (collectionId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -481,7 +482,7 @@ const getCollections = async (page = 1, limit = 20) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -526,7 +527,7 @@ const getCollectionsByGenre = async (genreId, page = 1, limit = 20) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -560,7 +561,7 @@ const savePlacedObject = async (placedObject) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -605,7 +606,7 @@ const getPlacedObjectsByCollection = async (collectionId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -630,9 +631,11 @@ const deletePlacedObject = async (placedObjectId) => {
       }
     );
 
+    console.log("Response:", response.status, response.data); // Log the response for debugging
+
     // Handle success response
     if (response.status === 200) {
-      return { status: "success", data: response.data.data };
+      return { status: "success", data: response.data };
     }
 
     // Handle 404 error
@@ -649,7 +652,7 @@ const deletePlacedObject = async (placedObjectId) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -685,7 +688,7 @@ const updateTokens = async (tokenAmount) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -715,7 +718,7 @@ const getGenres = async () => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -761,7 +764,7 @@ const searchArtists = async (query, page = 1, limit = 20) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
@@ -807,7 +810,7 @@ const searchCollections = async (query, page = 1, limit = 20) => {
     // Handle other errors
     return {
       status: "fail",
-      message: response.data?.data?.message || "Something went wrong",
+      message: response.data?.message || "Something went wrong",
     };
   } catch (error) {
     return { status: "fail", message: error.message };
