@@ -544,6 +544,10 @@ const AR = (route) => {
             currentlySelectedObjectId: currentlySelectedObjectId,
             handleObjectSelect: handleObjectSelect,
           }}
+          shadowsEnabled={true}
+          pbrEnabled={true}
+          hdrEnabled={true}
+          bloomEnabled={true}
         />
       )}
 
