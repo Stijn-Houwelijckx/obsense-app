@@ -769,11 +769,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
   switchContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
