@@ -30,6 +30,7 @@ const Header = ({
   searchValue,
   onSearchChange,
   onSearchClear,
+  showSearchButton = false,
 }) => {
   const navigation = useNavigation();
   const imageSource =
@@ -85,17 +86,19 @@ const Header = ({
           </TouchableOpacity>
 
           {/* Search Button */}
-          <IconButton
-            icon={MagnifyingGlassIcon}
-            onPress={() =>
-              navigation.navigate("Explore", {
-                screen: "Search",
-                params: { searchType: "all" },
-              })
-            } // Navigate to Search screen
-            buttonSize={48}
-            iconSize={24}
-          />
+          {showSearchButton && (
+            <IconButton
+              icon={MagnifyingGlassIcon}
+              onPress={() =>
+                navigation.navigate("Explore", {
+                  screen: "Search",
+                  params: { searchType: "all" },
+                })
+              } // Navigate to Search screen
+              buttonSize={48}
+              iconSize={24}
+            />
+          )}
         </>
       )}
 
