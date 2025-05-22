@@ -95,6 +95,7 @@ const HomeStack = () => {
                 text="Welcome Back!"
                 userName={user?.username}
                 onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
+                showSearchButton={false}
               />
             );
           }
