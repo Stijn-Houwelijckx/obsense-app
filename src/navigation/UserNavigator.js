@@ -102,6 +102,7 @@ const HomeStack = () => {
                 userName={user?.username}
                 tokens={user?.tokens}
                 onProfilePress={() => navigation.navigate("Settings")} // Navigate to Settings
+                showSearchButton={true}
               />
             );
           }
