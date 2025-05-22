@@ -56,6 +56,12 @@ const GenreCollections = ({ navigation, route }) => {
   }, [isLoading, hasMore, page, genreId]);
 
   useEffect(() => {
+    if (genre) {
+      navigation.setParams({ title: genre });
+    }
+  }, [genre, navigation]);
+
+  useEffect(() => {
     if (!initialLoadDone.current) {
       loadCollections();
       initialLoadDone.current = true;

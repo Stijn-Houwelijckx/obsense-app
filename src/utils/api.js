@@ -507,17 +507,18 @@ const getCollectionsByGenre = async (genreId, page = 1, limit = 20) => {
     );
 
     // Handle success response
-    if (response.status === 200) {
+    if (response.status === 200 && response.data.code !== 204) {
       return { status: "success", data: response.data.data };
     }
 
     // Handle 204 response
-    if (response.status === 204) {
+    if (response.status === 204 || response.data.code === 204) {
       return {
         status: "success",
         data: {
           code: 204,
           message: "No collections found",
+          genre: response.data.data.genre,
           collections: [],
           hasMore: false,
         },
