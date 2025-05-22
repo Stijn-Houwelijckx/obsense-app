@@ -36,8 +36,8 @@ const Map = ({ navigation }) => {
   const { activeCollectionId } = useActiveCollection();
   const [placedObjects, setPlacedObjects] = useState([]); // State to store placed objects
   const [location, setLocation] = useState({
-    latitude: 51.09284609, // Default latitude
-    longitude: 4.52385715, // Default longitude
+    latitude: 51.50262830611886, // Default latitude
+    longitude: -0.17658189393580523, // Default longitude
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -197,7 +197,7 @@ const Map = ({ navigation }) => {
         provider={PROVIDER_GOOGLE} // Use Google Maps as the provider
         style={styles.map}
         customMapStyle={darkModeStyle}
-        // region={location}
+        region={location}
         showsUserLocation={true}
         followsUserLocation={true}
         // showsBuildings={true} // Optional: Show 3D buildings on the map
@@ -210,25 +210,7 @@ const Map = ({ navigation }) => {
         onRegionChangeComplete={(region) => {
           const zoom = calculateZoomLevel(region.latitudeDelta);
           setZoomLevel(zoom); // Update the zoom level state
-        }}
-        onUserLocationChange={(event) => {
-          const { latitude, longitude } = event.nativeEvent.coordinate;
-          setLocation((prevLocation) => ({
-            ...prevLocation,
-            latitude,
-            longitude,
-          }));
-          // console.log("User location updated:", latitude, longitude);
-        }}
-        initialCamera={{
-          center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-          },
-          pitch: 0, // Default pitch (tilt)
-          heading: 0, // Default heading (rotation)
-          zoom: 15, // Set your desired zoom level here
-          altitude: 0, // Optional: altitude (not commonly used)
+          setLocation(region); // Update the location state
         }}
       >
         {/* Render markers for collections with valid locations */}
