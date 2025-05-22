@@ -757,18 +757,6 @@ const styles = StyleSheet.create({
     right: 20,
     alignItems: "center",
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    alignItems: "center",
-  },
   switchContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
