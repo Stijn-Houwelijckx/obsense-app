@@ -1,16 +1,6 @@
 // Import the necessary libraries
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Alert,
-  Button,
-  Modal,
-  Text,
-  Switch,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
@@ -22,18 +12,12 @@ import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
 import {
-  savePlacedObject,
   getArtistCollectionDetails,
   getPlacedObjectsByCollection,
-  deletePlacedObject,
 } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
-import { getPlacedObjectPayload } from "../../utils/payloadUtils";
 import { getCurrentLocation } from "../../utils/locationUtils";
-import {
-  calculateARCoordinates,
-  calculateGeoCoordinates,
-} from "../../utils/geoUtils";
+import { calculateARCoordinates } from "../../utils/geoUtils";
 
 // Import Hooks
 import useLogs from "../../hooks/useLogs";
@@ -44,14 +28,7 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import {
-  ArrowLeftIcon,
-  SaveIcon,
-  PlusIcon,
-  DotsVerticalIcon,
-  TrashIcon,
-  MapIcon,
-} from "../../components/icons";
+import { ArrowLeftIcon, MapIcon } from "../../components/icons";
 
 // Import Components
 import { IconButton } from "../../components/UI";
@@ -339,72 +316,12 @@ const styles = StyleSheet.create({
   iconButtonText: {
     color: COLORS.neutral[50],
   },
-  settingsButton: {
-    position: "absolute",
-    top: 16,
-    right: 16,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-  selectModelButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 20,
-    right: 20,
-    alignItems: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "80%",
-    marginBottom: 20,
-  },
-  saveButton: {
-    position: "absolute",
-    bottom: 16,
-    left: 20,
-    right: 20,
-    alignItems: "center",
-  },
-  deleteButton: {
-    position: "absolute",
-    bottom: 16,
-    right: 20,
-    alignItems: "center",
-  },
   mapButton: {
     position: "absolute",
     bottom: 16,
     right: 20,
     alignItems: "center",
   },
-  objectItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    alignItems: "center",
-  },
-
   coordinatesContainer: {
     position: "absolute",
     bottom: 20,
@@ -416,49 +333,6 @@ const styles = StyleSheet.create({
   coordinatesText: {
     color: "white",
     fontSize: 14,
-  },
-  showLogsButton: {
-    position: "absolute",
-    bottom: 80,
-    left: 10,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 8,
-  },
-  showLogsButtonText: {
-    color: "white",
-    fontSize: 14,
-    textAlign: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    margin: 20,
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  logContainer: {
-    maxHeight: 300,
-    width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  logText: {
-    color: "black",
-    fontSize: 12,
-    marginBottom: 5,
   },
 });
 
