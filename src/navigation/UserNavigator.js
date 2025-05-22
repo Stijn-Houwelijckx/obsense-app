@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { TouchableOpacity, ActivityIndicator, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useIsFocused } from "@react-navigation/native";
+import SystemNavigationBar from "react-native-system-navigation-bar";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Import Contexts
+import { useActiveCollection } from "../context/ActiveCollectionContext";
 
 // Import Utils
 import { getCurrentUser } from "../utils/api";
@@ -51,6 +56,8 @@ import { Header } from "../components/UI";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+SystemNavigationBar.setNavigationColor(COLORS.primaryNeutral[800], "light");
 
 const HomeStack = () => {
   const [user, setUser] = useState(null); // State to store user data
@@ -184,27 +191,24 @@ const ExploreStack = () => (
   </Stack.Navigator>
 );
 
-const ARStack = () => (
-  <Stack.Navigator
-    screenOptions={({ navigation, route }) => ({
-      // We use navigation.canGoBack() to check if there's a back action
-      header: () => {
-        const showBackButton =
-          route.name !== "ARScreen" && navigation.canGoBack();
+// AR Stack
+const ARStack = () => {
+  const isFocused = useIsFocused();
 
-        return (
-          <Header
-            title={route.name} // You can set dynamic title here if needed
-            showBackButton={showBackButton}
-          />
-        );
-      },
-    })}
-  >
-    <Stack.Screen name="ARScreen" component={AR} />
-    <Stack.Screen name="Details" component={Details} />
-  </Stack.Navigator>
-);
+  if (!isFocused) {
+    return null; // Do not render the AR screen if it is not focused
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false, // Hide the header for the AR screen
+      }}
+    >
+      <Stack.Screen name="ARScreen" component={AR} />
+    </Stack.Navigator>
+  );
+};
 
 const MapStack = () => {
   const isFocused = useIsFocused();
@@ -301,110 +305,163 @@ const SettingsStack = ({ handleAuthChangeSuccess }) => (
   </Stack.Navigator>
 );
 
-const UserNavigator = ({ handleAuthChangeSuccess }) => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarStyle:
-        route.name === "AR"
-          ? { display: "none" }
-          : {
-              backgroundColor: COLORS.primaryNeutral[800],
-              borderTopWidth: 0, // Ensure no actual border
-              elevation: 0, // Removes shadow on Android
-              shadowOpacity: 0, // Removes shadow on iOS
-            }, // Hide tab bar on AR screen
-      tabBarLabelStyle: {
-        fontSize: FONT_SIZES.label.sm,
-        lineHeight: LINE_HEIGHT.label.sm,
-        letterSpacing: LETTER_SPACING.label.sm,
-        fontFamily: "Nunito-Medium",
-      },
-      tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
-      tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
-    })}
-  >
-    <Tab.Screen
-      name="Home"
-      component={HomeStack}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <HomeIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Explore"
-      component={ExploreStack}
-      listeners={({ navigation }) => ({
-        tabPress: (e) => {
-          // Prevent default action
-          e.preventDefault();
-          // Navigate to the Explore screen
-          navigation.navigate("Explore", {
-            screen: "ExploreScreen",
-          });
+const UserNavigator = ({ handleAuthChangeSuccess }) => {
+  const [isARDisabled, setIsARDisabled] = useState(true); // State to track if AR tab should be disabled
+  const { activeCollectionId } = useActiveCollection();
+
+  // set activeCollectionId to something for testing purposes
+  const checkActiveCollection = async () => {
+    try {
+      const activeCollectionId = await AsyncStorage.getItem(
+        "activeCollectionId"
+      );
+
+      if (!activeCollectionId || activeCollectionId === "null") {
+        setIsARDisabled(true); // Disable AR tab if no activeCollectionId is set
+      } else {
+        setIsARDisabled(false); // Enable AR tab if activeCollectionId is set
+      }
+    } catch (error) {
+      console.error("Error checking active collection:", error);
+      setIsARDisabled(true); // Default to disabling AR tab on error
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkActiveCollection(); // Check active collection when the component is focused
+      console.log("Checking active collection..."); // Log for debugging
+    }, [])
+  );
+
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle:
+          route.name === "AR"
+            ? { display: "none" }
+            : {
+                backgroundColor: COLORS.primaryNeutral[800],
+                borderTopWidth: 0, // Ensure no actual border
+                elevation: 0, // Removes shadow on Android
+                shadowOpacity: 0, // Removes shadow on iOS
+              }, // Hide tab bar on AR screen
+        tabBarLabelStyle: {
+          fontSize: FONT_SIZES.label.sm,
+          lineHeight: LINE_HEIGHT.label.sm,
+          letterSpacing: LETTER_SPACING.label.sm,
+          fontFamily: "Nunito-Medium",
         },
+        tabBarActiveTintColor: COLORS.primary[500], // Set color for active tab label
+        tabBarInactiveTintColor: COLORS.neutral[300], // Set color for inactive tab
       })}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <CompassIcon
-            size={24}
-            fill={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="AR"
-      component={ARStack}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <CameraIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Map"
-      component={MapStack}
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <MapIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Settings"
-      options={{
-        tabBarIcon: ({ focused }) => (
-          <CogIcon
-            size={24}
-            stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
-            strokeWidth="1.5"
-          />
-        ),
-      }}
     >
-      {(props) => (
-        <SettingsStack
-          {...props}
-          handleAuthChangeSuccess={handleAuthChangeSuccess}
-        />
-      )}
-    </Tab.Screen>
-  </Tab.Navigator>
-);
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <HomeIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Explore"
+        component={ExploreStack}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Prevent default action
+            e.preventDefault();
+            // Navigate to the Explore screen
+            navigation.navigate("Explore", {
+              screen: "ExploreScreen",
+            });
+          },
+        })}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <CompassIcon
+              size={24}
+              fill={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AR"
+        component={ARStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <CameraIcon
+              size={24}
+              stroke={
+                focused && activeCollectionId
+                  ? COLORS.primary[500]
+                  : COLORS.neutral[300]
+              }
+              strokeWidth="1.5"
+            />
+          ),
+          tabBarLabel: "AR", // Ensure the label is displayed
+          tabBarButton: (props) =>
+            !activeCollectionId ? (
+              <TouchableOpacity
+                disabled
+                style={{
+                  opacity: 0.5, // Reduce opacity to indicate it's disabled
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginTop: 5,
+                  flex: 1,
+                }}
+              >
+                {/* Render the button with the same layout */}
+                {props.children}
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity {...props} />
+            ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapStack}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <MapIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <CogIcon
+              size={24}
+              stroke={focused ? COLORS.primary[500] : COLORS.neutral[300]}
+              strokeWidth="1.5"
+            />
+          ),
+        }}
+      >
+        {(props) => (
+          <SettingsStack
+            {...props}
+            handleAuthChangeSuccess={handleAuthChangeSuccess}
+          />
+        )}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+};
 
 export default UserNavigator;

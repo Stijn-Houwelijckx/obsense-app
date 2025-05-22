@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import FastImage from "react-native-fast-image";
 
+// Import Contexts
+import { useActiveCollection } from "../../context/ActiveCollectionContext";
+
 // Import Utils
 import { getCollectionDetails, purchaseCollection } from "../../utils/api";
 
@@ -31,6 +34,7 @@ const CollectionDetails = ({ navigation, route }) => {
   const { collectionId, owned } = route.params;
   const [collectionDetailsData, setCollectionDetailsData] = useState([]); // State to store collection data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const { setActiveCollection } = useActiveCollection();
 
   useEffect(() => {
     const getCollectionDataById = async () => {
@@ -164,7 +168,15 @@ const CollectionDetails = ({ navigation, route }) => {
               variant="filled"
               size="large"
               title={`Start ${collectionDetailsData.type}`}
-              onPress={() => console.log("Start button pressed")}
+              onPress={() => {
+                setActiveCollection(collectionDetailsData);
+                navigation.navigate("AR", {
+                  screen: "ARScreen",
+                  params: {
+                    collection: collectionDetailsData,
+                  },
+                });
+              }}
               style={{ width: "100%" }}
             />
           ) : (
