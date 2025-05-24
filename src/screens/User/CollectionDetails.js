@@ -3,6 +3,7 @@ import {
   View,
   Text,
   ActivityIndicator,
+  TouchableOpacity,
   StyleSheet,
   ScrollView,
   Alert,
@@ -13,7 +14,11 @@ import FastImage from "react-native-fast-image";
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
-import { getCollectionDetails, purchaseCollection } from "../../utils/api";
+import {
+  getCollectionDetails,
+  purchaseCollection,
+  apiRequest,
+} from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -25,6 +30,7 @@ import {
   BoxDashIcon,
   EyeIcon,
   HearthIcon,
+  HearthFilledIcon,
 } from "../../components/icons";
 
 // Import Components
@@ -35,6 +41,7 @@ const CollectionDetails = ({ navigation, route }) => {
   const [collectionDetailsData, setCollectionDetailsData] = useState([]); // State to store collection data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const { setActiveCollection } = useActiveCollection();
+  const [liked, setLiked] = useState(false); // State to manage liked status
 
   useEffect(() => {
     const getCollectionDataById = async () => {
@@ -43,6 +50,7 @@ const CollectionDetails = ({ navigation, route }) => {
       if (result.status === "success") {
         // setUser(result.data.data.user); // Set user data
         setCollectionDetailsData(result.data.collection); // Set collection data
+        setLiked(result.data.liked); // Set liked status
         console.log(result.data.collection); // Log collection data
       } else {
         console.log("Error getting user data:", result.message); // Log error message
@@ -92,6 +100,36 @@ const CollectionDetails = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error("Error during purchase:", error); // Log error message
+    }
+  };
+
+  const handleLike = async () => {
+    if (!owned) {
+      return;
+    }
+
+    setLiked((prevLiked) => !prevLiked); // Toggle liked status
+    setCollectionDetailsData((prevData) => ({
+      ...prevData,
+      likes: prevData.likes + (liked ? -1 : 1), // Update likes count based on current liked status
+    }));
+
+    try {
+      const result = await apiRequest({
+        method: "POST",
+        endpoint: `/collections/${collectionId}/like`,
+      });
+
+      if (result.status === "success") {
+        setLiked(result.data.liked); // Update liked status
+        setCollectionDetailsData((prevData) => ({
+          ...prevData,
+          likes: result.data.likesCount, // Update likes count
+        }));
+        console.log("Collection liked successfully:", result.data); // Log success message
+      }
+    } catch (error) {
+      console.error("Error liking collection:", error); // Log error message
     }
   };
 
@@ -156,7 +194,16 @@ const CollectionDetails = ({ navigation, route }) => {
               </Text>
             </View>
             <View style={styles.rowContainer}>
-              <HearthIcon size={20} stroke={COLORS.neutral[50]} />
+              <TouchableOpacity
+                onPress={handleLike}
+                activeOpacity={owned ? 0.2 : 1}
+              >
+                {liked && owned ? (
+                  <HearthFilledIcon size={20} fill={COLORS.red[500]} />
+                ) : (
+                  <HearthIcon size={20} stroke={COLORS.neutral[50]} />
+                )}
+              </TouchableOpacity>
               <Text style={[globalStyles.bodyMediumRegular, styles.text]}>
                 {collectionDetailsData.likes}
               </Text>
