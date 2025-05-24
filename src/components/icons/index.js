@@ -17,6 +17,7 @@ import EyeSlashIcon from "./EyeSlashIcon";
 import FacebookIcon from "./FacebookIcon";
 import GoogleIcon from "./GoogleIcon";
 import HearthIcon from "./HearthIcon";
+import HearthFilledIcon from "./HearthFilledIcon";
 import HomeIcon from "./HomeIcon";
 import KeyIcon from "./KeyIcon";
 import LocationPinIcon from "./LocationPinIcon";
@@ -52,6 +53,7 @@ export {
   FacebookIcon,
   GoogleIcon,
   HearthIcon,
+  HearthFilledIcon,
   HomeIcon,
   KeyIcon,
   LocationPinIcon,
