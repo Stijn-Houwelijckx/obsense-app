@@ -11,6 +11,7 @@ import ClockIcon from "./ClockIcon";
 import CogIcon from "./CogIcon";
 import CompassIcon from "./CompassIcon";
 import DotsVerticalIcon from "./DotsVerticalIcon";
+import DotsHorizontalIcon from "./DotsHorizontalIcon";
 import EuroCircleIcon from "./EuroCircleIcon";
 import EyeIcon from "./EyeIcon";
 import EyeSlashIcon from "./EyeSlashIcon";
@@ -47,6 +48,7 @@ export {
   CogIcon,
   CompassIcon,
   DotsVerticalIcon,
+  DotsHorizontalIcon,
   EuroCircleIcon,
   EyeIcon,
   EyeSlashIcon,
