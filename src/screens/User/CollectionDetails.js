@@ -4,11 +4,15 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
+  Modal,
+  Pressable,
+  Dimensions,
   StyleSheet,
   ScrollView,
   Alert,
 } from "react-native";
 import FastImage from "react-native-fast-image";
+import SystemNavigationBar from "react-native-system-navigation-bar";
 
 // Import Contexts
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
@@ -31,10 +35,31 @@ import {
   EyeIcon,
   HearthIcon,
   HearthFilledIcon,
+  DotsHorizontalIcon,
+  XIcon,
 } from "../../components/icons";
 
 // Import Components
-import { DescriptionTextBox, Badge, CustomButton } from "../../components/UI";
+import {
+  DescriptionTextBox,
+  Badge,
+  CustomButton,
+  IconButton,
+} from "../../components/UI";
+
+const reportReasons = [
+  "I just don’t like it",
+  "Inappropriate content",
+  "Copyright infringement",
+  "Harassment or bullying",
+  "Violence, hate or racism",
+  "Nudity or sexual activity",
+  "Scam, fraud or spam",
+  "False information",
+];
+
+const screenWidth = Dimensions.get("window").width; // Get screen width
+const modalWidth = screenWidth - 32; // Calculate card width
 
 const CollectionDetails = ({ navigation, route }) => {
   const { collectionId, owned } = route.params;
@@ -42,6 +67,8 @@ const CollectionDetails = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const { setActiveCollection } = useActiveCollection();
   const [liked, setLiked] = useState(false); // State to manage liked status
+  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(false);
 
   useEffect(() => {
     const getCollectionDataById = async () => {
@@ -126,11 +153,18 @@ const CollectionDetails = ({ navigation, route }) => {
           ...prevData,
           likes: result.data.likesCount, // Update likes count
         }));
-        console.log("Collection liked successfully:", result.data); // Log success message
       }
     } catch (error) {
       console.error("Error liking collection:", error); // Log error message
     }
+  };
+
+  const handleReportReason = (reason) => {
+    setReportModalVisible(false);
+    Alert.alert(
+      "Report submitted",
+      `Reason: ${reason}\n\nThank you for your feedback.`
+    );
   };
 
   if (isLoading) {
@@ -169,6 +203,13 @@ const CollectionDetails = ({ navigation, route }) => {
               styleType="filled"
               text={collectionDetailsData.type}
               style={styles.badgeType}
+            />
+            <IconButton
+              icon={DotsHorizontalIcon}
+              iconSize={24}
+              buttonSize={40}
+              onPress={() => setOptionsModalVisible(true)}
+              style={styles.optionsButton}
             />
             <FastImage
               style={styles.image}
@@ -237,6 +278,88 @@ const CollectionDetails = ({ navigation, route }) => {
           )}
         </View>
       </ScrollView>
+
+      {/* Options Modal */}
+      <Modal
+        visible={optionsModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setOptionsModalVisible(false)}
+      >
+        <Pressable
+          style={modalStyles.overlay}
+          onPress={() => setOptionsModalVisible(false)}
+        >
+          <Pressable style={modalStyles.content} onPress={() => {}}>
+            <View style={modalStyles.header}>
+              <Text style={[globalStyles.headingH6SemiBold, modalStyles.title]}>
+                Options
+              </Text>
+              <TouchableOpacity onPress={() => setOptionsModalVisible(false)}>
+                <XIcon size={24} stroke={COLORS.neutral[50]} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={modalStyles.reportButton}
+              onPress={() => {
+                setOptionsModalVisible(false);
+                setTimeout(() => setReportModalVisible(true), 200);
+              }}
+            >
+              <Text
+                style={[globalStyles.bodyMediumRegular, modalStyles.reportText]}
+              >
+                Report
+              </Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
+
+      {/* Report Modal */}
+      <Modal
+        visible={reportModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setReportModalVisible(false)}
+      >
+        <Pressable
+          style={modalStyles.overlay}
+          onPress={() => setReportModalVisible(false)}
+        >
+          <Pressable style={modalStyles.reportContent} onPress={() => {}}>
+            <View style={modalStyles.header}>
+              <Text style={[globalStyles.headingH6SemiBold, modalStyles.title]}>
+                Why are you reporting this artwork?
+              </Text>
+              <TouchableOpacity onPress={() => setReportModalVisible(false)}>
+                <XIcon size={24} stroke={COLORS.neutral[50]} />
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={[globalStyles.bodyMediumRegular, modalStyles.description]}
+            >
+              Your report is anonymous. Please select a reason below:
+            </Text>
+            {reportReasons.map((reason) => (
+              <TouchableOpacity
+                key={reason}
+                style={modalStyles.reasonButton}
+                onPress={() => handleReportReason(reason)}
+              >
+                <Text
+                  style={[
+                    globalStyles.bodyMediumRegular,
+                    modalStyles.reasonText,
+                  ]}
+                >
+                  {reason}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 };
@@ -261,6 +384,12 @@ const styles = StyleSheet.create({
     width: "100%",
     aspectRatio: 1,
     borderRadius: 8,
+  },
+  optionsButton: {
+    position: "absolute",
+    zIndex: 1,
+    top: 12,
+    right: 12,
   },
   badgeType: {
     position: "absolute",
@@ -290,6 +419,62 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   text: {
+    color: COLORS.neutral[50],
+  },
+});
+
+const modalStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content: {
+    backgroundColor: COLORS.primaryNeutral[700],
+    borderRadius: 12,
+    padding: 24,
+    minWidth: 220,
+    alignItems: "flex-start",
+    elevation: 5,
+    maxWidth: modalWidth,
+  },
+  reportContent: {
+    backgroundColor: COLORS.primaryNeutral[700],
+    borderRadius: 12,
+    padding: 24,
+    minWidth: 280,
+    alignItems: "flex-start",
+    elevation: 5,
+    maxWidth: modalWidth,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 16,
+  },
+  title: {
+    color: COLORS.neutral[50],
+    flex: 1,
+    marginRight: 8,
+  },
+  reportButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 0,
+  },
+  reportText: {
+    color: COLORS.error[500],
+  },
+  description: {
+    color: COLORS.neutral[300],
+    marginBottom: 16,
+  },
+  reasonButton: {
+    paddingVertical: 10,
+    width: "100%",
+  },
+  reasonText: {
     color: COLORS.neutral[50],
   },
 });
