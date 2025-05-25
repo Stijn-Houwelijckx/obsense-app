@@ -13,6 +13,7 @@ import CompassIcon from "./CompassIcon";
 import DotsVerticalIcon from "./DotsVerticalIcon";
 import DotsHorizontalIcon from "./DotsHorizontalIcon";
 import EuroCircleIcon from "./EuroCircleIcon";
+import ExclamationCircleIcon from "./ExclamationCircleIcon";
 import EyeIcon from "./EyeIcon";
 import EyeSlashIcon from "./EyeSlashIcon";
 import FacebookIcon from "./FacebookIcon";
@@ -50,6 +51,7 @@ export {
   DotsVerticalIcon,
   DotsHorizontalIcon,
   EuroCircleIcon,
+  ExclamationCircleIcon,
   EyeIcon,
   EyeSlashIcon,
   FacebookIcon,
