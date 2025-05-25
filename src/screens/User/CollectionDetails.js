@@ -45,6 +45,7 @@ import {
   Badge,
   CustomButton,
   IconButton,
+  ReportModal,
 } from "../../components/UI";
 
 const reportReasons = [
@@ -317,49 +318,12 @@ const CollectionDetails = ({ navigation, route }) => {
       </Modal>
 
       {/* Report Modal */}
-      <Modal
+      <ReportModal
         visible={reportModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setReportModalVisible(false)}
-      >
-        <Pressable
-          style={modalStyles.overlay}
-          onPress={() => setReportModalVisible(false)}
-        >
-          <Pressable style={modalStyles.reportContent} onPress={() => {}}>
-            <View style={modalStyles.header}>
-              <Text style={[globalStyles.headingH6SemiBold, modalStyles.title]}>
-                Why are you reporting this artwork?
-              </Text>
-              <TouchableOpacity onPress={() => setReportModalVisible(false)}>
-                <XIcon size={24} stroke={COLORS.neutral[50]} />
-              </TouchableOpacity>
-            </View>
-            <Text
-              style={[globalStyles.bodyMediumRegular, modalStyles.description]}
-            >
-              Your report is anonymous. Please select a reason below:
-            </Text>
-            {reportReasons.map((reason) => (
-              <TouchableOpacity
-                key={reason}
-                style={modalStyles.reasonButton}
-                onPress={() => handleReportReason(reason)}
-              >
-                <Text
-                  style={[
-                    globalStyles.bodyMediumRegular,
-                    modalStyles.reasonText,
-                  ]}
-                >
-                  {reason}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </Pressable>
-        </Pressable>
-      </Modal>
+        onClose={() => setReportModalVisible(false)}
+        reasons={reportReasons}
+        onSelectReason={handleReportReason}
+      />
     </View>
   );
 };
@@ -439,15 +403,6 @@ const modalStyles = StyleSheet.create({
     elevation: 5,
     maxWidth: modalWidth,
   },
-  reportContent: {
-    backgroundColor: COLORS.primaryNeutral[700],
-    borderRadius: 12,
-    padding: 24,
-    minWidth: 280,
-    alignItems: "flex-start",
-    elevation: 5,
-    maxWidth: modalWidth,
-  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -465,17 +420,6 @@ const modalStyles = StyleSheet.create({
   },
   reportText: {
     color: COLORS.error[500],
-  },
-  description: {
-    color: COLORS.neutral[300],
-    marginBottom: 16,
-  },
-  reasonButton: {
-    paddingVertical: 10,
-    width: "100%",
-  },
-  reasonText: {
-    color: COLORS.neutral[50],
   },
 });
 
