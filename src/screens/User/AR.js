@@ -1,6 +1,14 @@
 // Import the necessary libraries
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
@@ -11,7 +19,7 @@ import ARScene from "./ARScene";
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
-import { getPlacedObjectsByCollection } from "../../utils/api";
+import { getPlacedObjectsByCollection, apiRequest } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
 import { getCurrentLocation } from "../../utils/locationUtils";
 import { calculateARCoordinates } from "../../utils/geoUtils";
@@ -24,10 +32,13 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import { ArrowLeftIcon, MapIcon } from "../../components/icons";
+import { ArrowLeftIcon, MapIcon, XIcon } from "../../components/icons";
 
 // Import Components
 import { IconButton } from "../../components/UI";
+
+const screenWidth = Dimensions.get("window").width; // Get screen width
+const modalWidth = screenWidth - 32; // Calculate card width
 
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
@@ -45,6 +56,10 @@ const AR = (route) => {
 
   const [currentLocationReady, setCurrentLocationReady] = useState(false); // Track if current location is ready
   const [initialHeadingReady, setInitialHeadingReady] = useState(false); // Track if initial heading is ready
+
+  const [objectInfoModalVisible, setObjectInfoModalVisible] = useState(false);
+  const [objectInfo, setObjectInfo] = useState(null); // Track object info
+  const [objectInfoLoading, setObjectInfoLoading] = useState(false);
 
   const getFinalARPosition = async ({
     modelPosition, // { lat, lon }
@@ -166,8 +181,11 @@ const AR = (route) => {
   }, [currentLocationReady, initialHeadingReady]);
 
   useEffect(() => {
-    // Set the AR origin when the AR session starts
-    getAROriginGeoCoordinates();
+    if (!currentLocationReady) {
+      console.log("Getting AR origin coordinates once..."); // Debug log
+      // Set the AR origin when the AR session starts
+      getAROriginGeoCoordinates();
+    }
   });
 
   useEffect(() => {
@@ -206,8 +224,37 @@ const AR = (route) => {
     }
   };
 
+  const fetchObjectInfo = async (objectId) => {
+    setObjectInfoLoading(true); // Show loading state
+    try {
+      response = await apiRequest({
+        method: "GET",
+        endpoint: `/placedObjects/${objectId}`,
+      });
+
+      if (response.status === "success") {
+        setObjectInfo(response.data.placedObject.object); // Set the object info
+        setObjectInfoModalVisible(true); // Show the modal
+      }
+    } catch (error) {
+      console.error("Error fetching object info:", error);
+      setObjectInfoLoading(false); // Hide loading state
+      return;
+    } finally {
+      setObjectInfoLoading(false); // Hide loading state
+    }
+  };
+
   const handleObjectSelect = (obj) => {
     console.log("Selected object:", obj); // Debug log
+    if (obj && obj.id) {
+      // If an object is selected, fetch its info
+      fetchObjectInfo(obj.id);
+    } else {
+      // If no object is selected, close the modal
+      setObjectInfoModalVisible(false);
+      setObjectInfo(null); // Clear object info
+    }
   };
 
   const handleBackPress = () => {
@@ -218,6 +265,8 @@ const AR = (route) => {
     clearActiveCollection();
     // await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
+    setObjectInfo(null); // Clear object info
+    setObjectInfoModalVisible(false); // Hide object info modal
     navigation.goBack(); // Go back to the previous screen
   };
 
@@ -230,6 +279,7 @@ const AR = (route) => {
           viroAppProps={{
             objects: objects, // Pass objects to ARScene
             setObjects: setObjects, // Allow ARScene to update objects
+            handleObjectSelect: handleObjectSelect,
           }}
           shadowsEnabled={true}
           pbrEnabled={true}
@@ -272,6 +322,63 @@ const AR = (route) => {
           Map
         </Text>
       </View>
+
+      {/* Model Info Modal */}
+      <Modal
+        visible={objectInfoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          setObjectInfoModalVisible(false);
+          setObjectInfo(null);
+        }}
+      >
+        <Pressable
+          style={modalStyles.overlay}
+          onPress={() => {
+            setObjectInfoModalVisible(false);
+            setObjectInfo(null);
+          }}
+        >
+          <Pressable style={modalStyles.content} onPress={() => {}}>
+            <View style={modalStyles.header}>
+              <Text style={[globalStyles.headingH6SemiBold, modalStyles.title]}>
+                {objectInfoLoading
+                  ? "Loading..."
+                  : objectInfo?.title || "Object Info"}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setObjectInfoModalVisible(false);
+                  setObjectInfo(null);
+                }}
+              >
+                <XIcon size={24} stroke={COLORS.neutral[50]} />
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={[globalStyles.bodySmallRegular, modalStyles.description]}
+            >
+              {objectInfoLoading
+                ? "Loading description..."
+                : objectInfo?.description || "No description available."}
+            </Text>
+            {/* <TouchableOpacity
+              style={modalStyles.reportButton}
+              onPress={() => {
+                setObjectInfoModalVisible(false);
+                setTimeout(() => setReportModalVisible(true), 200);
+              }}
+            >
+              <Text
+                style={[globalStyles.bodyMediumRegular, modalStyles.reportText]}
+              >
+                Report
+              </Text>
+            </TouchableOpacity> */}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 };
@@ -302,6 +409,62 @@ const styles = StyleSheet.create({
   coordinatesText: {
     color: "white",
     fontSize: 14,
+  },
+});
+
+const modalStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  content: {
+    backgroundColor: COLORS.primaryNeutral[700],
+    borderRadius: 12,
+    padding: 24,
+    minWidth: 220,
+    alignItems: "flex-start",
+    elevation: 5,
+    maxWidth: modalWidth,
+  },
+  reportContent: {
+    backgroundColor: COLORS.primaryNeutral[700],
+    borderRadius: 12,
+    padding: 24,
+    minWidth: 280,
+    alignItems: "flex-start",
+    elevation: 5,
+    maxWidth: modalWidth,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 16,
+  },
+  title: {
+    color: COLORS.neutral[50],
+    flex: 1,
+    marginRight: 8,
+  },
+  reportButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 0,
+  },
+  reportText: {
+    color: COLORS.error[500],
+  },
+  description: {
+    color: COLORS.neutral[300],
+    marginBottom: 16,
+  },
+  reasonButton: {
+    paddingVertical: 10,
+    width: "100%",
+  },
+  reasonText: {
+    color: COLORS.neutral[50],
   },
 });
 

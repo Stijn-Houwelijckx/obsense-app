@@ -10,7 +10,8 @@ import {
 const ARScene = ({ sceneNavigator }) => {
   // const [objects, setObjects] = useState([]);
   const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
-  const { objects, setObjects } = sceneNavigator.viroAppProps;
+  const { objects, setObjects, handleObjectSelect } =
+    sceneNavigator.viroAppProps;
 
   // Function to add a new object to the scene
   const addObjectToScene = (selectedObject) => {
@@ -25,6 +26,12 @@ const ARScene = ({ sceneNavigator }) => {
         id: Date.now(),
       },
     ]);
+  };
+
+  const handleObjectClick = (clickState, objectId) => {
+    if (clickState === 3) {
+      handleObjectSelect({ id: objectId });
+    }
   };
 
   React.useEffect(() => {
@@ -78,6 +85,7 @@ const ARScene = ({ sceneNavigator }) => {
           scale={obj.scale}
           rotation={obj.rotation}
           type="GLB"
+          onClickState={(clickState) => handleObjectClick(clickState, obj.id)}
         />
       ))}
     </ViroARScene>
