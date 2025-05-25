@@ -150,7 +150,11 @@ const CollectionDetails = ({ navigation, route }) => {
             <FlatList
               data={collectionDetailsData.objects}
               renderItem={({ item }) => (
-                <ObjectCard title={item.title} isPlaced={false} />
+                <ObjectCard
+                  title={item.title}
+                  imageUrl={item.thumbnail.filePath}
+                  isPlaced={false}
+                />
               )}
               keyExtractor={(item) => item._id}
               contentContainerStyle={styles.cardsContainer}
