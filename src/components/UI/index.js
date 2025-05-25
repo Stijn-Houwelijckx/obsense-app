@@ -17,6 +17,7 @@ import NavListItem from "./NavListItem";
 import NumberSelector from "./NumberSelector";
 import ObjectCard from "./ObjectCard";
 import ProgressIndicator from "./ProgressIndicator";
+import ReportModal from "./ReportModal";
 import SearchInput from "./SearchInput";
 import SocialButton from "./SocialButton";
 import WalletCard from "./WalletCard";
@@ -41,6 +42,7 @@ export {
   NumberSelector,
   ObjectCard,
   ProgressIndicator,
+  ReportModal,
   SearchInput,
   SocialButton,
   WalletCard,
