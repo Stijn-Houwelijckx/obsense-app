@@ -8,6 +8,7 @@ import {
   Pressable,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -32,10 +33,26 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import { ArrowLeftIcon, MapIcon, XIcon } from "../../components/icons";
+import {
+  ArrowLeftIcon,
+  MapIcon,
+  XIcon,
+  ExclamationCircleIcon,
+} from "../../components/icons";
 
 // Import Components
-import { IconButton } from "../../components/UI";
+import { IconButton, ReportModal } from "../../components/UI";
+
+const reportReasons = [
+  "I just don’t like it",
+  "Inappropriate content",
+  "Copyright infringement",
+  "Harassment or bullying",
+  "Violence, hate or racism",
+  "Nudity or sexual activity",
+  "Scam, fraud or spam",
+  "False information",
+];
 
 const screenWidth = Dimensions.get("window").width; // Get screen width
 const modalWidth = screenWidth - 32; // Calculate card width
@@ -60,6 +77,7 @@ const AR = (route) => {
   const [objectInfoModalVisible, setObjectInfoModalVisible] = useState(false);
   const [objectInfo, setObjectInfo] = useState(null); // Track object info
   const [objectInfoLoading, setObjectInfoLoading] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(false);
 
   const getFinalARPosition = async ({
     modelPosition, // { lat, lon }
@@ -270,6 +288,14 @@ const AR = (route) => {
     navigation.goBack(); // Go back to the previous screen
   };
 
+  const handleReportReason = (reason) => {
+    setReportModalVisible(false);
+    Alert.alert(
+      "Report submitted",
+      `Reason: ${reason}\n\nThank you for your feedback.`
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {isARActive && (
@@ -363,22 +389,31 @@ const AR = (route) => {
                 ? "Loading description..."
                 : objectInfo?.description || "No description available."}
             </Text>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={modalStyles.reportButton}
               onPress={() => {
                 setObjectInfoModalVisible(false);
                 setTimeout(() => setReportModalVisible(true), 200);
               }}
             >
+              <ExclamationCircleIcon size={24} stroke={COLORS.error[500]} />
               <Text
                 style={[globalStyles.bodyMediumRegular, modalStyles.reportText]}
               >
-                Report
+                Report Artwork
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </Pressable>
         </Pressable>
       </Modal>
+
+      {/* Report Modal */}
+      <ReportModal
+        visible={reportModalVisible}
+        onClose={() => setReportModalVisible(false)}
+        reasons={reportReasons}
+        onSelectReason={handleReportReason}
+      />
     </View>
   );
 };
@@ -449,6 +484,9 @@ const modalStyles = StyleSheet.create({
     marginRight: 8,
   },
   reportButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
     paddingVertical: 8,
     paddingHorizontal: 0,
   },
