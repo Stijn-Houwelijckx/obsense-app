@@ -244,11 +244,13 @@ const styles = StyleSheet.create({
   emptyText: {
     color: COLORS.neutral[500],
     fontStyle: "italic",
+    paddingBottom: 56,
   },
   cardsContainer: {
     width: "100%",
     flexDirection: "col",
     gap: 8,
+    paddingBottom: 56,
   },
   bottomButtonContainer: {
     position: "absolute",
