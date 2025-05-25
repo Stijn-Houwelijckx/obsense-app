@@ -11,16 +11,12 @@ import ARScene from "./ARScene";
 import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
-import {
-  getArtistCollectionDetails,
-  getPlacedObjectsByCollection,
-} from "../../utils/api";
+import { getPlacedObjectsByCollection } from "../../utils/api";
 import { getDeviceHeading } from "../../utils/headingUtils";
 import { getCurrentLocation } from "../../utils/locationUtils";
 import { calculateARCoordinates } from "../../utils/geoUtils";
 
 // Import Hooks
-import useLogs from "../../hooks/useLogs";
 import useLocation from "../../hooks/useLocation";
 
 // Import Styles
@@ -37,7 +33,6 @@ const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
   const isFocused = useIsFocused(); // React Navigation hook to track focus
   const { activeCollectionId, clearActiveCollection } = useActiveCollection();
-  const [collection, setCollection] = useState(null);
 
   const [objects, setObjects] = useState([]); // Manage objects in App
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
@@ -48,49 +43,8 @@ const AR = (route) => {
   // const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const { location } = useLocation(); // Get location from custom hook
 
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    const fetchActiveCollection = async () => {
-      if (route.route?.params?.collection) {
-        setCollection(route.route.params.collection); // Set collection from route params
-      } else if (activeCollectionId) {
-        try {
-          const result = await getArtistCollectionDetails(
-            activeCollectionId._id
-          ); // Fetch collection details
-          if (result.status === "success") {
-            setCollection(result.data.collection); // Set collection from API response
-          } else {
-            console.log("Error getting collection data:", result.message);
-            console.log(
-              "ActiveCollectionID on fetch: ",
-              activeCollectionId._id
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching collection data:", error.message);
-        }
-      }
-    };
-
-    fetchActiveCollection(); // Call the function to fetch collection
-  }, [activeCollectionId, route.route?.params]);
-
-  useEffect(() => {
-    if (
-      activeCollectionId &&
-      collection &&
-      arOriginGeoCoordinates &&
-      initialHeading
-    ) {
-      console.log("All dependencies are ready.");
-      setIsReady(true);
-    } else {
-      console.log("Waiting for dependencies...");
-      setIsReady(false);
-    }
-  }, [activeCollectionId, collection, arOriginGeoCoordinates, initialHeading]);
+  const [currentLocationReady, setCurrentLocationReady] = useState(false); // Track if current location is ready
+  const [initialHeadingReady, setInitialHeadingReady] = useState(false); // Track if initial heading is ready
 
   const getFinalARPosition = async ({
     modelPosition, // { lat, lon }
@@ -128,9 +82,16 @@ const AR = (route) => {
   const fetchAndPlaceObjects = async () => {
     console.log("Fetching and placing objects..."); // Debug log
 
-    if (collection) {
+    if (
+      arOriginGeoCoordinates &&
+      initialHeading &&
+      currentLocationReady &&
+      initialHeadingReady
+    ) {
       try {
-        const response = await getPlacedObjectsByCollection(collection._id); // Fetch placed objects by collection ID
+        const response = await getPlacedObjectsByCollection(
+          route.route?.params?.collection?._id || activeCollectionId._id
+        );
 
         console.log("Response from API: ", response); // Debug log
 
@@ -193,27 +154,29 @@ const AR = (route) => {
 
   // Fetch AR origin and placed objects when the component mounts
   useEffect(() => {
-    if (isReady) {
+    if (
+      arOriginGeoCoordinates &&
+      initialHeading &&
+      currentLocationReady &&
+      initialHeadingReady
+    ) {
       console.log("Fetching and placing objects...");
       fetchAndPlaceObjects();
     }
-  }, [isReady]);
+  }, [currentLocationReady, initialHeadingReady]);
 
   useEffect(() => {
-    // Request location permission when the component mounts
-    if (collection) {
-      console.log("Editing collection with ID: ", collection._id);
-
-      // Set the AR origin when the AR session starts
-      getAROriginGeoCoordinates();
-    }
-  }, [collection]);
+    // Set the AR origin when the AR session starts
+    getAROriginGeoCoordinates();
+  });
 
   useEffect(() => {
     // Get the device's heading when the AR session starts
     const fetchHeading = async () => {
       const heading = await getDeviceHeading(); // Get the device's heading
       setInitialHeading(heading); // Save the initial heading
+
+      setInitialHeadingReady(true); // Mark initial heading as ready
     };
 
     fetchHeading(); // Call the function to fetch heading
@@ -236,9 +199,15 @@ const AR = (route) => {
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
       });
+
+      setCurrentLocationReady(true); // Mark current location as ready
     } catch (error) {
       console.error("Error getting AR origin position: ", error);
     }
+  };
+
+  const handleObjectSelect = (obj) => {
+    console.log("Selected object:", obj); // Debug log
   };
 
   const handleBackPress = () => {
