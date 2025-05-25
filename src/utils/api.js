@@ -578,7 +578,7 @@ const getPlacedObjectsByCollection = async (collectionId) => {
     }
 
     const response = await axios.get(
-      `${API_PATHS.PLACED_OBJECTS}/${collectionId}`,
+      `${API_PATHS.PLACED_OBJECTS}/collections/${collectionId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
