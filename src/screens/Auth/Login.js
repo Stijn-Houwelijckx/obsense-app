@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
+  ScrollView,
   StyleSheet,
   ActivityIndicator,
   Keyboard,
@@ -94,117 +95,119 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[globalStyles.container, styles.container]}>
-        <View
-          style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
-        >
-          <Text style={[globalStyles.headingH6Bold, styles.title]}>
-            Welcome Back!
-          </Text>
-
-          {/* Error Message */}
-          {errorMessage ? (
-            <Text style={[globalStyles.labelMediumRegular, styles.errorText]}>
-              {errorMessage}
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[globalStyles.container, styles.container]}>
+          <View
+            style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
+          >
+            <Text style={[globalStyles.headingH6Bold, styles.title]}>
+              Welcome Back!
             </Text>
-          ) : null}
 
-          <View style={styles.formContainer}>
-            <View style={styles.fieldsContainer}>
-              <InputField
-                label="Email Address"
-                placeholder="Email Address"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
-              <InputField
-                type="password"
-                label="Password"
-                leadingIcon={
-                  <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
-                }
-                placeholder="Password"
-                secureTextEntry={false}
-                value={password}
-                onChangeText={setPassword}
-                trailingIcon={{
-                  visible: (
-                    <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
-                  ),
-                  hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
-                }}
-                autoCapitalize="none"
-              />
-              {loading ? (
-                <ActivityIndicator size="large" color={COLORS.primary[500]} />
-              ) : (
-                <CustomButton
-                  variant="filled"
-                  size="large"
-                  title="Login"
-                  onPress={handleLogin}
-                  style={styles.button}
-                />
-              )}
-            </View>
-          </View>
-
-          <View style={styles.alternativeLoginContainer}>
-            <View style={styles.alternativeLoginText}>
-              <View style={styles.line} />
-              <Text
-                style={[
-                  globalStyles.labelXSmallSemiBold,
-                  { color: COLORS.neutral[200] },
-                ]}
-              >
-                or sign in with
+            {/* Error Message */}
+            {errorMessage ? (
+              <Text style={[globalStyles.labelMediumRegular, styles.errorText]}>
+                {errorMessage}
               </Text>
-              <View style={styles.line} />
+            ) : null}
+
+            <View style={styles.formContainer}>
+              <View style={styles.fieldsContainer}>
+                <InputField
+                  label="Email Address"
+                  placeholder="Email Address"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+
+                <InputField
+                  type="password"
+                  label="Password"
+                  leadingIcon={
+                    <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
+                  }
+                  placeholder="Password"
+                  secureTextEntry={false}
+                  value={password}
+                  onChangeText={setPassword}
+                  trailingIcon={{
+                    visible: (
+                      <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
+                    ),
+                    hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
+                  }}
+                  autoCapitalize="none"
+                />
+                {loading ? (
+                  <ActivityIndicator size="large" color={COLORS.primary[500]} />
+                ) : (
+                  <CustomButton
+                    variant="filled"
+                    size="large"
+                    title="Login"
+                    onPress={handleLogin}
+                    style={styles.button}
+                  />
+                )}
+              </View>
             </View>
 
-            <View style={styles.socialButtonsContainer}>
-              <SocialButton
-                provider={"google"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-              <SocialButton
-                provider={"apple"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-              <SocialButton
-                provider={"facebook"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-            </View>
-            <View style={styles.linkContainer}>
-              <View style={styles.linkContent}>
-                <Text style={[globalStyles.bodySmallBold, styles.linkText]}>
-                  Don't have an account?
+            <View style={styles.alternativeLoginContainer}>
+              <View style={styles.alternativeLoginText}>
+                <View style={styles.line} />
+                <Text
+                  style={[
+                    globalStyles.labelXSmallSemiBold,
+                    { color: COLORS.neutral[200] },
+                  ]}
+                >
+                  or sign in with
                 </Text>
-                <CustomButton
-                  variant="text"
-                  size="medium"
-                  title="Sign Up"
-                  onPress={() => navigation.replace("Create Account")}
+                <View style={styles.line} />
+              </View>
+
+              <View style={styles.socialButtonsContainer}>
+                <SocialButton
+                  provider={"google"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
                 />
+                <SocialButton
+                  provider={"apple"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
+                />
+                <SocialButton
+                  provider={"facebook"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
+                />
+              </View>
+              <View style={styles.linkContainer}>
+                <View style={styles.linkContent}>
+                  <Text style={[globalStyles.bodySmallBold, styles.linkText]}>
+                    Don't have an account?
+                  </Text>
+                  <CustomButton
+                    variant="text"
+                    size="medium"
+                    title="Sign Up"
+                    onPress={() => navigation.replace("Create Account")}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };

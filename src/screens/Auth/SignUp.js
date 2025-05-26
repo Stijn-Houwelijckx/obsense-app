@@ -3,6 +3,7 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
+  ScrollView,
   StyleSheet,
   ActivityIndicator,
   Keyboard,
@@ -194,270 +195,287 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[globalStyles.container, styles.container]}>
-        <View
-          style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
-        >
-          <View style={styles.header}>
-            {step > 1 ? (
-              <IconButton
-                icon={ArrowLeftIcon}
-                onPress={() => handlePreviousStep()}
-              />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={[globalStyles.container, styles.container]}>
+          <View
+            style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
+          >
+            <View style={styles.header}>
+              {step > 1 ? (
+                <IconButton
+                  icon={ArrowLeftIcon}
+                  onPress={() => handlePreviousStep()}
+                />
+              ) : null}
+              <Text style={[globalStyles.headingH6Bold, styles.title]}>
+                Sign up to continue
+              </Text>
+            </View>
+
+            {/* Error Message */}
+            {errorMessage ? (
+              <Text style={[globalStyles.labelMediumRegular, styles.errorText]}>
+                {errorMessage}
+              </Text>
             ) : null}
-            <Text style={[globalStyles.headingH6Bold, styles.title]}>
-              Sign up to continue
-            </Text>
-          </View>
 
-          {/* Error Message */}
-          {errorMessage ? (
-            <Text style={[globalStyles.labelMediumRegular, styles.errorText]}>
-              {errorMessage}
-            </Text>
-          ) : null}
+            {/* Step 1: First Name, Last Name, Email */}
+            {step === 1 && (
+              <>
+                <ProgressIndicator totalSteps={3} currentStep={step} />
 
-          {/* Step 1: First Name, Last Name, Email */}
-          {step === 1 && (
-            <>
-              <ProgressIndicator totalSteps={3} currentStep={step} />
+                <View style={styles.formContainer}>
+                  <View style={styles.fieldsContainer}>
+                    <InputField
+                      label="First Name"
+                      placeholder="First Name"
+                      value={firstName}
+                      onChangeText={(text) => {
+                        setFirstName(text);
+                        setError((prev) => ({ ...prev, firstName: "" })); // Clear error on change
+                      }}
+                      error={error.firstName ? true : false}
+                      errorMessage={error.firstName}
+                    />
+                    <InputField
+                      label="Last Name"
+                      placeholder="Last Name"
+                      value={lastName}
+                      onChangeText={(text) => {
+                        setLastName(text);
+                        setError((prev) => ({ ...prev, lastName: "" })); // Clear error on change
+                      }}
+                      error={error.lastName ? true : false}
+                      errorMessage={error.lastName}
+                    />
+                  </View>
 
-              <View style={styles.formContainer}>
-                <View style={styles.fieldsContainer}>
-                  <InputField
-                    label="First Name"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChangeText={(text) => {
-                      setFirstName(text);
-                      setError((prev) => ({ ...prev, firstName: "" })); // Clear error on change
-                    }}
-                    error={error.firstName ? true : false}
-                    errorMessage={error.firstName}
-                  />
-                  <InputField
-                    label="Last Name"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChangeText={(text) => {
-                      setLastName(text);
-                      setError((prev) => ({ ...prev, lastName: "" })); // Clear error on change
-                    }}
-                    error={error.lastName ? true : false}
-                    errorMessage={error.lastName}
-                  />
-                </View>
-
-                <CustomButton
-                  variant="filled"
-                  size="large"
-                  title="Continue"
-                  onPress={handleNextStep}
-                  style={styles.button}
-                />
-              </View>
-            </>
-          )}
-
-          {step === 2 && (
-            <>
-              <ProgressIndicator totalSteps={3} currentStep={step} />
-
-              <View style={styles.formContainer}>
-                <View style={styles.fieldsContainer}>
-                  <InputField
-                    label="Username"
-                    placeholder="Username"
-                    value={username}
-                    onChangeText={(text) => {
-                      setUsername(text);
-                      setError((prev) => ({ ...prev, username: "" })); // Clear error on change
-                    }}
-                    error={error.username ? true : false}
-                    errorMessage={error.username}
-                  />
-                  <InputField
-                    label="Email Address"
-                    placeholder="Email Address"
-                    value={email}
-                    onChangeText={(text) => {
-                      setEmail(text);
-                      setError((prev) => ({ ...prev, email: "" })); // Clear error on change
-                    }}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    error={error.email ? true : false}
-                    errorMessage={error.email}
-                  />
-                </View>
-
-                <CustomButton
-                  variant="filled"
-                  size="large"
-                  title="Continue"
-                  onPress={handleNextStep}
-                  style={styles.button}
-                />
-              </View>
-            </>
-          )}
-
-          {/* Step 2: Password, Confirm Password, Privacy Policy */}
-          {step === 3 && (
-            <>
-              <ProgressIndicator totalSteps={3} currentStep={step} />
-
-              <View style={styles.formContainer}>
-                <View style={styles.fieldsContainer}>
-                  <InputField
-                    type="password"
-                    label="Password"
-                    leadingIcon={
-                      <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
-                    }
-                    placeholder="Password"
-                    secureTextEntry={false}
-                    value={password}
-                    onChangeText={(text) => {
-                      setPassword(text);
-                      setError((prev) => ({ ...prev, password: "" })); // Clear error on change
-                    }}
-                    trailingIcon={{
-                      visible: (
-                        <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
-                      ),
-                      hidden: (
-                        <EyeIcon size={20} stroke={COLORS.neutral[500]} />
-                      ),
-                    }}
-                    autoCapitalize="none"
-                    error={error.password ? true : false}
-                    errorMessage={error.password}
-                  />
-                  <InputField
-                    type="password"
-                    label="Confirm Password"
-                    leadingIcon={
-                      <LockClosedIcon size={20} stroke={COLORS.neutral[500]} />
-                    }
-                    placeholder="Confirm Password"
-                    secureTextEntry={false}
-                    value={confirmPassword}
-                    onChangeText={(text) => {
-                      setConfirmPassword(text);
-                      setError((prev) => ({
-                        ...prev,
-                        confirmPassword: "",
-                      })); // Clear error on change
-                    }}
-                    trailingIcon={{
-                      visible: (
-                        <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
-                      ),
-                      hidden: (
-                        <EyeIcon size={20} stroke={COLORS.neutral[500]} />
-                      ),
-                    }}
-                    autoCapitalize="none"
-                    error={error.confirmPassword ? true : false}
-                    errorMessage={error.confirmPassword}
-                  />
-                </View>
-                <View style={styles.checkboxContainer}>
-                  <CheckBox
-                    value={agreeToPolicy}
-                    onValueChange={(set) => {
-                      setAgreeToPolicy(set);
-                      setError((prev) => ({
-                        ...prev,
-                        agreeToPolicy: "",
-                      })); // Clear error on change
-                    }}
-                    style={styles.checkbox}
-                    tintColors
-                  />
-                  <Text style={styles.checkboxLabel}>
-                    I agree with the privacy policy.
-                  </Text>
-                </View>
-                {error.agreeToPolicy ? (
-                  <Text
-                    style={
-                      ([globalStyles.labelXSmallRegular],
-                      { color: COLORS.error[500] })
-                    }
-                  >
-                    {error.agreeToPolicy}
-                  </Text>
-                ) : null}
-                {loading ? (
-                  <ActivityIndicator size="large" color={COLORS.primary[500]} />
-                ) : (
                   <CustomButton
                     variant="filled"
                     size="large"
-                    title="Sign Up"
-                    onPress={handleSignUp}
+                    title="Continue"
+                    onPress={handleNextStep}
                     style={styles.button}
                   />
-                )}
-              </View>
-            </>
-          )}
+                </View>
+              </>
+            )}
 
-          <View style={styles.alternativeLoginContainer}>
-            <View style={styles.alternativeLoginText}>
-              <View style={styles.line} />
-              <Text
-                style={[
-                  globalStyles.labelXSmallSemiBold,
-                  { color: COLORS.neutral[200] },
-                ]}
-              >
-                or sign up with
-              </Text>
-              <View style={styles.line} />
-            </View>
+            {step === 2 && (
+              <>
+                <ProgressIndicator totalSteps={3} currentStep={step} />
 
-            <View style={styles.socialButtonsContainer}>
-              <SocialButton
-                provider={"google"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-              <SocialButton
-                provider={"apple"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-              <SocialButton
-                provider={"facebook"}
-                backgroundColor={COLORS.primary["500-20"]}
-                borderColor={COLORS.primary[500]}
-                textColor={COLORS.neutral[50]}
-                style={styles.socialButton}
-              />
-            </View>
-            <View style={styles.linkContainer}>
-              <View style={styles.linkContent}>
-                <Text style={[globalStyles.bodySmallBold, styles.linkText]}>
-                  Already have an account?
+                <View style={styles.formContainer}>
+                  <View style={styles.fieldsContainer}>
+                    <InputField
+                      label="Username"
+                      placeholder="Username"
+                      value={username}
+                      onChangeText={(text) => {
+                        setUsername(text);
+                        setError((prev) => ({ ...prev, username: "" })); // Clear error on change
+                      }}
+                      error={error.username ? true : false}
+                      errorMessage={error.username}
+                    />
+                    <InputField
+                      label="Email Address"
+                      placeholder="Email Address"
+                      value={email}
+                      onChangeText={(text) => {
+                        setEmail(text);
+                        setError((prev) => ({ ...prev, email: "" })); // Clear error on change
+                      }}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      error={error.email ? true : false}
+                      errorMessage={error.email}
+                    />
+                  </View>
+
+                  <CustomButton
+                    variant="filled"
+                    size="large"
+                    title="Continue"
+                    onPress={handleNextStep}
+                    style={styles.button}
+                  />
+                </View>
+              </>
+            )}
+
+            {/* Step 2: Password, Confirm Password, Privacy Policy */}
+            {step === 3 && (
+              <>
+                <ProgressIndicator totalSteps={3} currentStep={step} />
+
+                <View style={styles.formContainer}>
+                  <View style={styles.fieldsContainer}>
+                    <InputField
+                      type="password"
+                      label="Password"
+                      leadingIcon={
+                        <LockClosedIcon
+                          size={20}
+                          stroke={COLORS.neutral[500]}
+                        />
+                      }
+                      placeholder="Password"
+                      secureTextEntry={false}
+                      value={password}
+                      onChangeText={(text) => {
+                        setPassword(text);
+                        setError((prev) => ({ ...prev, password: "" })); // Clear error on change
+                      }}
+                      trailingIcon={{
+                        visible: (
+                          <EyeSlashIcon
+                            size={20}
+                            stroke={COLORS.neutral[500]}
+                          />
+                        ),
+                        hidden: (
+                          <EyeIcon size={20} stroke={COLORS.neutral[500]} />
+                        ),
+                      }}
+                      autoCapitalize="none"
+                      error={error.password ? true : false}
+                      errorMessage={error.password}
+                    />
+                    <InputField
+                      type="password"
+                      label="Confirm Password"
+                      leadingIcon={
+                        <LockClosedIcon
+                          size={20}
+                          stroke={COLORS.neutral[500]}
+                        />
+                      }
+                      placeholder="Confirm Password"
+                      secureTextEntry={false}
+                      value={confirmPassword}
+                      onChangeText={(text) => {
+                        setConfirmPassword(text);
+                        setError((prev) => ({
+                          ...prev,
+                          confirmPassword: "",
+                        })); // Clear error on change
+                      }}
+                      trailingIcon={{
+                        visible: (
+                          <EyeSlashIcon
+                            size={20}
+                            stroke={COLORS.neutral[500]}
+                          />
+                        ),
+                        hidden: (
+                          <EyeIcon size={20} stroke={COLORS.neutral[500]} />
+                        ),
+                      }}
+                      autoCapitalize="none"
+                      error={error.confirmPassword ? true : false}
+                      errorMessage={error.confirmPassword}
+                    />
+                  </View>
+                  <View style={styles.checkboxContainer}>
+                    <CheckBox
+                      value={agreeToPolicy}
+                      onValueChange={(set) => {
+                        setAgreeToPolicy(set);
+                        setError((prev) => ({
+                          ...prev,
+                          agreeToPolicy: "",
+                        })); // Clear error on change
+                      }}
+                      style={styles.checkbox}
+                      tintColors
+                    />
+                    <Text style={styles.checkboxLabel}>
+                      I agree with the privacy policy.
+                    </Text>
+                  </View>
+                  {error.agreeToPolicy ? (
+                    <Text
+                      style={
+                        ([globalStyles.labelXSmallRegular],
+                        { color: COLORS.error[500] })
+                      }
+                    >
+                      {error.agreeToPolicy}
+                    </Text>
+                  ) : null}
+                  {loading ? (
+                    <ActivityIndicator
+                      size="large"
+                      color={COLORS.primary[500]}
+                    />
+                  ) : (
+                    <CustomButton
+                      variant="filled"
+                      size="large"
+                      title="Sign Up"
+                      onPress={handleSignUp}
+                      style={styles.button}
+                    />
+                  )}
+                </View>
+              </>
+            )}
+
+            <View style={styles.alternativeLoginContainer}>
+              <View style={styles.alternativeLoginText}>
+                <View style={styles.line} />
+                <Text
+                  style={[
+                    globalStyles.labelXSmallSemiBold,
+                    { color: COLORS.neutral[200] },
+                  ]}
+                >
+                  or sign up with
                 </Text>
-                <CustomButton
-                  variant="text"
-                  size="medium"
-                  title="Login"
-                  onPress={() => navigation.replace("Login")}
+                <View style={styles.line} />
+              </View>
+
+              <View style={styles.socialButtonsContainer}>
+                <SocialButton
+                  provider={"google"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
                 />
+                <SocialButton
+                  provider={"apple"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
+                />
+                <SocialButton
+                  provider={"facebook"}
+                  backgroundColor={COLORS.primary["500-20"]}
+                  borderColor={COLORS.primary[500]}
+                  textColor={COLORS.neutral[50]}
+                  style={styles.socialButton}
+                />
+              </View>
+              <View style={styles.linkContainer}>
+                <View style={styles.linkContent}>
+                  <Text style={[globalStyles.bodySmallBold, styles.linkText]}>
+                    Already have an account?
+                  </Text>
+                  <CustomButton
+                    variant="text"
+                    size="medium"
+                    title="Login"
+                    onPress={() => navigation.replace("Login")}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
