@@ -54,7 +54,7 @@ import {
 } from "../../components/icons";
 
 // Import Components
-import { IconButton } from "../../components/UI";
+import { IconButton, ObjectSelectModal } from "../../components/UI";
 
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
@@ -87,8 +87,9 @@ const AR = (route) => {
       setObjectList(
         collection.objects.map((obj) => ({
           id: obj._id,
-          name: obj.title,
-          source: { uri: obj.file.filePath }, // Assuming the image is a URL
+          title: obj.title,
+          source: { uri: obj.file.filePath },
+          thumbnail: { uri: obj.thumbnail.filePath },
         }))
       );
     } else {
@@ -655,32 +656,13 @@ const AR = (route) => {
         </View>
       </Modal>
 
-      <Modal
+      <ObjectSelectModal
         visible={isObjectModalVisible}
-        transparent={true}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Choose a Model</Text>
-            <ScrollView style={{ maxHeight: 300 }}>
-              {objectList.map((obj) => (
-                <TouchableOpacity
-                  key={obj.id}
-                  style={styles.objectItem}
-                  onPress={() => selectObject(obj)}
-                >
-                  <Text>{obj.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <Button
-              title="Close"
-              onPress={() => setIsObjectModalVisible(false)}
-            />
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setIsObjectModalVisible(false)}
+        objects={objectList}
+        onSelect={selectObject}
+        style={styles.objectSelectModal}
+      />
 
       {currentlySelectedObjectId && (
         <View style={styles.saveButton}>
@@ -844,6 +826,14 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 12,
     marginBottom: 5,
+  },
+  objectSelectModal: {
+    maxWidth: "100%",
+    width: "100%",
+    maxHeight: "75%",
+    height: "75%",
+    bottom: 0,
+    position: "absolute",
   },
 });
 
