@@ -17,7 +17,12 @@ import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
 
 // Import Icons
-import { LockClosedIcon, EyeIcon, EyeSlashIcon } from "../../components/icons";
+import {
+  LockClosedIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  ArrowLeftIcon,
+} from "../../components/icons";
 
 // Import Components
 import {
@@ -25,6 +30,7 @@ import {
   InputField,
   CustomButton,
   SocialButton,
+  IconButton,
 } from "../../components/UI";
 
 const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
@@ -77,6 +83,14 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
       }
       setError({});
       setStep(3);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setErrorMessage(""); // Reset error message when going back
+      setError({}); // Reset error state
+      setStep(step - 1);
     }
   };
 
@@ -184,9 +198,17 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
         <View
           style={[globalStyles.secondaryContainer, styles.secondaryContainer]}
         >
-          <Text style={[globalStyles.headingH6Bold, styles.title]}>
-            Sign up to continue
-          </Text>
+          <View style={styles.header}>
+            {step > 1 ? (
+              <IconButton
+                icon={ArrowLeftIcon}
+                onPress={() => handlePreviousStep()}
+              />
+            ) : null}
+            <Text style={[globalStyles.headingH6Bold, styles.title]}>
+              Sign up to continue
+            </Text>
+          </View>
 
           {/* Error Message */}
           {errorMessage ? (
@@ -449,6 +471,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     gap: 32,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     color: COLORS.neutral[50],
