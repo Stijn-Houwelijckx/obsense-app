@@ -26,6 +26,7 @@ const InputField = ({
   label, // Label for the input
   helperText, // Helper text to show below input
   error, // Error state flag
+  errorMessage, // Error message to display
   style, // Custom styles for the input field
   ...props
 }) => {
@@ -53,11 +54,6 @@ const InputField = ({
   const labelStyle = [
     styles.label,
     error && styles.labelError, // Apply error label style
-  ];
-
-  const helperTextStyle = [
-    styles.helperText,
-    error && styles.helperTextError, // Apply error helper text style
   ];
 
   return (
@@ -89,7 +85,15 @@ const InputField = ({
         )}
       </View>
 
-      {helperText && <Text style={helperTextStyle}>{helperText}</Text>}
+      {helperText && !error && (
+        <Text style={styles.helperText}>{helperText}</Text>
+      )}
+
+      {error && errorMessage && (
+        <Text style={[styles.helperText, styles.helperTextError]}>
+          {errorMessage}
+        </Text>
+      )}
     </View>
   );
 };
