@@ -34,7 +34,7 @@ const WalletCard = ({ tokens, conversionRate, style }) => {
 const styles = StyleSheet.create({
   cardContainer: {
     padding: 16,
-    height: 200,
+    height: 172,
     borderRadius: 20,
     overflow: "hidden",
   },
