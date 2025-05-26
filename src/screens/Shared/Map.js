@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -42,6 +42,8 @@ const Map = ({ navigation }) => {
     longitudeDelta: 0.0421,
   });
   const [zoomLevel, setZoomLevel] = useState(15); // Default zoom level
+
+  const mapRef = useRef(null);
 
   useEffect(() => {
     const getCollectionData = async () => {
@@ -150,6 +152,15 @@ const Map = ({ navigation }) => {
           latitude,
           longitude,
         }));
+        mapRef.current?.animateToRegion(
+          {
+            latitude,
+            longitude,
+            latitudeDelta: 0.0922, // Default latitude delta
+            longitudeDelta: 0.0421, // Default longitude delta
+          },
+          1000
+        );
         console.log("Current location:", position.coords); // Log the current location
       },
       (error) => {
@@ -194,10 +205,11 @@ const Map = ({ navigation }) => {
   return (
     <View style={[globalStyles.container, styles.container]}>
       <MapView
+        ref={mapRef}
         provider={PROVIDER_GOOGLE} // Use Google Maps as the provider
         style={styles.map}
         customMapStyle={darkModeStyle}
-        region={location}
+        // region={location}
         showsUserLocation={true}
         followsUserLocation={true}
         // showsBuildings={true} // Optional: Show 3D buildings on the map
@@ -210,7 +222,25 @@ const Map = ({ navigation }) => {
         onRegionChangeComplete={(region) => {
           const zoom = calculateZoomLevel(region.latitudeDelta);
           setZoomLevel(zoom); // Update the zoom level state
-          setLocation(region); // Update the location state
+        }}
+        onUserLocationChange={(event) => {
+          const { latitude, longitude } = event.nativeEvent.coordinate;
+          setLocation((prevLocation) => ({
+            ...prevLocation,
+            latitude,
+            longitude,
+          }));
+          // console.log("User location updated:", latitude, longitude);
+        }}
+        initialCamera={{
+          center: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          pitch: 0, // Default pitch (tilt)
+          heading: 0, // Default heading (rotation)
+          zoom: 15, // Set your desired zoom level here
+          altitude: 0, // Optional: altitude (not commonly used)
         }}
       >
         {/* Render markers for collections with valid locations */}
