@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CheckBox from "@react-native-community/checkbox";
-import axios from "axios";
-import API_PATHS from "../../config/apiConfig";
+
+import { apiRequest } from "../../utils/api";
 
 // Import Styles
 import { COLORS } from "../../styles/theme";
@@ -42,55 +42,88 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
   // Other states
   const [loading, setLoading] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState({});
 
   const handleNextStep = () => {
     // Validation for step 1 (first name, last name, email)
     if (step === 1) {
       if (!firstName || !lastName) {
-        setErrorMessage("All fields are required.");
+        setError({
+          firstName: !firstName ? "First name is required." : "",
+          lastName: !lastName ? "Last name is required." : "",
+        });
         return;
       }
 
       // Proceed to step 2
-      setErrorMessage("");
+      setError({});
       setStep(2);
     } else if (step === 2) {
       if (!username || !email) {
-        setErrorMessage("All fields are required.");
+        setError({
+          username: !username ? "Username is required." : "",
+          email: !email ? "Email is required." : "",
+        });
         return;
       }
-      setErrorMessage("");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError({
+          email: "Please enter a valid email address.",
+        });
+        return;
+      }
+      setError({});
       setStep(3);
     }
   };
 
   const handleSignUp = async () => {
-    setErrorMessage(""); // Reset error message
+    setError({}); // Reset error state
 
     // Validation for step 2 (password, confirm password, privacy policy)
     if (!password || !confirmPassword) {
-      setErrorMessage("All fields are required.");
+      setError({
+        password: !password ? "Password is required." : "",
+        confirmPassword: !confirmPassword
+          ? "Confirm password is required."
+          : "",
+      });
+      return;
+    }
+
+    if (password.length < 8) {
+      setError({
+        password: "Password must be at least 8 characters long.",
+        confirmPassword: "Password must be at least 8 characters long.",
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      setError({
+        password: "Passwords do not match.",
+        confirmPassword: "Passwords do not match.",
+      });
       return;
     }
 
     if (!agreeToPolicy) {
-      setErrorMessage("You must agree to the privacy policy.");
+      setError({
+        agreeToPolicy: "You must agree to the privacy policy.",
+      });
       return;
     }
 
     setLoading(true);
 
     try {
-      // API request to signup
-      const response = await axios.post(
-        API_PATHS.SIGNUP,
-        {
+      const response = await apiRequest({
+        method: "post",
+        endpoint: "/users/signup",
+        data: {
           user: {
             firstName,
             lastName,
@@ -99,16 +132,13 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
             password,
           },
         },
-        {
-          validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx status as success
-        }
-      );
+        requiresAuth: false, // No auth required for signup
+      });
 
-      console.log("Response data:", response.data);
-      console.log("Response data:", response.data.status);
+      console.log("Response data:", response);
 
-      if (response.data.status === "success") {
-        const { isArtist, token } = response.data.data;
+      if (response.status === "success") {
+        const { isArtist, token } = response.data;
 
         console.log("Token:", token);
 
@@ -118,11 +148,22 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
 
         // Notify AppNavigator that sign-up was successful
         handleAuthChangeSuccess(); // Trigger re-check in AppNavigator
-      } else if (response.data.status === "fail") {
+      } else if (
+        response.status === "fail" &&
+        (response.data.email || response.data.username)
+      ) {
+        // Handle "fail" response with specific error messages
+        setError({
+          email: response.data.email || "",
+          username: response.data.username || "",
+        });
+
+        setStep(2); // Go back to step 2 if there are errors
+      } else if (response.status === "fail") {
         // Handle "fail" response here
         // The error messages are inside the "data" object
         setErrorMessage(
-          response.data.message || "Something went wrong. Please try again."
+          response.message || "Something went wrong. Please try again."
         );
       }
     } catch (error) {
@@ -165,13 +206,23 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                     label="First Name"
                     placeholder="First Name"
                     value={firstName}
-                    onChangeText={setFirstName}
+                    onChangeText={(text) => {
+                      setFirstName(text);
+                      setError((prev) => ({ ...prev, firstName: "" })); // Clear error on change
+                    }}
+                    error={error.firstName ? true : false}
+                    errorMessage={error.firstName}
                   />
                   <InputField
                     label="Last Name"
                     placeholder="Last Name"
                     value={lastName}
-                    onChangeText={setLastName}
+                    onChangeText={(text) => {
+                      setLastName(text);
+                      setError((prev) => ({ ...prev, lastName: "" })); // Clear error on change
+                    }}
+                    error={error.lastName ? true : false}
+                    errorMessage={error.lastName}
                   />
                 </View>
 
@@ -196,15 +247,25 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                     label="Username"
                     placeholder="Username"
                     value={username}
-                    onChangeText={setUsername}
+                    onChangeText={(text) => {
+                      setUsername(text);
+                      setError((prev) => ({ ...prev, username: "" })); // Clear error on change
+                    }}
+                    error={error.username ? true : false}
+                    errorMessage={error.username}
                   />
                   <InputField
                     label="Email Address"
                     placeholder="Email Address"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      setError((prev) => ({ ...prev, email: "" })); // Clear error on change
+                    }}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    error={error.email ? true : false}
+                    errorMessage={error.email}
                   />
                 </View>
 
@@ -235,7 +296,10 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                     placeholder="Password"
                     secureTextEntry={false}
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => {
+                      setPassword(text);
+                      setError((prev) => ({ ...prev, password: "" })); // Clear error on change
+                    }}
                     trailingIcon={{
                       visible: (
                         <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -245,6 +309,8 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                       ),
                     }}
                     autoCapitalize="none"
+                    error={error.password ? true : false}
+                    errorMessage={error.password}
                   />
                   <InputField
                     type="password"
@@ -255,7 +321,13 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                     placeholder="Confirm Password"
                     secureTextEntry={false}
                     value={confirmPassword}
-                    onChangeText={setConfirmPassword}
+                    onChangeText={(text) => {
+                      setConfirmPassword(text);
+                      setError((prev) => ({
+                        ...prev,
+                        confirmPassword: "",
+                      })); // Clear error on change
+                    }}
                     trailingIcon={{
                       visible: (
                         <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -265,12 +337,20 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                       ),
                     }}
                     autoCapitalize="none"
+                    error={error.confirmPassword ? true : false}
+                    errorMessage={error.confirmPassword}
                   />
                 </View>
                 <View style={styles.checkboxContainer}>
                   <CheckBox
                     value={agreeToPolicy}
-                    onValueChange={setAgreeToPolicy}
+                    onValueChange={(set) => {
+                      setAgreeToPolicy(set);
+                      setError((prev) => ({
+                        ...prev,
+                        agreeToPolicy: "",
+                      })); // Clear error on change
+                    }}
                     style={styles.checkbox}
                     tintColors
                   />
@@ -278,6 +358,16 @@ const SignUp = ({ navigation, handleAuthChangeSuccess }) => {
                     I agree with the privacy policy.
                   </Text>
                 </View>
+                {error.agreeToPolicy ? (
+                  <Text
+                    style={
+                      ([globalStyles.labelXSmallRegular],
+                      { color: COLORS.error[500] })
+                    }
+                  >
+                    {error.agreeToPolicy}
+                  </Text>
+                ) : null}
                 {loading ? (
                   <ActivityIndicator size="large" color={COLORS.primary[500]} />
                 ) : (
