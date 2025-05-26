@@ -14,6 +14,7 @@ import DotsVerticalIcon from "./DotsVerticalIcon";
 import DotsHorizontalIcon from "./DotsHorizontalIcon";
 import EuroCircleIcon from "./EuroCircleIcon";
 import ExclamationCircleIcon from "./ExclamationCircleIcon";
+import ExclamationTriangleIcon from "./ExclamationTriangleIcon";
 import EyeIcon from "./EyeIcon";
 import EyeSlashIcon from "./EyeSlashIcon";
 import FacebookIcon from "./FacebookIcon";
@@ -54,6 +55,7 @@ export {
   DotsHorizontalIcon,
   EuroCircleIcon,
   ExclamationCircleIcon,
+  ExclamationTriangleIcon,
   EyeIcon,
   EyeSlashIcon,
   FacebookIcon,
