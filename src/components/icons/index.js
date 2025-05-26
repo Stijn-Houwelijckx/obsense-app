@@ -18,10 +18,12 @@ import EyeIcon from "./EyeIcon";
 import EyeSlashIcon from "./EyeSlashIcon";
 import FacebookIcon from "./FacebookIcon";
 import GoogleIcon from "./GoogleIcon";
-import HearthIcon from "./HearthIcon";
+import GridIcon from "./GridIcon";
 import HearthFilledIcon from "./HearthFilledIcon";
+import HearthIcon from "./HearthIcon";
 import HomeIcon from "./HomeIcon";
 import KeyIcon from "./KeyIcon";
+import ListIcon from "./ListIcon";
 import LocationPinIcon from "./LocationPinIcon";
 import LockClosedIcon from "./LockClosedIcon";
 import LogoutIcon from "./LogoutIcon";
@@ -56,10 +58,12 @@ export {
   EyeSlashIcon,
   FacebookIcon,
   GoogleIcon,
-  HearthIcon,
+  GridIcon,
   HearthFilledIcon,
+  HearthIcon,
   HomeIcon,
   KeyIcon,
+  ListIcon,
   LocationPinIcon,
   LockClosedIcon,
   LogoutIcon,
