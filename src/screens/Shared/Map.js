@@ -278,6 +278,14 @@ const Map = ({ navigation }) => {
               anchor={{ x: 0.5, y: 0.5 }}
               calloutAnchor={{ x: 0.5, y: 0 }}
             >
+              {/* Custom marker using the objects's image */}
+              <View style={styles.markerContainer}>
+                <FastImage
+                  source={{ uri: object.object.thumbnail.filePath }}
+                  style={styles.markerImage}
+                />
+              </View>
+
               {/* Custom Callout */}
               <Callout tooltip>
                 <View style={styles.calloutContainer}>
