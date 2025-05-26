@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import FastImage from "react-native-fast-image";
 
 // Import ARScene
 import ARScene from "./ARScene";
@@ -382,6 +383,32 @@ const AR = (route) => {
                 <XIcon size={24} stroke={COLORS.neutral[50]} />
               </TouchableOpacity>
             </View>
+
+            <View
+              style={{
+                width: modalWidth - 48,
+                height: 100,
+                borderRadius: 8,
+                overflow: "hidden",
+                marginBottom: 16,
+              }}
+            >
+              <FastImage
+                style={{
+                  width: "100%",
+                  height: 180, // Make this larger than the container height
+                  borderRadius: 8,
+                  marginTop: 0, // Set to 0 to show the top, or adjust for more/less
+                }}
+                source={
+                  objectInfoLoading
+                    ? require("../../../assets/profileImages/Default.jpg")
+                    : { uri: objectInfo?.thumbnail?.filePath || "" }
+                }
+                resizeMode="cover"
+              />
+            </View>
+
             <Text
               style={[globalStyles.bodySmallRegular, modalStyles.description]}
             >
@@ -503,6 +530,12 @@ const modalStyles = StyleSheet.create({
   },
   reasonText: {
     color: COLORS.neutral[50],
+  },
+  image: {
+    width: modalWidth - 48, // Adjust width to fit modal
+    height: 100,
+    borderRadius: 8,
+    marginBottom: 16,
   },
 });
 
