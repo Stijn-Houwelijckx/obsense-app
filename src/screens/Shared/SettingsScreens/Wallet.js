@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 // Import Utils
-import { getCurrentUser, updateTokens } from "../../../utils/api";
+import { getCurrentUser, apiRequest } from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";
@@ -28,11 +28,14 @@ const Wallet = ({ navigation }) => {
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [message, setMessage] = useState(""); // State to manage message
-  const [error, setError] = useState(""); // State to manage error
+  const [errorMessage, setErrorMessage] = useState(""); // State to manage error
+  const [error, setError] = useState({}); // State to manage error object
 
   const [selectedNumber, setSelectedNumber] = useState(null); // State to track the selected number
 
   const handleNumberSelect = (number) => {
+    setErrorMessage(""); // Reset error message
+    setError({}); // Reset error object
     if (selectedNumber === number) {
       setSelectedNumber(null); // Deselect if already selected
     } else {
@@ -57,25 +60,51 @@ const Wallet = ({ navigation }) => {
   }, []);
 
   const handleBuyTokens = async () => {
-    const result = await updateTokens(selectedNumber); // Call the API to update tokens
+    setErrorMessage(""); // Reset error message
+    setMessage(""); // Reset success message
+    setError({}); // Reset error object
 
-    if (result.status === "success") {
-      setUser((prevUser) => ({
-        ...prevUser,
-        tokens: result.data.tokens, // Update user tokens
-      }));
+    // Validation for selected number
+    if (!selectedNumber || isNaN(selectedNumber) || selectedNumber <= 0) {
+      setError({
+        selectedNumber: "Please select a valid number of tokens.",
+      });
+      return;
+    }
 
-      setSelectedNumber(null); // Reset selected number
-      setError(""); // Reset error message
-      setMessage("Purchase successfull!"); // Set success message
+    try {
+      const response = await apiRequest({
+        method: "PUT",
+        endpoint: "/tokens",
+        data: {
+          tokens: {
+            tokenAmount: selectedNumber,
+          },
+        },
+        requiresAuth: true, // Authentication required for this request
+      });
 
-      // Clear the message after 3 seconds
-      setTimeout(() => {
-        setMessage(""); // Clear message after 3 seconds
-      }, 2000);
-    } else {
-      setMessage(""); // Reset success message
-      setError(result.message); // Set error message
+      if (response.status === "success") {
+        setUser((prevUser) => ({
+          ...prevUser,
+          tokens: response.data.tokens, // Update user tokens
+        }));
+
+        setSelectedNumber(null); // Reset selected number
+        setErrorMessage(""); // Reset error message
+        setMessage("Purchase successfull!"); // Set success message
+
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+          setMessage(""); // Clear message after 3 seconds
+        }, 2000);
+      } else {
+        setMessage(""); // Reset success message
+        setErrorMessage(result.message); // Set error message
+      }
+    } catch (error) {
+      console.error("Error buying tokens:", error); // Log error
+      setErrorMessage("An error occurred while buying tokens."); // Set error message
     }
   };
 
@@ -145,8 +174,13 @@ const Wallet = ({ navigation }) => {
               placeholder="Enter amount"
               keyboardType="numeric"
               value={selectedNumber}
-              onChangeText={(text) => setSelectedNumber(text)}
+              onChangeText={(text) => {
+                setSelectedNumber(text);
+                setError((prev) => ({ ...prev, selectedNumber: "" })); // Clear error on change
+              }}
               style={styles.InputField}
+              error={error.selectedNumber ? true : false}
+              errorMessage={error.selectedNumber}
             />
             {message && (
               <Text
@@ -158,14 +192,14 @@ const Wallet = ({ navigation }) => {
                 {message}
               </Text>
             )}
-            {error && (
+            {errorMessage && (
               <Text
                 style={[
                   globalStyles.bodyMediumRegular,
                   { color: COLORS.error[500], marginBottom: 12 },
                 ]}
               >
-                {error}
+                {errorMessage}
               </Text>
             )}
             <CustomButton
