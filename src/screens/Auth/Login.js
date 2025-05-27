@@ -12,6 +12,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import API_PATHS from "../../config/apiConfig";
 
+import { apiRequest } from "../../utils/api";
+
 // Import Styles
 import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
@@ -42,25 +44,22 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
     setLoading(true);
 
     try {
-      // API request to signup
-      const response = await axios.post(
-        API_PATHS.LOGIN,
-        {
+      const response = await apiRequest({
+        method: "POST",
+        endpoint: "/users/login",
+        data: {
           user: {
             email,
             password,
           },
         },
-        {
-          validateStatus: (status) => status >= 200 && status < 500, // Accept any 2xx status as success
-        }
-      );
+        requiresAuth: false, // No auth required for login
+      });
 
-      console.log("Response data:", response.data);
-      console.log("Response data:", response.data.status);
+      console.log("Response data:", response);
 
-      if (response.data.status === "success") {
-        const { isArtist, token } = response.data.data;
+      if (response.status === "success") {
+        const { isArtist, token } = response.data;
 
         console.log("Token:", token);
 
@@ -74,11 +73,11 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
         } else {
           handleAuthChangeSuccess(); // Proceed to UserNavigator
         }
-      } else if (response.data.status === "fail") {
+      } else if (response.status === "fail") {
         // Handle "fail" response here
         // The error messages are inside the "data" object
         setErrorMessage(
-          response.data.message || "Something went wrong. Please try again."
+          response.message || "Something went wrong. Please try again."
         );
       }
     } catch (error) {
