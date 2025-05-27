@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 // Import Utils
-import { changeCurrentUserPassword } from "../../../utils/api";
+import { apiRequest } from "../../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../../styles/global";
@@ -26,7 +26,8 @@ import {
 import { InputField, CustomButton } from "../../../components/UI";
 
 const ChangePassword = ({ navigation }) => {
-  const [error, setError] = useState(""); // State to manage error
+  const [errorMessage, setErrorMessage] = useState(""); // State to manage error
+  const [error, setError] = useState({}); // State to manage error object
   const [message, setMessage] = useState(""); // State to manage message
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -34,33 +35,73 @@ const ChangePassword = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handlePasswordChange = async () => {
-    setError(""); // Reset error state
+    setErrorMessage(""); // Reset error state
+    setError({}); // Reset error object state
     setMessage(""); // Reset message state
 
-    // Function to handle password change
-    if (newPassword !== confirmPassword) {
-      setError("Password doesn't match, try again.");
+    // Validation for current password, new password, and confirm password
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError({
+        currentPassword: !currentPassword
+          ? "Current password is required."
+          : "",
+        newPassword: !newPassword ? "New password is required." : "",
+        confirmPassword: !confirmPassword
+          ? "Confirm password is required."
+          : "",
+      });
       return;
     }
 
-    const result = await changeCurrentUserPassword(
-      currentPassword,
-      newPassword
-    );
+    // Additional validation for new password
+    if (newPassword.length < 8) {
+      setError({
+        newPassword: "New password must be at least 8 characters long.",
+      });
+      return;
+    }
 
-    if (result.status === "success") {
+    // Old and new password should not be the same
+    if (currentPassword === newPassword) {
+      setError({
+        newPassword: "New password cannot be the same as current password.",
+      });
+      return;
+    }
+
+    // Function to handle password change
+    if (newPassword !== confirmPassword) {
+      setError({
+        confirmPassword: "Password does not match.",
+      });
+      return;
+    }
+
+    const response = await apiRequest({
+      method: "PUT",
+      endpoint: "/users/change-password",
+      data: {
+        user: {
+          oldPassword: currentPassword,
+          newPassword: newPassword,
+        },
+      },
+      requiresAuth: true, // Auth required for changing password
+    });
+
+    if (response.status === "success") {
       setMessage("Password changed successfully.");
 
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+    } else if (response.status === "fail" && response.data.oldPassword) {
+      setError({
+        currentPassword: response.data.oldPassword,
+      });
     } else {
-      setError(result.message);
+      setErrorMessage(response.message);
     }
-
-    setTimeout(() => {
-      setMessage("");
-    }, 2000);
   };
 
   return (
@@ -78,7 +119,10 @@ const ChangePassword = ({ navigation }) => {
                 placeholder="Current Password"
                 secureTextEntry={false}
                 value={currentPassword}
-                onChangeText={setCurrentPassword}
+                onChangeText={(text) => {
+                  setCurrentPassword(text);
+                  setError((prev) => ({ ...prev, currentPassword: "" })); // Clear error on change
+                }}
                 trailingIcon={{
                   visible: (
                     <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -86,6 +130,8 @@ const ChangePassword = ({ navigation }) => {
                   hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
                 }}
                 autoCapitalize="none"
+                error={error.currentPassword ? true : false}
+                errorMessage={error.currentPassword}
               />
             </View>
             <View style={styles.fieldsContainer}>
@@ -98,7 +144,10 @@ const ChangePassword = ({ navigation }) => {
                 placeholder="New Password"
                 secureTextEntry={false}
                 value={newPassword}
-                onChangeText={setNewPassword}
+                onChangeText={(text) => {
+                  setNewPassword(text);
+                  setError((prev) => ({ ...prev, newPassword: "" })); // Clear error on change
+                }}
                 trailingIcon={{
                   visible: (
                     <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -106,6 +155,8 @@ const ChangePassword = ({ navigation }) => {
                   hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
                 }}
                 autoCapitalize="none"
+                error={error.newPassword ? true : false}
+                errorMessage={error.newPassword}
               />
             </View>
             <View style={styles.fieldsContainer}>
@@ -118,7 +169,10 @@ const ChangePassword = ({ navigation }) => {
                 placeholder="Confirm New Password"
                 secureTextEntry={false}
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  setError((prev) => ({ ...prev, confirmPassword: "" })); // Clear error on change
+                }}
                 trailingIcon={{
                   visible: (
                     <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -126,6 +180,8 @@ const ChangePassword = ({ navigation }) => {
                   hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
                 }}
                 autoCapitalize="none"
+                error={error.confirmPassword ? true : false}
+                errorMessage={error.confirmPassword}
               />
             </View>
             {message && (
@@ -138,14 +194,14 @@ const ChangePassword = ({ navigation }) => {
                 {message}
               </Text>
             )}
-            {error && (
+            {errorMessage && (
               <Text
                 style={[
                   globalStyles.bodyMediumRegular,
                   { color: COLORS.error[500], marginTop: 12 },
                 ]}
               >
-                {error}
+                {errorMessage}
               </Text>
             )}
             <CustomButton
