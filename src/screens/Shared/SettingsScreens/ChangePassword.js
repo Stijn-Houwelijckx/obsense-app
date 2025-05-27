@@ -77,30 +77,44 @@ const ChangePassword = ({ navigation }) => {
       return;
     }
 
-    const response = await apiRequest({
-      method: "PUT",
-      endpoint: "/users/change-password",
-      data: {
-        user: {
-          oldPassword: currentPassword,
-          newPassword: newPassword,
+    try {
+      const response = await apiRequest({
+        method: "PUT",
+        endpoint: "/users/change-password",
+        data: {
+          user: {
+            oldPassword: currentPassword,
+            newPassword: newPassword,
+          },
         },
-      },
-      requiresAuth: true, // Auth required for changing password
-    });
-
-    if (response.status === "success") {
-      setMessage("Password changed successfully.");
-
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } else if (response.status === "fail" && response.data.oldPassword) {
-      setError({
-        currentPassword: response.data.oldPassword,
+        requiresAuth: true, // Auth required for changing password
       });
-    } else {
-      setErrorMessage(response.message);
+
+      if (response.status === "success") {
+        setMessage("Password changed successfully.");
+
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+          setMessage(""); // Clear message after 3 seconds
+        }, 2000);
+      } else if (response.status === "fail" && response.data.oldPassword) {
+        setError({
+          currentPassword: response.data.oldPassword,
+        });
+      } else {
+        setErrorMessage(response.message);
+      }
+    } catch (error) {
+      // If response is available, extract error message or details
+      const errorMsg = error.response?.message || error.message;
+      const errorDetails = error.response?.data?.details;
+
+      console.error("Error changing password:", errorMsg, errorDetails);
+      setErrorMessage(errorMsg || "Something went wrong. Please try again.");
     }
   };
 
