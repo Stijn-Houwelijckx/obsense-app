@@ -9,8 +9,6 @@ import {
   Keyboard,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import API_PATHS from "../../config/apiConfig";
 
 import { apiRequest } from "../../utils/api";
 
@@ -31,13 +29,25 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
   // Other states
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [error, setError] = useState({});
 
   const handleLogin = async () => {
     setErrorMessage(""); // Reset error message
 
     // Validation for step 2 (password, confirm password, privacy policy)
     if (!email || !password) {
-      setErrorMessage("All fields are required.");
+      setError({
+        email: !email ? "Email is required." : "",
+        password: !password ? "Password is required." : "",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError({
+        email: "Please enter a valid email address.",
+      });
       return;
     }
 
@@ -116,9 +126,14 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
                   label="Email Address"
                   placeholder="Email Address"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setError((prev) => ({ ...prev, email: "" })); // Clear error on change
+                  }}
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  error={error.email ? true : false}
+                  errorMessage={error.email}
                 />
 
                 <InputField
@@ -130,7 +145,10 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
                   placeholder="Password"
                   secureTextEntry={false}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setError((prev) => ({ ...prev, password: "" })); // Clear error on change
+                  }}
                   trailingIcon={{
                     visible: (
                       <EyeSlashIcon size={20} stroke={COLORS.neutral[500]} />
@@ -138,6 +156,8 @@ const Login = ({ navigation, handleAuthChangeSuccess }) => {
                     hidden: <EyeIcon size={20} stroke={COLORS.neutral[500]} />,
                   }}
                   autoCapitalize="none"
+                  error={error.password ? true : false}
+                  errorMessage={error.password}
                 />
                 {loading ? (
                   <ActivityIndicator size="large" color={COLORS.primary[500]} />
