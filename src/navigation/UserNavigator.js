@@ -32,7 +32,6 @@ import GenreCollections from "../screens/User/GenreCollections";
 import PurchasedCollections from "../screens/User/PurchasedCollections";
 import Artists from "../screens/User/Artists";
 import ArtistProfile from "../screens/User/ArtistProfile";
-import Details from "../screens/Shared/Details";
 
 // Import Styles
 import {
