@@ -21,6 +21,7 @@ import {
   updateCurrentUser,
   updateCurrentUserProfilePicture,
   deleteCurrentUserAccount,
+  apiRequest,
 } from "../../../utils/api";
 
 // Import Styles
@@ -38,7 +39,8 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
 
   const [user, setUser] = useState(null); // State to store user data
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
-  const [error, setError] = useState(""); // State to manage error
+  const [errorMessage, setErrorMessage] = useState(""); // State to manage error message
+  const [error, setError] = useState({}); // State to manage error
   const [message, setMessage] = useState(""); // State to manage message
 
   const [firstName, setFirstName] = useState("");
@@ -70,30 +72,71 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
   }, []);
 
   const handleSaveChanges = async () => {
-    const updatedUser = {
-      user: {
-        firstName,
-        lastName,
-        username,
-        email,
-      },
-    };
+    setErrorMessage(""); // Reset error message state
+    setError({}); // Reset error state
 
-    const result = await updateCurrentUser(updatedUser);
-    if (result.status === "success") {
-      setUser(result.data.user); // Update user data
-      console.log("User updated successfully:", result.data.user); // Log success message
+    // Validation for required fields
+    if (!firstName || !lastName || !username || !email) {
+      setError({
+        firstName: !firstName ? "First name is required." : "",
+        lastName: !lastName ? "Last name is required." : "",
+        username: !username ? "Username is required." : "",
+        email: !email ? "Email is required." : "",
+      });
+      return; // Exit if validation fails
+    }
 
-      setError(""); // Reset error state
-      setMessage("Saved"); // Set success message
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError({
+        email: "Please enter a valid email address.",
+      });
+      return;
+    }
 
-      // Clear the message after 2 seconds
-      setTimeout(() => {
-        setMessage("");
-      }, 2000);
-    } else {
-      console.log("Error updating user data:", result.message); // Log error message
-      setError(result.message); // Set error message
+    try {
+      const response = await apiRequest({
+        method: "PUT",
+        endpoint: "/users/me",
+        data: {
+          user: {
+            firstName,
+            lastName,
+            username,
+            email,
+          },
+          requiresAuth: true, // Authentication is required for this request
+        },
+      });
+
+      if (response.status === "success") {
+        setUser(response.data.user); // Update user data
+        console.log("User updated successfully:", response.data.user); // Log success message
+
+        setErrorMessage(""); // Reset error state
+        setMessage("Saved"); // Set success message
+
+        // Clear the message after 2 seconds
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      } else if (
+        response.status === "fail" &&
+        (response.data.email || response.data.username)
+      ) {
+        // Handle "fail" response with specific error messages
+        setError({
+          email: response.data.email || "",
+          username: response.data.username || "",
+        });
+      } else {
+        console.log("Error updating user data:", response.message); // Log error message
+        setErrorMessage(response.message); // Set error message
+      }
+    } catch (error) {
+      console.log("Error updating user data:", error.message); // Log error message
+      setErrorMessage(error.message); // Set error message
     }
   };
 
@@ -246,15 +289,25 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
                 label="First Name"
                 placeholder="First Name"
                 value={firstName}
-                onChangeText={setFirstName}
+                onChangeText={(text) => {
+                  setFirstName(text);
+                  setError((prev) => ({ ...prev, firstName: "" })); // Clear error on change
+                }}
                 style={styles.inputField}
+                error={error.firstName ? true : false}
+                errorMessage={error.firstName}
               />
               <InputField
                 label="Last Name"
                 placeholder="Last Name"
                 value={lastName}
-                onChangeText={setLastName}
+                onChangeText={(text) => {
+                  setLastName(text);
+                  setError((prev) => ({ ...prev, lastName: "" })); // Clear error on change
+                }}
                 style={styles.inputField}
+                error={error.lastName ? true : false}
+                errorMessage={error.lastName}
               />
             </View>
             <View style={styles.fieldsContainer}>
@@ -262,7 +315,12 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
                 label="Username"
                 placeholder="Username"
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={(text) => {
+                  setUsername(text);
+                  setError((prev) => ({ ...prev, username: "" })); // Clear error on change
+                }}
+                error={error.username ? true : false}
+                errorMessage={error.username}
               />
             </View>
             <View style={styles.fieldsContainer}>
@@ -270,19 +328,24 @@ const AccountSettings = ({ navigation, handleAuthChangeSuccess }) => {
                 label="Email Address"
                 placeholder="Email Address"
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  setError((prev) => ({ ...prev, email: "" })); // Clear error on change
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                error={error.email ? true : false}
+                errorMessage={error.email}
               />
             </View>
-            {error && (
+            {errorMessage && (
               <Text
                 style={[
                   globalStyles.bodyMediumRegular,
                   { color: COLORS.error[500], marginTop: 12 },
                 ]}
               >
-                {error}
+                {errorMessage}
               </Text>
             )}
             <View style={styles.buttonContainer}>
