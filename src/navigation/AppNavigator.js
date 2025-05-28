@@ -8,6 +8,11 @@ import UserNavigator from "./UserNavigator";
 import AuthNavigator from "./AuthNavigator";
 import RoleSelection from "../screens/Auth/RoleSelection";
 
+import {
+  checkLocationPermission,
+  checkCameraPermission,
+} from "../utils/permissions";
+
 // Import Contexts
 import ContextProvider from "../context/ContexProvider";
 
@@ -37,6 +42,16 @@ const AppNavigator = () => {
         } else {
           const savedRole = await AsyncStorage.setItem("selectedRole", "user");
           setSelectedRole(savedRole);
+        }
+
+        // Check permissions
+        const locationPermission = await checkLocationPermission();
+        const cameraPermission = await checkCameraPermission();
+        if (!locationPermission) {
+          console.warn("Location permission is not granted.");
+        }
+        if (!cameraPermission) {
+          console.warn("Camera permission is not granted.");
         }
       } else {
         setIsLoggedIn(false);
