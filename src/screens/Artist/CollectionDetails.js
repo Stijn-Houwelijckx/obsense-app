@@ -14,6 +14,10 @@ import { useActiveCollection } from "../../context/ActiveCollectionContext";
 
 // Import Utils
 import { getArtistCollectionDetails } from "../../utils/api";
+import {
+  checkLocationPermission,
+  checkCameraPermission,
+} from "../../utils/permissions";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -65,6 +69,16 @@ const CollectionDetails = ({ navigation, route }) => {
       navigation.setParams({ title: collectionDetailsData.title });
     }
   }, [collectionDetailsData, navigation]);
+
+  const checkPermissions = async () => {
+    const locationPermission = await checkLocationPermission();
+    const cameraPermission = await checkCameraPermission();
+    if (!locationPermission || !cameraPermission) {
+      // console.warn("Location or Camera permission is not granted.");
+      return false;
+    }
+    return true;
+  };
 
   if (isLoading) {
     return (
@@ -175,12 +189,17 @@ const CollectionDetails = ({ navigation, route }) => {
           size="large"
           title={`Edit ${collectionDetailsData.type}`}
           onPress={() => {
-            setActiveCollection(collectionDetailsData);
-            navigation.navigate("AR", {
-              screen: "ARScreen",
-              params: {
-                collection: collectionDetailsData,
-              },
+            checkPermissions().then((hasPermissions) => {
+              if (!hasPermissions) {
+                return;
+              }
+              setActiveCollection(collectionDetailsData);
+              navigation.navigate("AR", {
+                screen: "ARScreen",
+                params: {
+                  collection: collectionDetailsData,
+                },
+              });
             });
           }}
           style={{}}
