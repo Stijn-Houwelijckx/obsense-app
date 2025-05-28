@@ -3,7 +3,7 @@ import { PermissionsAndroid, Platform, Alert, Linking } from "react-native";
 export const checkLocationPermission = async () => {
   if (Platform.OS !== "android") return true;
 
-  console.log("Checking location permission...");
+  // console.log("Checking location permission...");
 
   const granted = await PermissionsAndroid.check(
     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
@@ -35,7 +35,7 @@ export const checkCameraPermission = async () => {
     PermissionsAndroid.PERMISSIONS.CAMERA
   );
 
-  console.log("Checking camera permission...");
+  // console.log("Checking camera permission...");
 
   if (!granted) {
     const result = await PermissionsAndroid.request(
