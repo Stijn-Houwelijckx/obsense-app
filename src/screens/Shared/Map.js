@@ -22,6 +22,7 @@ import {
   getOwnedCollections,
   getPlacedObjectsByCollection,
 } from "../../utils/api";
+import { checkLocationPermission } from "../../utils/permissions";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -99,50 +100,6 @@ const Map = ({ navigation }) => {
     fetchPlacedObjects();
   }, [activeCollectionId]);
 
-  // Request location permission and get the user's location
-  const requestLocationPermission = async () => {
-    if (Platform.OS === "android") {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: "Location Permission",
-          message:
-            "This app needs access to your location to show it on the map.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getCurrentLocation();
-        console.log("Location permission granted");
-      } else {
-        console.log("Location permission denied");
-        Alert.alert(
-          "Permission Denied",
-          "Location permission is required to use this feature. Please enable it in your device settings.",
-          [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "Open Settings",
-              onPress: () => {
-                // Open device location settings
-                if (Platform.OS === "android") {
-                  Linking.openSettings();
-                }
-              },
-            },
-          ]
-        );
-      }
-    } else {
-      getCurrentLocation();
-    }
-  };
-
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -194,7 +151,15 @@ const Map = ({ navigation }) => {
   };
 
   useEffect(() => {
-    requestLocationPermission();
+    // Chekc permission, if granted, get the current location
+    const checkAndGetLocation = async () => {
+      const locationPermission = await checkLocationPermission();
+      if (locationPermission) {
+        getCurrentLocation();
+      }
+    };
+
+    checkAndGetLocation(); // Call the function to check permission and get location
   }, []);
 
   const calculateZoomLevel = (latitudeDelta) => {
