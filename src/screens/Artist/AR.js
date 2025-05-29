@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import FastImage from "react-native-fast-image";
 
 // Import ARScene
 import ARScene from "./ARScene";
@@ -80,7 +81,9 @@ const AR = (route) => {
   const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
 
-  const [isReady, setIsReady] = useState(false);
+  const [dependenciesReady, setDependenciesReady] = useState(false);
+  const [objectsPlaced, setObjectsPlaced] = useState(false); // Track if objects are placed
+  const [planeFound, setPlaneFound] = useState(false);
 
   useEffect(() => {
     if (collection?.objects) {
@@ -132,10 +135,10 @@ const AR = (route) => {
       initialHeading
     ) {
       console.log("All dependencies are ready.");
-      setIsReady(true);
+      setDependenciesReady(true);
     } else {
       console.log("Waiting for dependencies...");
-      setIsReady(false);
+      setDependenciesReady(false);
     }
   }, [activeCollectionId, collection, arOriginGeoCoordinates, initialHeading]);
 
@@ -228,6 +231,8 @@ const AR = (route) => {
             })
           );
 
+          setObjectsPlaced(true);
+
           setObjects(arObjects); // Set the objects in AR
         } else {
           console.log("Error fetching objects:", response.message);
@@ -240,11 +245,11 @@ const AR = (route) => {
 
   // Fetch AR origin and placed objects when the component mounts
   useEffect(() => {
-    if (isReady) {
+    if (dependenciesReady) {
       console.log("Fetching and placing objects...");
       fetchAndPlaceObjects();
     }
-  }, [isReady]);
+  }, [dependenciesReady]);
 
   useEffect(() => {
     // Request location permission when the component mounts
@@ -312,9 +317,10 @@ const AR = (route) => {
         "You have unsaved changes. Do you want to save them before exiting?",
         [
           {
-            text: "Cancel",
-            onPress: () => {},
-            style: "cancel",
+            text: "Discard",
+            onPress: () => {
+              cleanupAndGoBack();
+            },
           },
           {
             text: "Save",
@@ -555,12 +561,33 @@ const AR = (route) => {
             setObjects: setObjects, // Allow ARScene to update objects
             currentlySelectedObjectId: currentlySelectedObjectId,
             handleObjectSelect: handleObjectSelect,
+            onPlaneFound: () => {
+              console.log("Plane found");
+              setPlaneFound(true);
+            },
+            onPlaneLost: () => {
+              console.log("Plane lost");
+              setPlaneFound(false);
+            },
           }}
           shadowsEnabled={true}
           pbrEnabled={true}
           hdrEnabled={true}
           bloomEnabled={true}
         />
+      )}
+
+      {(!planeFound || !dependenciesReady) && (
+        <View style={styles.scanOverlay} pointerEvents="auto">
+          <FastImage
+            source={require("../../../assets/animations/ScanARGround.gif")}
+            style={styles.scanImage}
+            resizeMode="contain"
+          />
+          <Text style={[globalStyles.bodyLargeBold, styles.scanText]}>
+            Move your phone slowly from side to side to scan the ground
+          </Text>
+        </View>
       )}
 
       {/* Coordinates Display */}
@@ -727,6 +754,7 @@ const AR = (route) => {
 
 const styles = StyleSheet.create({
   customBackButton: {
+    zIndex: 9999,
     position: "absolute",
     top: 16,
     left: 16,
@@ -845,6 +873,26 @@ const styles = StyleSheet.create({
     height: "75%",
     bottom: 0,
     position: "absolute",
+  },
+  scanOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    zIndex: 9998,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scanImage: {
+    width: 300,
+    aspectRatio: 1,
+  },
+  scanText: {
+    color: COLORS.neutral[50],
+    textAlign: "center",
+    paddingHorizontal: 20,
   },
 });
 

@@ -80,6 +80,10 @@ const AR = (route) => {
   const [objectInfoLoading, setObjectInfoLoading] = useState(false);
   const [reportModalVisible, setReportModalVisible] = useState(false);
 
+  const [dependenciesReady, setDependenciesReady] = useState(false);
+  const [objectsPlaced, setObjectsPlaced] = useState(false); // Track if objects are placed
+  const [planeFound, setPlaneFound] = useState(false);
+
   const getFinalARPosition = async ({
     modelPosition, // { lat, lon }
     savedOrigin, // { lat, lon, heading } -> from DB
@@ -194,10 +198,20 @@ const AR = (route) => {
       currentLocationReady &&
       initialHeadingReady
     ) {
+      console.log("All dependencies are ready.");
+      setDependenciesReady(true);
+    } else {
+      console.log("Waiting for dependencies...");
+      setDependenciesReady(false);
+    }
+  }, [currentLocationReady, initialHeadingReady]);
+
+  useEffect(() => {
+    if (dependenciesReady) {
       console.log("Fetching and placing objects...");
       fetchAndPlaceObjects();
     }
-  }, [currentLocationReady, initialHeadingReady]);
+  }, [dependenciesReady]);
 
   useEffect(() => {
     console.log("Getting AR origin coordinates once..."); // Debug log
@@ -316,12 +330,33 @@ const AR = (route) => {
             objects: objects, // Pass objects to ARScene
             setObjects: setObjects, // Allow ARScene to update objects
             handleObjectSelect: handleObjectSelect,
+            onPlaneFound: () => {
+              console.log("Plane found");
+              setPlaneFound(true);
+            },
+            onPlaneLost: () => {
+              console.log("Plane lost");
+              setPlaneFound(false);
+            },
           }}
           shadowsEnabled={true}
           pbrEnabled={true}
           hdrEnabled={true}
           bloomEnabled={true}
         />
+      )}
+
+      {(!planeFound || !dependenciesReady) && (
+        <View style={styles.scanOverlay} pointerEvents="auto">
+          <FastImage
+            source={require("../../../assets/animations/ScanARGround.gif")}
+            style={styles.scanImage}
+            resizeMode="contain"
+          />
+          <Text style={[globalStyles.bodyLargeBold, styles.scanText]}>
+            Move your phone slowly from side to side to scan the ground
+          </Text>
+        </View>
       )}
 
       {/* Coordinates Display */}
@@ -456,6 +491,7 @@ const AR = (route) => {
 
 const styles = StyleSheet.create({
   customBackButton: {
+    zIndex: 9999,
     position: "absolute",
     top: 16,
     left: 16,
@@ -480,6 +516,26 @@ const styles = StyleSheet.create({
   coordinatesText: {
     color: "white",
     fontSize: 14,
+  },
+  scanOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    zIndex: 9998,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scanImage: {
+    width: 300,
+    aspectRatio: 1,
+  },
+  scanText: {
+    color: COLORS.neutral[50],
+    textAlign: "center",
+    paddingHorizontal: 20,
   },
 });
 

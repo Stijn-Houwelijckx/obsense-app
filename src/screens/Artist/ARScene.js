@@ -16,6 +16,8 @@ const ARScene = ({ sceneNavigator }) => {
     setObjects,
     currentlySelectedObjectId,
     handleObjectSelect,
+    onPlaneFound,
+    onPlaneLost,
   } = sceneNavigator.viroAppProps;
 
   // Function to add a new object to the scene
@@ -123,6 +125,9 @@ const ARScene = ({ sceneNavigator }) => {
 
   const onAnchorFound = (anchor) => {
     setSelectedPlane(anchor);
+    if (onPlaneFound) {
+      onPlaneFound();
+    }
   };
 
   const onAnchorUpdated = (anchor) => {
@@ -131,6 +136,9 @@ const ARScene = ({ sceneNavigator }) => {
 
   const onAnchorRemoved = () => {
     setSelectedPlane(null);
+    if (onPlaneLost) {
+      onPlaneLost();
+    }
   };
 
   return (
