@@ -200,12 +200,10 @@ const AR = (route) => {
   }, [currentLocationReady, initialHeadingReady]);
 
   useEffect(() => {
-    if (!currentLocationReady) {
-      console.log("Getting AR origin coordinates once..."); // Debug log
-      // Set the AR origin when the AR session starts
-      getAROriginGeoCoordinates();
-    }
-  });
+    console.log("Getting AR origin coordinates once..."); // Debug log
+    // Set the AR origin when the AR session starts
+    getAROriginGeoCoordinates();
+  }, []);
 
   useEffect(() => {
     // Get the device's heading when the AR session starts
@@ -239,7 +237,18 @@ const AR = (route) => {
 
       setCurrentLocationReady(true); // Mark current location as ready
     } catch (error) {
-      console.error("Error getting AR origin position: ", error);
+      console.log("Error getting AR origin position: ", error);
+
+      Alert.alert(
+        "Location Error",
+        "Unable to get your current location. Please check your device's location settings and try again.",
+        [
+          {
+            text: "OK",
+            onPress: () => cleanupAndGoBack(),
+          },
+        ]
+      );
     }
   };
 
