@@ -290,7 +290,18 @@ const AR = (route) => {
         longitude: currentLocation.longitude,
       });
     } catch (error) {
-      console.error("Error getting AR origin position: ", error);
+      console.log("Error getting AR origin position: ", error);
+
+      Alert.alert(
+        "Location Error",
+        "Unable to get your current location. Please check your device's location settings and try again.",
+        [
+          {
+            text: "OK",
+            onPress: () => cleanupAndGoBack(),
+          },
+        ]
+      );
     }
   };
 
