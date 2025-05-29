@@ -8,7 +8,7 @@ const getCurrentLocation = () => {
         resolve({ latitude, longitude });
       },
       (error) => {
-        console.error("Error getting current location: ", error);
+        console.log("Error getting current location: ", error);
         reject(error);
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }

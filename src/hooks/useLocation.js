@@ -13,7 +13,7 @@ const useLocation = () => {
         setLocation({ latitude, longitude });
       },
       (error) => {
-        console.error("Error watching location: ", error);
+        console.log("Error watching location: ", error);
         setError(error.message);
       },
       { enableHighAccuracy: true, distanceFilter: 1 }
