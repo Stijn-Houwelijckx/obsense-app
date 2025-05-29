@@ -42,7 +42,7 @@ import {
 } from "../../components/icons";
 
 // Import Components
-import { IconButton, ReportModal } from "../../components/UI";
+import { IconButton, ReportModal, CustomButton } from "../../components/UI";
 
 const reportReasons = [
   "I just don’t like it",
@@ -83,6 +83,7 @@ const AR = (route) => {
   const [dependenciesReady, setDependenciesReady] = useState(false);
   const [objectsPlaced, setObjectsPlaced] = useState(false); // Track if objects are placed
   const [planeFound, setPlaneFound] = useState(false);
+  const [showScanOverlay, setShowScanOverlay] = useState(true);
 
   const getFinalARPosition = async ({
     modelPosition, // { lat, lon }
@@ -337,6 +338,7 @@ const AR = (route) => {
             onPlaneLost: () => {
               console.log("Plane lost");
               setPlaneFound(false);
+              setShowScanOverlay(true); // Show scan overlay when plane is lost
             },
           }}
           shadowsEnabled={true}
@@ -346,7 +348,7 @@ const AR = (route) => {
         />
       )}
 
-      {(!planeFound || !dependenciesReady) && (
+      {(!planeFound || !dependenciesReady) && showScanOverlay === true && (
         <View style={styles.scanOverlay} pointerEvents="auto">
           <FastImage
             source={require("../../../assets/animations/ScanARGround.gif")}
@@ -356,6 +358,33 @@ const AR = (route) => {
           <Text style={[globalStyles.bodyLargeBold, styles.scanText]}>
             Move your phone slowly from side to side to scan the ground
           </Text>
+          {dependenciesReady && (
+            <CustomButton
+              variant="text"
+              size="medium"
+              title="Continue without scanning"
+              onPress={() => {
+                // setShowScanOverlay(false);
+                Alert.alert(
+                  "Continue without scanning",
+                  "Are you sure you want to continue without scanning the ground? Objects may not be placed or shown correctly.",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "Continue",
+                      onPress: () => {
+                        setShowScanOverlay(false);
+                      },
+                    },
+                  ]
+                );
+              }}
+              style={styles.noScanButton}
+            />
+          )}
         </View>
       )}
 
@@ -536,6 +565,10 @@ const styles = StyleSheet.create({
     color: COLORS.neutral[50],
     textAlign: "center",
     paddingHorizontal: 20,
+  },
+  noScanButton: {
+    position: "absolute",
+    bottom: 60,
   },
 });
 
