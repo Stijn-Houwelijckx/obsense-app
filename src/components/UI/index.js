@@ -21,6 +21,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import ReportModal from "./ReportModal";
 import SearchInput from "./SearchInput";
 import SocialButton from "./SocialButton";
+import TutorialOverlay from "./TutorialOverlay";
 import WalletCard from "./WalletCard";
 
 export {
@@ -47,5 +48,6 @@ export {
   ReportModal,
   SearchInput,
   SocialButton,
+  TutorialOverlay,
   WalletCard,
 };
