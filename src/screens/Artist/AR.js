@@ -52,6 +52,7 @@ import {
   DotsVerticalIcon,
   TrashIcon,
   MapIcon,
+  QuestionMarkCircleIcon,
 } from "../../components/icons";
 
 // Import Components
@@ -59,7 +60,23 @@ import {
   IconButton,
   ObjectSelectModal,
   CustomButton,
+  TutorialOverlay,
 } from "../../components/UI";
+
+const videos = [
+  {
+    title: "Welcome to the App",
+    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+  },
+  {
+    title: "How to Navigate",
+    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+  },
+  {
+    title: "Useful Tips",
+    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+  },
+];
 
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
@@ -84,6 +101,7 @@ const AR = (route) => {
   const { location } = useLocation(); // Get location from custom hook
   const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
   const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
+  const [showTutorialOverlay, setShowTutorialOverlay] = useState(false);
 
   const [dependenciesReady, setDependenciesReady] = useState(false);
   const [objectsPlaced, setObjectsPlaced] = useState(false); // Track if objects are placed
@@ -574,6 +592,7 @@ const AR = (route) => {
               console.log("Plane lost");
               setPlaneFound(false);
               setShowScanOverlay(true); // Show scan overlay when plane is lost
+              setShowTutorialOverlay(false); // Hide tutorial overlay when plane is lost
             },
           }}
           shadowsEnabled={true}
@@ -672,13 +691,15 @@ const AR = (route) => {
       </Modal>
 
       {/* Button to go back */}
-      <IconButton
-        icon={ArrowLeftIcon}
-        onPress={handleBackPress}
-        buttonSize={48}
-        iconSize={24}
-        style={styles.customBackButton}
-      />
+      {!showTutorialOverlay && (
+        <IconButton
+          icon={ArrowLeftIcon}
+          onPress={handleBackPress}
+          buttonSize={48}
+          iconSize={24}
+          style={styles.customBackButton}
+        />
+      )}
 
       {/* Button to open settings modal */}
       <IconButton
@@ -688,6 +709,28 @@ const AR = (route) => {
         iconSize={24}
         style={styles.settingsButton}
       />
+
+      {/* Button to open tutorial overlay */}
+      {((planeFound && dependenciesReady) || !showScanOverlay) &&
+        !showTutorialOverlay && (
+          <IconButton
+            icon={QuestionMarkCircleIcon}
+            onPress={() => setShowTutorialOverlay(true)}
+            buttonSize={48}
+            iconSize={24}
+            style={styles.tutorialButton}
+          />
+        )}
+
+      {showTutorialOverlay && (
+        <TutorialOverlay
+          videos={videos}
+          initialIndex={0}
+          autoAdvance={true}
+          allowSkip={true}
+          onClose={() => setShowTutorialOverlay(false)}
+        />
+      )}
 
       {/* Button to add a new object */}
       {!currentlySelectedObjectId && (
@@ -930,6 +973,12 @@ const styles = StyleSheet.create({
   noScanButton: {
     position: "absolute",
     bottom: 60,
+  },
+  tutorialButton: {
+    position: "absolute",
+    top: 76,
+    right: 16,
+    zIndex: 9998,
   },
 });
 
