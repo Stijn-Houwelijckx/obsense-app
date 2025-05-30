@@ -25,6 +25,7 @@ const TutorialOverlay = ({
   initialIndex = 0,
   autoAdvance = true,
   allowSkip = true,
+  loop = false,
   onClose,
 }) => {
   const videoPlayerRef = useRef(null);
@@ -40,6 +41,8 @@ const TutorialOverlay = ({
   const handleVideoEnd = () => {
     if (autoAdvance && currentIndex < videos.length - 1) {
       setCurrentIndex(currentIndex + 1);
+    } else if (loop) {
+      setCurrentIndex(0);
     }
   };
 
@@ -96,74 +99,78 @@ const TutorialOverlay = ({
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
-        {/* Close button */}
-        <IconButton
-          icon={XIcon}
-          onPress={closeOverlay}
-          buttonSize={40}
-          iconSize={20}
-          style={styles.closeButton}
-        />
-
         {/* Title */}
         <Text style={styles.title}>{videos[currentIndex].title}</Text>
+        {/* Video */}
+        <View style={styles.videoContainer}>
+          <View style={styles.controlsContainer}>
+            {/* Speed button */}
+            <TouchableOpacity
+              onPress={cycleSpeed}
+              style={styles.speedContainer}
+            >
+              <Text style={styles.speed}>{playbackRate}x</Text>
+            </TouchableOpacity>
+            {/* Progress Bars */}
+            <View style={styles.progressBarsContainer}>
+              {allowSkip ? (
+                videos.map((video, index) => {
+                  let barWidth = "0%";
+                  let barColor = COLORS.neutral[300];
 
-        {/* Progress Bars */}
-        <View style={styles.progressBarsContainer}>
-          {allowSkip ? (
-            videos.map((video, index) => {
-              let barWidth = "0%";
-              let barColor = COLORS.neutral[300];
-
-              if (index < currentIndex) {
-                barWidth = "100%";
-                barColor = COLORS.primary[500];
-              } else if (index === currentIndex) {
-                const percent = durations[index]
-                  ? (progress[index] / durations[index]) * 100
-                  : 0;
-                barWidth = `${percent}%`;
-                barColor = COLORS.primary[500];
-              }
-              return (
-                <View key={index} style={styles.barContainer}>
+                  if (index < currentIndex) {
+                    barWidth = "100%";
+                    barColor = COLORS.primary[500];
+                  } else if (index === currentIndex) {
+                    const percent = durations[index]
+                      ? (progress[index] / durations[index]) * 100
+                      : 0;
+                    barWidth = `${percent}%`;
+                    barColor = COLORS.primary[500];
+                  }
+                  return (
+                    <View key={index} style={styles.barContainer}>
+                      <View
+                        style={[
+                          styles.bar,
+                          {
+                            width: barWidth,
+                            backgroundColor: barColor,
+                          },
+                        ]}
+                      />
+                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.barContainer}>
                   <View
                     style={[
                       styles.bar,
                       {
-                        width: barWidth,
-                        backgroundColor: barColor,
+                        width: durations[currentIndex]
+                          ? `${
+                              (progress[currentIndex] /
+                                durations[currentIndex]) *
+                              100
+                            }%`
+                          : "0%",
+                        backgroundColor: COLORS.primary[500],
                       },
                     ]}
                   />
                 </View>
-              );
-            })
-          ) : (
-            <View style={styles.barContainer}>
-              <View
-                style={[
-                  styles.bar,
-                  {
-                    width: durations[currentIndex]
-                      ? `${
-                          (progress[currentIndex] / durations[currentIndex]) *
-                          100
-                        }%`
-                      : "0%",
-                    backgroundColor: COLORS.primary[500],
-                  },
-                ]}
-              />
+              )}
             </View>
-          )}
-        </View>
-
-        {/* Video */}
-        <View style={styles.videoContainer}>
-          <TouchableOpacity onPress={cycleSpeed} style={styles.speedContainer}>
-            <Text style={styles.speed}>{playbackRate}x</Text>
-          </TouchableOpacity>
+            {/* Close button */}
+            <IconButton
+              icon={XIcon}
+              onPress={closeOverlay}
+              buttonSize={40}
+              iconSize={20}
+              style={styles.closeButton}
+            />
+          </View>
           <Video
             key={currentIndex}
             ref={videoPlayerRef}
@@ -192,17 +199,6 @@ const TutorialOverlay = ({
             </>
           )}
         </View>
-
-        {/* Skip Button */}
-        <CustomButton
-          variant="filled"
-          size="large"
-          title="Skip Tutorial"
-          onPress={() => {
-            closeOverlay();
-          }}
-          style={styles.skipButton}
-        />
       </View>
     </View>
   );
@@ -222,22 +218,38 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: COLORS.primaryNeutral[800],
-    borderRadius: 8,
+    borderRadius: 24,
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    padding: 32,
+    padding: 16,
+    paddingBottom: 10,
     width: screenWidth - 32, // Adjusted for padding
     height: "90%", // Fixed height for the overlay
   },
+  controlsContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 8,
+    gap: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
 
   progressBarsContainer: {
-    width: screenWidth - 64, // Adjusted for padding
-    marginBottom: 0,
+    flex: 1,
     flexDirection: "row",
     gap: 4,
-    marginBottom: 8,
     borderRadius: 9999,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 4,
+    borderRadius: 9999,
+    overflow: "hidden",
   },
   barContainer: {
     flex: 1,
@@ -250,12 +262,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
 
-  closeButton: {
-    position: "absolute",
-    top: 16,
-    right: 16,
-    zIndex: 10,
-  },
+  closeButton: {},
   closeText: {
     color: "white",
     fontSize: 20,
@@ -263,17 +270,19 @@ const styles = StyleSheet.create({
   title: {
     color: "white",
     fontSize: 18,
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: "center",
   },
   videoContainer: {
     // width: screenWidth - 40, // Adjusted for padding
-    height: "70%",
-    aspectRatio: 3 / 4,
+    height: "95%",
+    aspectRatio: 6 / 11,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: COLORS.neutral[600],
   },
   video: {
     width: "100%",
@@ -285,6 +294,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: "50%",
+    // backgroundColor: "red",
   },
   touchRight: {
     position: "absolute",
@@ -292,23 +302,20 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: "50%",
+    // backgroundColor: "blue",
   },
   skipButton: {
-    marginTop: 20,
+    // marginTop: 20,
   },
   skipText: {
     color: "#000",
     fontWeight: "bold",
   },
   speedContainer: {
-    position: "absolute",
-    top: 4,
-    right: 4,
     backgroundColor: COLORS.primaryNeutral[800],
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 9999,
-    zIndex: 10,
   },
   speed: {
     color: COLORS.neutral[300],
