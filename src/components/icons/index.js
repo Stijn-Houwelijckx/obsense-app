@@ -32,6 +32,7 @@ import MagnifyingGlassIcon from "./MagnifyingGlassIcon";
 import MapIcon from "./MapIcon";
 import PencilSquareIcon from "./PencilSquareIcon";
 import PlusIcon from "./PlusIcon";
+import QuestionMarkCircleIcon from "./QuestionMarkCircleIcon";
 import SaveIcon from "./SaveIcon";
 import ShieldCheckIcon from "./ShieldCheckIcon";
 import TrashIcon from "./TrashIcon";
@@ -73,6 +74,7 @@ export {
   MapIcon,
   PencilSquareIcon,
   PlusIcon,
+  QuestionMarkCircleIcon,
   SaveIcon,
   ShieldCheckIcon,
   TrashIcon,
