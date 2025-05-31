@@ -143,11 +143,6 @@ const Settings = ({ navigation, handleAuthChangeSuccess }) => {
             onPress={() => navigation.navigate("ChangePassword")}
           />
           <NavListItem
-            title="Notifications"
-            icon={BellIcon}
-            onPress={() => navigation.navigate("Notification")}
-          />
-          <NavListItem
             title="Privacy & Cookies"
             icon={LockClosedIcon}
             onPress={() => navigation.navigate("PrivacyCookies")}
