@@ -9,7 +9,7 @@ import {
 import FastImage from "react-native-fast-image";
 
 // Import Utils
-import { getArtistDetails } from "../../utils/api";
+import { getArtistDetails, getOwnedCollections } from "../../utils/api";
 
 // Import Styles
 import { globalStyles } from "../../styles/global";
@@ -27,6 +27,7 @@ const ArtistProfile = ({ navigation, route }) => {
   const [totalLikes, setTotalLikes] = useState(0); // State to store total likes
   const [totalViews, setTotalViews] = useState(0); // State to store total views
   const [totalCollections, setTotalCollections] = useState(0); // State to store total collections
+  const [ownedCollections, setOwnedCollections] = useState([]); // State to store owned collection data
 
   useEffect(() => {
     const getArtistById = async () => {
@@ -59,14 +60,20 @@ const ArtistProfile = ({ navigation, route }) => {
       setIsLoading(false); // Set loading state to false
     };
 
+    const getOwnedCollectionsData = async () => {
+      const result = await getOwnedCollections();
+
+      if (result.status === "success") {
+        setOwnedCollections(result.data.purchases); // Set owned collection data
+        console.log(result.data.purchases); // Log owned collection data
+      } else {
+        console.log("Error getting owned collection data:", result.message); // Log error message
+      }
+    };
+
+    getOwnedCollectionsData(); // Call the function
     getArtistById(); // Call the function
   }, []);
-
-  //   useEffect(() => {
-  //     if (collectionDetailsData?.title) {
-  //       navigation.setParams({ title: collectionDetailsData.title });
-  //     }
-  //   }, [collectionDetailsData, navigation]);
 
   if (isLoading) {
     return (
