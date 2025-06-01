@@ -104,6 +104,10 @@ const ARScene = ({ sceneNavigator }) => {
           rotation={obj.rotation}
           type="GLB"
           onClickState={(clickState) => handleObjectClick(clickState, obj.id)}
+          animation={{
+            run: true,
+            loop: true,
+          }}
         />
       ))}
     </ViroARScene>
