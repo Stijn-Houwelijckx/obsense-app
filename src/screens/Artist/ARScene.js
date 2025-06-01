@@ -178,6 +178,10 @@ const ARScene = ({ sceneNavigator }) => {
           onRotate={(rotateState, rotationFactor) =>
             onRotate(rotateState, rotationFactor, obj.id)
           }
+          animation={{
+            run: true,
+            loop: true,
+          }}
         />
       ))}
     </ViroARScene>
