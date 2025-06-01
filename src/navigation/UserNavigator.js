@@ -188,7 +188,6 @@ const ExploreStack = () => (
       })}
     />
     <Stack.Screen name="Search" component={Search} />
-    <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
 );
 
