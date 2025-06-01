@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ScrollView,
   ActivityIndicator,
   StyleSheet,
   Image,
@@ -76,87 +77,91 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={[globalStyles.container, styles.container]}>
-      {/* Drafts Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Drafts
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Draft Collections")}
-          >
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
-              </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
-            </View>
-          </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Drafts Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Drafts
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Draft Collections")}
+            >
+              <View style={styles.linkContainer}>
+                <Text
+                  style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                >
+                  See all
+                </Text>
+                <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={collectionData
+              .filter((item) => !item.isPublished)
+              .slice(0, 3)}
+            renderItem={({ item }) => (
+              <ArtistCollectionCard
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                published={item.isPublished}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", { collectionId: id })
+                }
+                style={{ width: 140 }} // Custom styles (46%)
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
         </View>
-        <FlatList
-          data={collectionData.filter((item) => !item.isPublished).slice(0, 3)}
-          renderItem={({ item }) => (
-            <ArtistCollectionCard
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              published={item.isPublished}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
-              }
-              style={{ width: 140 }} // Custom styles (46%)
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
 
-      {/* Published Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Published
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Published Collections")}
-          >
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
-              </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
-            </View>
-          </TouchableOpacity>
+        {/* Published Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Published
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Published Collections")}
+            >
+              <View style={styles.linkContainer}>
+                <Text
+                  style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                >
+                  See all
+                </Text>
+                <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={collectionData.filter((item) => item.isPublished).slice(0, 3)}
+            renderItem={({ item }) => (
+              <ArtistCollectionCard
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                published={item.isPublished}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", { collectionId: id })
+                }
+                style={{ width: 140 }} // Custom styles (46%)
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
         </View>
-        <FlatList
-          data={collectionData.filter((item) => item.isPublished).slice(0, 3)}
-          renderItem={({ item }) => (
-            <ArtistCollectionCard
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              published={item.isPublished}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
-              }
-              style={{ width: 140 }} // Custom styles (46%)
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
+      </ScrollView>
     </View>
   );
 };
