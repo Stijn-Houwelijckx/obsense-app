@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Import Styles
@@ -13,41 +20,49 @@ const RoleSelection = ({ navigation, handleAuthChangeSuccess }) => {
   };
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleSelectRole("user")}
+    <View
+      style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 20 }]}
       >
-        <Text style={[globalStyles.headingH6Bold, styles.text]}>
-          Continue as Normal User
-        </Text>
-        <Image
-          source={require("../../../assets/images/UserLoginImage.png")}
-          style={styles.image}
-        />
-      </TouchableOpacity>
-      <Text style={[globalStyles.headingH6Bold, styles.text]}>OR</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleSelectRole("artist")}
-      >
-        <Text style={[globalStyles.headingH6Bold, styles.text]}>
-          Continue as Artist
-        </Text>
-        <Image
-          source={require("../../../assets/images/ArtistLoginImage.png")}
-          style={styles.image}
-        />
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleSelectRole("user")}
+        >
+          <Text style={[globalStyles.headingH6Bold, styles.text]}>
+            Continue as Normal User
+          </Text>
+          <Image
+            source={require("../../../assets/images/UserLoginImage.png")}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+        <Text style={[globalStyles.headingH6Bold, styles.text]}>OR</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleSelectRole("artist")}
+        >
+          <Text style={[globalStyles.headingH6Bold, styles.text]}>
+            Continue as Artist
+          </Text>
+          <Image
+            source={require("../../../assets/images/ArtistLoginImage.png")}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 16,
+    width: "100%",
   },
   image: {
     width: "75%",
