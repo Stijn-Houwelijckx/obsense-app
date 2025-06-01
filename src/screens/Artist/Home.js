@@ -76,8 +76,12 @@ const Home = ({ navigation }) => {
   }
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View
+      style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 20 }]}
+      >
         {/* Drafts Section */}
         <View style={styles.section}>
           <View style={styles.sectionTitleContainer}>

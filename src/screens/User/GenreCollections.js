@@ -18,6 +18,9 @@ import { COLORS } from "../../styles/theme";
 // Import Components
 import { CollectionCard, GenreBadge } from "../../components/UI";
 
+const screenWidth = Dimensions.get("window").width; // Get screen width
+const cardWidth = (screenWidth - 48) / 2; // Calculate card width
+
 const GenreCollections = ({ navigation, route }) => {
   const { genreId } = route.params; // Get genreId from route params
 
@@ -29,9 +32,6 @@ const GenreCollections = ({ navigation, route }) => {
   const [hasMore, setHasMore] = useState(true); // State to manage pagination
 
   const initialLoadDone = useRef(false);
-
-  const screenWidth = Dimensions.get("window").width; // Get screen width
-  const cardWidth = (screenWidth - 48) / 2; // Calculate card width
 
   const loadCollections = useCallback(async () => {
     if (isLoading || !hasMore) return; // If loading or no more data, return

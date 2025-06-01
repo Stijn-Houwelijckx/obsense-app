@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Dimensions,
   StyleSheet,
   ScrollView,
   Alert,
@@ -109,8 +108,12 @@ const Payment = ({ navigation, route }) => {
   }
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View
+      style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 20 }]}
+      >
         <WalletCard tokens={user.tokens} conversionRate="0.05" />
         <View style={styles.section}>
           <FastImage

@@ -75,12 +75,6 @@ const Artists = ({ navigation }) => {
 
         {/* Artists Section */}
         <View style={styles.section}>
-          <View style={styles.sectionTitleContainer}>
-            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-              Artists
-            </Text>
-          </View>
-
           {/* Empty State */}
           {artists.length === 0 && !isLoading && (
             <Text style={[globalStyles.bodyText, styles.emptyText]}>
@@ -138,25 +132,6 @@ const styles = StyleSheet.create({
     gap: 20,
     justifyContent: "flex-start",
     alignItems: "flex-start",
-  },
-  sectionTitleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-  sectionTitle: {
-    color: COLORS.neutral[50],
-  },
-  linkContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingLeft: 5.5,
-    height: 28,
-  },
-  sectionLink: {
-    color: COLORS.neutral[50],
   },
   cardsContainer: {
     flexDirection: "column",

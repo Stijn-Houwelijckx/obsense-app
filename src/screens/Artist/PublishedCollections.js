@@ -3,6 +3,8 @@ import {
   View,
   Text,
   FlatList,
+  ScrollView,
+  Dimensions,
   ActivityIndicator,
   StyleSheet,
 } from "react-native";
@@ -16,6 +18,8 @@ import { COLORS } from "../../styles/theme";
 
 // Import Components
 import { ArtistCollectionCard } from "../../components/UI";
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const PublishedCollections = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data
@@ -48,86 +52,92 @@ const PublishedCollections = ({ navigation }) => {
   }
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      {/* Drafts Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Tours
-          </Text>
-        </View>
-        {/* If empty */}
-        {collectionData.filter(
-          (item) => item.isPublished && item.type === "tour"
-        ).length === 0 && (
-          <Text style={[globalStyles.bodyText, styles.emptyText]}>
-            No tours found.
-          </Text>
-        )}
-        {/* If not empty */}
-        <FlatList
-          data={collectionData.filter(
+    <View
+      style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 20 }]}
+      >
+        {/* Drafts Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Tours
+            </Text>
+          </View>
+          {/* If empty */}
+          {collectionData.filter(
             (item) => item.isPublished && item.type === "tour"
+          ).length === 0 && (
+            <Text style={[globalStyles.bodyText, styles.emptyText]}>
+              No tours found.
+            </Text>
           )}
-          renderItem={({ item }) => (
-            <ArtistCollectionCard
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              published={item.isPublished}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
-              }
-              style={{ width: 140 }} // Custom styles (46%)
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
-
-      {/* Published Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Expositions
-          </Text>
+          {/* If not empty */}
+          <FlatList
+            data={collectionData.filter(
+              (item) => item.isPublished && item.type === "tour"
+            )}
+            renderItem={({ item }) => (
+              <ArtistCollectionCard
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                published={item.isPublished}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", { collectionId: id })
+                }
+                style={{ width: 140 }} // Custom styles (46%)
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
         </View>
-        {/* If empty */}
-        {collectionData.filter(
-          (item) => item.isPublished && item.type === "exposition"
-        ).length === 0 && (
-          <Text style={[globalStyles.bodyText, styles.emptyText]}>
-            No expositions found.
-          </Text>
-        )}
-        {/* If not empty */}
-        <FlatList
-          data={collectionData.filter(
+
+        {/* Published Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Expositions
+            </Text>
+          </View>
+          {/* If empty */}
+          {collectionData.filter(
             (item) => item.isPublished && item.type === "exposition"
+          ).length === 0 && (
+            <Text style={[globalStyles.bodyText, styles.emptyText]}>
+              No expositions found.
+            </Text>
           )}
-          renderItem={({ item }) => (
-            <ArtistCollectionCard
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              published={item.isPublished}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", { collectionId: id })
-              }
-              style={{ width: 140 }} // Custom styles (46%)
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
+          {/* If not empty */}
+          <FlatList
+            data={collectionData.filter(
+              (item) => item.isPublished && item.type === "exposition"
+            )}
+            renderItem={({ item }) => (
+              <ArtistCollectionCard
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                published={item.isPublished}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", { collectionId: id })
+                }
+                style={{ width: 140 }} // Custom styles (46%)
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -139,7 +149,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   section: {
-    width: "100%",
+    width: screenWidth - 32,
     marginTop: 4,
     gap: 20,
     justifyContent: "flex-start",

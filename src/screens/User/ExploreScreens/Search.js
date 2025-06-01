@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions } from "react-native";
 import {
   View,
   FlatList,
@@ -34,9 +33,6 @@ const Search = ({ navigation, route }) => {
   const [hasMoreArtists, setHasMoreArtists] = useState(true);
   const [hasMoreCollections, setHasMoreCollections] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
-  const screenWidth = Dimensions.get("window").width;
-  const cardWidth = screenWidth - 32;
 
   useEffect(() => {
     setSearchResults([]);
@@ -177,7 +173,7 @@ const Search = ({ navigation, route }) => {
           onPress={(id) =>
             navigation.navigate("Artist Profile", { artistId: id })
           }
-          style={{ width: cardWidth }}
+          style={styles.card}
         />
       );
     } else if (item.type === "collection") {
@@ -194,7 +190,7 @@ const Search = ({ navigation, route }) => {
               owned: ownedCollections.some((c) => c.collectionRef._id === id),
             })
           }
-          style={{ width: cardWidth }}
+          style={styles.card}
         />
       );
     }
@@ -203,7 +199,9 @@ const Search = ({ navigation, route }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[globalStyles.container, styles.container]}>
+      <View
+        style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+      >
         <FlatList
           data={searchResults}
           keyExtractor={(item) => item._id}
@@ -233,6 +231,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 16,
     paddingBottom: 60,
+  },
+  card: {
+    width: "100%",
   },
 });
 

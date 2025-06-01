@@ -118,7 +118,10 @@ const Explore = ({ navigation }) => {
               <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
                 Genres
               </Text>
-              <TouchableOpacity onPress={() => console.log("See all genres")}>
+              <TouchableOpacity
+                onPress={() => console.log("See all genres")}
+                style={{ display: "none" }}
+              >
                 <View style={styles.linkContainer}>
                   <Text
                     style={[globalStyles.labelSmallRegular, styles.sectionLink]}

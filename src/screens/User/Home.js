@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 
@@ -114,161 +115,169 @@ const Home = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={[globalStyles.container, styles.container]}>
-      {/* Owned Collections Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Your Tours & Expositions
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("PurchasedCollections")}
-          >
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
+    <View
+      style={[globalStyles.container, styles.container, { paddingBottom: 0 }]}
+    >
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 20 }]}
+      >
+        {/* Owned Collections Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Your Tours & Expositions
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("PurchasedCollections")}
+            >
+              <View style={styles.linkContainer}>
+                <Text
+                  style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                >
+                  See all
+                </Text>
+                <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {ownedCollections.length === 0 && !isLoading && (
+            <View>
+              <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                No owned tours or expositions found
               </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
             </View>
-          </TouchableOpacity>
+          )}
+
+          {/* Display owned collections */}
+          <FlatList
+            data={ownedCollections.slice(0, 3)}
+            renderItem={({ item }) => (
+              <BoughtCollectionCard
+                id={item.collectionRef._id}
+                imageUrl={item.collectionRef.coverImage.filePath}
+                title={item.collectionRef.title}
+                creator={item.collectionRef.createdBy.username}
+                timeLeft={timeLeft[ownedCollections.indexOf(item)]}
+                category={item.collectionRef.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", {
+                    collectionId: id,
+                    owned: true,
+                  })
+                }
+                style={{ width: 140 }} // Custom styles (46%)
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
         </View>
 
-        {ownedCollections.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No owned tours or expositions found
+        {/* Artists Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Top Artists
             </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
+              <View style={styles.linkContainer}>
+                <Text
+                  style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                >
+                  See all
+                </Text>
+                <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              </View>
+            </TouchableOpacity>
           </View>
-        )}
 
-        {/* Display owned collections */}
-        <FlatList
-          data={ownedCollections.slice(0, 3)}
-          renderItem={({ item }) => (
-            <BoughtCollectionCard
-              id={item.collectionRef._id}
-              imageUrl={item.collectionRef.coverImage.filePath}
-              title={item.collectionRef.title}
-              creator={item.collectionRef.createdBy.username}
-              timeLeft={timeLeft[ownedCollections.indexOf(item)]}
-              category={item.collectionRef.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", {
-                  collectionId: id,
-                  owned: true,
-                })
-              }
-              style={{ width: 140 }} // Custom styles (46%)
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
-
-      {/* Artists Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Top Artists
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Artists")}>
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
+          {artists.length === 0 && !isLoading && (
+            <View>
+              <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                No artists found
               </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
             </View>
-          </TouchableOpacity>
+          )}
+
+          {/* Display owned collections */}
+          <FlatList
+            data={artists}
+            renderItem={({ item }) => (
+              <ArtistItem
+                id={item._id}
+                profileImage={item.profilePicture.filePath}
+                username={item.username}
+                collectionCount={item.collectionCount}
+                onPress={(id) =>
+                  navigation.navigate("Artist Profile", { artistId: id })
+                }
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
         </View>
 
-        {artists.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No artists found
+        {/* Trending Collections Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleContainer}>
+            <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
+              Trending Near You
             </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Collections")}
+            >
+              <View style={styles.linkContainer}>
+                <Text
+                  style={[globalStyles.labelSmallRegular, styles.sectionLink]}
+                >
+                  See all
+                </Text>
+                <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
+              </View>
+            </TouchableOpacity>
           </View>
-        )}
 
-        {/* Display owned collections */}
-        <FlatList
-          data={artists}
-          renderItem={({ item }) => (
-            <ArtistItem
-              id={item._id}
-              profileImage={item.profilePicture.filePath}
-              username={item.username}
-              collectionCount={item.collectionCount}
-              onPress={(id) =>
-                navigation.navigate("Artist Profile", { artistId: id })
-              }
-            />
-          )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
-
-      {/* Trending Collections Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionTitleContainer}>
-          <Text style={[globalStyles.headingH6Bold, styles.sectionTitle]}>
-            Trending Near You
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Collections")}>
-            <View style={styles.linkContainer}>
-              <Text
-                style={[globalStyles.labelSmallRegular, styles.sectionLink]}
-              >
-                See all
+          {collections.length === 0 && !isLoading && (
+            <View>
+              <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                No collections found
               </Text>
-              <ChevronRightIcon size={16} stroke={COLORS.neutral[50]} />
             </View>
-          </TouchableOpacity>
-        </View>
-
-        {collections.length === 0 && !isLoading && (
-          <View>
-            <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
-              No collections found
-            </Text>
-          </View>
-        )}
-
-        {/* Display trending collections */}
-        <FlatList
-          data={collections}
-          renderItem={({ item }) => (
-            <CollectionListItem
-              id={item._id}
-              imageUrl={item.coverImage.filePath}
-              title={item.title}
-              creator={item.createdBy.username}
-              category={item.type}
-              onPress={(id) =>
-                navigation.navigate("CollectionDetails", {
-                  collectionId: id,
-                  owned: ownedCollections.some(
-                    (ownedItem) => ownedItem.collectionRef._id === id
-                  ),
-                })
-              }
-            />
           )}
-          keyExtractor={(item) => item._id} // Unique key for each card
-          contentContainerStyle={styles.cardsContainer} // Apply container styles
-          horizontal // Optional: if you want to display the cards horizontally
-          showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
-        />
-      </View>
+
+          {/* Display trending collections */}
+          <FlatList
+            data={collections}
+            renderItem={({ item }) => (
+              <CollectionListItem
+                id={item._id}
+                imageUrl={item.coverImage.filePath}
+                title={item.title}
+                creator={item.createdBy.username}
+                category={item.type}
+                onPress={(id) =>
+                  navigation.navigate("CollectionDetails", {
+                    collectionId: id,
+                    owned: ownedCollections.some(
+                      (ownedItem) => ownedItem.collectionRef._id === id
+                    ),
+                  })
+                }
+              />
+            )}
+            keyExtractor={(item) => item._id} // Unique key for each card
+            contentContainerStyle={styles.cardsContainer} // Apply container styles
+            horizontal // Optional: if you want to display the cards horizontally
+            showsHorizontalScrollIndicator={false} // Optional: remove scroll indicator for horizontal list
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
