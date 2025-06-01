@@ -128,6 +128,18 @@ const ARScene = ({ sceneNavigator }) => {
     if (onPlaneFound) {
       onPlaneFound();
     }
+
+    // Set y psoition of the objects to the plane's position
+    setObjects((prevObjects) =>
+      prevObjects.map((obj) => ({
+        ...obj,
+        position: [
+          obj.position[0],
+          anchor.position[1], // Set y position to the plane's y position
+          obj.position[2],
+        ],
+      }))
+    );
   };
 
   const onAnchorUpdated = (anchor) => {
