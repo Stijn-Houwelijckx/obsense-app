@@ -6,7 +6,6 @@ import {
   Button,
   Modal,
   Text,
-  Switch,
   StyleSheet,
   // TouchableOpacity,
   // ScrollView,
@@ -53,6 +52,7 @@ import {
   TrashIcon,
   MapIcon,
   QuestionMarkCircleIcon,
+  XIcon,
 } from "../../components/icons";
 
 // Import Components
@@ -61,6 +61,7 @@ import {
   ObjectSelectModal,
   CustomButton,
   TutorialOverlay,
+  CustomSwitch,
 } from "../../components/UI";
 
 const videos = [
@@ -757,15 +758,25 @@ const AR = (route) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Settings</Text>
+            <Text style={[styles.modalTitle, globalStyles.bodyLargeBold]}>
+              Settings
+            </Text>
+            <IconButton
+              icon={XIcon}
+              onPress={() => setIsSettingsVisible(false)}
+              buttonSize={40}
+              iconSize={20}
+              style={styles.closeButton}
+            />
             <View style={styles.switchContainer}>
-              <Text>Snap to Surface:</Text>
-              <Switch
+              <CustomSwitch
                 value={snapToSurfaceEnabled}
                 onValueChange={setSnapToSurfaceEnabled}
+                label="Snap to Surface"
+                helperText="Enable or disable snapping objects to detected surfaces"
+                switchPosition="right"
               />
             </View>
-            <Button title="Close" onPress={() => setIsSettingsVisible(false)} />
           </View>
         </View>
       </Modal>
@@ -858,7 +869,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "80%",
     marginBottom: 20,
   },
   saveButton: {
@@ -919,15 +929,14 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     margin: 20,
-    padding: 20,
-    backgroundColor: "white",
+    padding: 16,
+    backgroundColor: COLORS.primaryNeutral[700],
     borderRadius: 10,
     alignItems: "center",
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
     marginBottom: 20,
+    color: COLORS.neutral[200],
   },
   logContainer: {
     maxHeight: 300,
@@ -979,6 +988,11 @@ const styles = StyleSheet.create({
     top: 76,
     right: 16,
     zIndex: 9998,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 12,
+    right: 12,
   },
 });
 
