@@ -6,6 +6,7 @@ import BoughtCollectionCard from "./BoughtCollectionCard";
 import CollectionCard from "./CollectionCard";
 import CollectionListItem from "./CollectionListItem";
 import CustomButton from "./CustomButton";
+import CustomSwitch from "./CustomSwitch";
 import DescriptionTextBox from "./DescriptionTextBox";
 import GenreBadge from "./GenreBadge";
 import GenreItem from "./GenreItem";
@@ -33,6 +34,7 @@ export {
   CollectionCard,
   CollectionListItem,
   CustomButton,
+  CustomSwitch,
   DescriptionTextBox,
   GenreBadge,
   GenreItem,
