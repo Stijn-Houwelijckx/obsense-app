@@ -8,8 +8,8 @@ import {
   Text,
   Switch,
   StyleSheet,
-  TouchableOpacity,
-  ScrollView,
+  // TouchableOpacity,
+  // ScrollView,
 } from "react-native";
 import { ViroARSceneNavigator } from "@reactvision/react-viro";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
@@ -37,8 +37,8 @@ import {
 } from "../../utils/geoUtils";
 
 // Import Hooks
-import useLogs from "../../hooks/useLogs";
-import useLocation from "../../hooks/useLocation";
+// import useLogs from "../../hooks/useLogs";
+// import useLocation from "../../hooks/useLocation";
 
 // Import Styles
 import { COLORS } from "../../styles/theme";
@@ -98,9 +98,9 @@ const AR = (route) => {
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
   // const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  const { location } = useLocation(); // Get location from custom hook
-  const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
-  const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
+  // const { location } = useLocation(); // Get location from custom hook
+  // const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
+  // const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
   const [showTutorialOverlay, setShowTutorialOverlay] = useState(false);
 
   const [dependenciesReady, setDependenciesReady] = useState(false);
@@ -289,7 +289,7 @@ const AR = (route) => {
     const fetchHeading = async () => {
       const heading = await getDeviceHeading(); // Get the device's heading
       setInitialHeading(heading); // Save the initial heading
-      addLog(`Initial heading: \n ${heading} degrees`);
+      // addLog(`Initial heading: \n ${heading} degrees`);
     };
 
     fetchHeading(); // Call the function to fetch heading
@@ -307,11 +307,11 @@ const AR = (route) => {
   const getAROriginGeoCoordinates = async () => {
     try {
       const currentLocation = await getCurrentLocation(); // Get the current location
-      addLog(
-        `AR Origin Coordinates: \n lat: ${currentLocation.latitude.toFixed(
-          6
-        )} \n lon: ${currentLocation.longitude.toFixed(6)}`
-      );
+      // addLog(
+      //   `AR Origin Coordinates: \n lat: ${currentLocation.latitude.toFixed(
+      //     6
+      //   )} \n lon: ${currentLocation.longitude.toFixed(6)}`
+      // );
 
       setAROriginGeoCoordinates({
         latitude: currentLocation.latitude,
@@ -364,7 +364,7 @@ const AR = (route) => {
     // await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
     setCurrentlySelectedObjectId(null); // Reset selected object
-    clearLogs(); // Clear logs when navigating away
+    // clearLogs(); // Clear logs when navigating away
     navigation.goBack(); // Go back to the previous screen
   };
 
@@ -410,11 +410,11 @@ const AR = (route) => {
   const saveObject = async (objectId) => {
     if (!objectId) {
       console.log("No object selected to save.");
-      addLog("No object selected to save.");
+      // addLog("No object selected to save.");
       return;
     }
-    addLog(`===================`);
-    addLog(`Save object with ID: \n ${objectId}`);
+    // addLog(`===================`);
+    // addLog(`Save object with ID: \n ${objectId}`);
     // console.log("Save object with ID: ", objectId);
     // console.log(
     //   "Position: ",
@@ -423,36 +423,36 @@ const AR = (route) => {
     const currentObject = objects.find((obj) => obj.id === objectId);
     if (!currentObject) return null;
 
-    addLog(
-      `Position: \n x: ${JSON.stringify(
-        currentObject.position[0].toFixed(6)
-      )}\n y: ${JSON.stringify(
-        currentObject.position[1].toFixed(6)
-      )}\n z: ${JSON.stringify(currentObject.position[2].toFixed(6))}`
-    );
-    // console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
-    addLog(
-      `Scale: \n x: ${JSON.stringify(
-        currentObject.scale[0]
-      )} \n y: ${JSON.stringify(currentObject.scale[1])} \n z: ${JSON.stringify(
-        currentObject.scale[2]
-      )}`
-    );
+    // addLog(
+    //   `Position: \n x: ${JSON.stringify(
+    //     currentObject.position[0].toFixed(6)
+    //   )}\n y: ${JSON.stringify(
+    //     currentObject.position[1].toFixed(6)
+    //   )}\n z: ${JSON.stringify(currentObject.position[2].toFixed(6))}`
+    // );
+    // // console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
+    // addLog(
+    //   `Scale: \n x: ${JSON.stringify(
+    //     currentObject.scale[0]
+    //   )} \n y: ${JSON.stringify(currentObject.scale[1])} \n z: ${JSON.stringify(
+    //     currentObject.scale[2]
+    //   )}`
+    // );
     // console.log(
     //   "Rotation: ",
     //   objects.find((obj) => obj.id === objectId).rotation
     // );
-    addLog(
-      `Rotation: \n x: ${JSON.stringify(
-        currentObject.rotation[0]
-      )} \n y: ${JSON.stringify(
-        currentObject.rotation[1]
-      )} \n z: ${JSON.stringify(currentObject.rotation[2])}`
-    );
+    // addLog(
+    //   `Rotation: \n x: ${JSON.stringify(
+    //     currentObject.rotation[0]
+    //   )} \n y: ${JSON.stringify(
+    //     currentObject.rotation[1]
+    //   )} \n z: ${JSON.stringify(currentObject.rotation[2])}`
+    // );
 
     // Get the current heading
     const heading = await getDeviceHeading();
-    addLog(`Device heading: \n ${heading} degrees`);
+    // addLog(`Device heading: \n ${heading} degrees`);
 
     const geoCoordinates = await calculateGeoCoordinates(
       currentObject.position,
@@ -472,42 +472,42 @@ const AR = (route) => {
     );
 
     if (!payload) {
-      addLog("No payload to save.");
+      // addLog("No payload to save.");
       console.log("No payload to save.");
       return;
     }
 
-    addLog(
-      `Payload to save: \n { \n collectionId: \n ${JSON.stringify(
-        payload.placedObject.collectionId
-      )} \n deviceHeading: \n ${JSON.stringify(
-        payload.placedObject.deviceHeading
-      )} degrees \n\n objectId: \n ${JSON.stringify(
-        payload.placedObject.objectId
-      )} \n\n placedObjectId: \n ${JSON.stringify(
-        payload.placedObject.placedObjectId
-      )} \n\n position: \n { \n lat: ${JSON.stringify(
-        payload.placedObject.position.lat.toFixed(6)
-      )} \n lon: ${JSON.stringify(
-        payload.placedObject.position.lon.toFixed(6)
-      )} \n\n x: ${JSON.stringify(
-        payload.placedObject.position.x.toFixed(6)
-      )} \n y: ${JSON.stringify(
-        payload.placedObject.position.y.toFixed(6)
-      )} \n z: ${JSON.stringify(
-        payload.placedObject.position.z.toFixed(6)
-      )} \n } \n\n rotation: \n { \n x: ${JSON.stringify(
-        payload.placedObject.rotation.x
-      )} \n y: ${JSON.stringify(
-        payload.placedObject.rotation.y
-      )} \n z: ${JSON.stringify(
-        payload.placedObject.rotation.z
-      )} \n } \n\n scale: \n { \n x: ${JSON.stringify(
-        payload.placedObject.scale.x
-      )} \n y: ${JSON.stringify(
-        payload.placedObject.scale.y
-      )} \n z: ${JSON.stringify(payload.placedObject.scale.z)} \n } \n } \n`
-    );
+    // addLog(
+    //   `Payload to save: \n { \n collectionId: \n ${JSON.stringify(
+    //     payload.placedObject.collectionId
+    //   )} \n deviceHeading: \n ${JSON.stringify(
+    //     payload.placedObject.deviceHeading
+    //   )} degrees \n\n objectId: \n ${JSON.stringify(
+    //     payload.placedObject.objectId
+    //   )} \n\n placedObjectId: \n ${JSON.stringify(
+    //     payload.placedObject.placedObjectId
+    //   )} \n\n position: \n { \n lat: ${JSON.stringify(
+    //     payload.placedObject.position.lat.toFixed(6)
+    //   )} \n lon: ${JSON.stringify(
+    //     payload.placedObject.position.lon.toFixed(6)
+    //   )} \n\n x: ${JSON.stringify(
+    //     payload.placedObject.position.x.toFixed(6)
+    //   )} \n y: ${JSON.stringify(
+    //     payload.placedObject.position.y.toFixed(6)
+    //   )} \n z: ${JSON.stringify(
+    //     payload.placedObject.position.z.toFixed(6)
+    //   )} \n } \n\n rotation: \n { \n x: ${JSON.stringify(
+    //     payload.placedObject.rotation.x
+    //   )} \n y: ${JSON.stringify(
+    //     payload.placedObject.rotation.y
+    //   )} \n z: ${JSON.stringify(
+    //     payload.placedObject.rotation.z
+    //   )} \n } \n\n scale: \n { \n x: ${JSON.stringify(
+    //     payload.placedObject.scale.x
+    //   )} \n y: ${JSON.stringify(
+    //     payload.placedObject.scale.y
+    //   )} \n z: ${JSON.stringify(payload.placedObject.scale.z)} \n } \n } \n`
+    // );
 
     // Post the payload to the API
     try {
@@ -515,10 +515,10 @@ const AR = (route) => {
 
       if (response.status === "success") {
         console.log("Object updated successfully:", response.data);
-        addLog("Object saved successfully.");
+        // addLog("Object saved successfully.");
       } else if (response.status === "created") {
         console.log("Object created successfully:", response.data);
-        addLog("Object created successfully.");
+        // addLog("Object created successfully.");
 
         // Update the placedObjectId with the new _id from the response
         const newPlacedObjectId = response.data.placedObject._id;
@@ -534,11 +534,11 @@ const AR = (route) => {
       } else {
         console.error("Failed to save object:", response.message);
         console.log(response);
-        addLog(`Failed to save object: ${response.message}`);
+        // addLog(`Failed to save object: ${response.message}`);
       }
     } catch (error) {
       console.error("Error saving object:", error.message);
-      addLog(`Error saving object: ${error.message}`);
+      // addLog(`Error saving object: ${error.message}`);
     }
 
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
@@ -550,14 +550,14 @@ const AR = (route) => {
       const response = await deletePlacedObject(objectId);
       if (response.status === "success" || response.data.code === 404) {
         console.log("Object deleted successfully:", response.data);
-        addLog("Object deleted successfully.");
+        // addLog("Object deleted successfully.");
       } else {
         console.error("Failed to delete object:", response.message);
-        addLog(`Failed to delete object: ${response.message}`);
+        // addLog(`Failed to delete object: ${response.message}`);
       }
     } catch (error) {
       console.error("Error deleting object:", error.message);
-      addLog(`Error deleting object: ${error.message}`);
+      // addLog(`Error deleting object: ${error.message}`);
     }
   };
 
@@ -643,25 +643,25 @@ const AR = (route) => {
       )}
 
       {/* Coordinates Display */}
-      <View style={styles.coordinatesContainer}>
+      {/* <View style={styles.coordinatesContainer}>
         <Text style={styles.coordinatesText}>
           Latitude: {location.latitude.toFixed(6)}
         </Text>
         <Text style={styles.coordinatesText}>
           Longitude: {location.longitude.toFixed(6)}
         </Text>
-      </View>
+      </View> */}
 
       {/* Button to Show Logs */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.showLogsButton}
         onPress={() => setIsLogsVisible(true)}
       >
         <Text style={styles.showLogsButtonText}>Show Logs</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* Logs Modal */}
-      <Modal
+      {/* <Modal
         visible={isLogsVisible}
         transparent={true}
         animationType="slide"
@@ -688,7 +688,7 @@ const AR = (route) => {
             </View>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
 
       {/* Button to go back */}
       {!showTutorialOverlay && (
