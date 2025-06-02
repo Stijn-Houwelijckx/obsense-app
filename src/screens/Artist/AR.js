@@ -87,7 +87,10 @@ const AR = (route) => {
   const [objectList, setObjectList] = useState([]);
 
   const [selectedObject, setSelectedObject] = useState(null);
+
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
+  const [animationsEnabled, setAnimationsEnabled] = useState(true); // State for animations
+
   const [isObjectModalVisible, setIsObjectModalVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
   const [currentlySelectedObjectId, setCurrentlySelectedObjectId] =
@@ -581,6 +584,7 @@ const AR = (route) => {
             selectedObject: selectedObject,
             onObjectSelected: setSelectedObject,
             snapToSurfaceEnabled: snapToSurfaceEnabled,
+            animationsEnabled: animationsEnabled,
             objects: objects, // Pass objects to ARScene
             setObjects: setObjects, // Allow ARScene to update objects
             currentlySelectedObjectId: currentlySelectedObjectId,
@@ -776,6 +780,13 @@ const AR = (route) => {
                 helperText="Enable or disable snapping objects to detected surfaces"
                 switchPosition="right"
               />
+              <CustomSwitch
+                value={animationsEnabled}
+                onValueChange={setAnimationsEnabled}
+                label="Animations"
+                helperText="Enable or disable animations for objects"
+                switchPosition="right"
+              />
             </View>
           </View>
         </View>
@@ -866,7 +877,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   switchContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
+    gap: 20,
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,

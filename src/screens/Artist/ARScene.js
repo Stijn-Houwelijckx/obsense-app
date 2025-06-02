@@ -12,6 +12,7 @@ const ARScene = ({ sceneNavigator }) => {
   const [selectedPlane, setSelectedPlane] = useState(null); // Track the selected plane
   const {
     snapToSurfaceEnabled,
+    animationsEnabled,
     objects,
     setObjects,
     currentlySelectedObjectId,
@@ -191,7 +192,7 @@ const ARScene = ({ sceneNavigator }) => {
             onRotate(rotateState, rotationFactor, obj.id)
           }
           animation={{
-            run: true,
+            run: animationsEnabled ? true : false,
             loop: true,
           }}
         />
