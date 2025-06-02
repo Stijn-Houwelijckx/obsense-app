@@ -90,6 +90,7 @@ const AR = (route) => {
 
   const [snapToSurfaceEnabled, setSnapToSurfaceEnabled] = useState(true); // State for snapping
   const [animationsEnabled, setAnimationsEnabled] = useState(true); // State for animations
+  const [spawnAtAROrigin, setSpawnAtAROrigin] = useState(false); // State for spawning at AR origin
 
   const [isObjectModalVisible, setIsObjectModalVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false); // State for modal visibility
@@ -585,6 +586,7 @@ const AR = (route) => {
             onObjectSelected: setSelectedObject,
             snapToSurfaceEnabled: snapToSurfaceEnabled,
             animationsEnabled: animationsEnabled,
+            spawnAtAROrigin: spawnAtAROrigin,
             objects: objects, // Pass objects to ARScene
             setObjects: setObjects, // Allow ARScene to update objects
             currentlySelectedObjectId: currentlySelectedObjectId,
@@ -785,6 +787,13 @@ const AR = (route) => {
                 onValueChange={setAnimationsEnabled}
                 label="Animations"
                 helperText="Enable or disable animations for objects"
+                switchPosition="right"
+              />
+              <CustomSwitch
+                value={spawnAtAROrigin}
+                onValueChange={setSpawnAtAROrigin}
+                label="Spawn at AR Origin"
+                helperText="Enable or disable spawning objects at the AR origin"
                 switchPosition="right"
               />
             </View>

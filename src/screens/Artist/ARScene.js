@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   ViroARScene,
   Viro3DObject,
@@ -13,6 +13,7 @@ const ARScene = ({ sceneNavigator }) => {
   const {
     snapToSurfaceEnabled,
     animationsEnabled,
+    spawnAtAROrigin,
     objects,
     setObjects,
     currentlySelectedObjectId,
@@ -21,14 +22,33 @@ const ARScene = ({ sceneNavigator }) => {
     onPlaneLost,
   } = sceneNavigator.viroAppProps;
 
+  const arSceneRef = useRef(null);
+
   // Function to add a new object to the scene
-  const addObjectToScene = (selectedObject) => {
+  const addObjectToScene = async (selectedObject) => {
+    let spawnPosition = [0, 0, -0.5]; // Default spawn position
+    if (!spawnAtAROrigin) {
+      if (!arSceneRef.current) return;
+
+      // Get the camera orientation and position
+      const camera = await arSceneRef.current.getCameraOrientationAsync();
+      const { position, forward } = camera; // position: [x, y, z], forward: [x, y, z]
+
+      // Calculate a point 0.5m in front of the camera
+      const distance = 0.5;
+      spawnPosition = [
+        position[0] + forward[0] * distance,
+        position[1] + forward[1] * distance,
+        position[2] + forward[2] * distance,
+      ];
+    }
+
     setObjects((prevObjects) => [
       ...prevObjects,
       {
         ...selectedObject,
         objectId: selectedObject.id,
-        position: [0, 0, -0.5],
+        position: spawnPosition,
         scale: [0.1, 0.1, 0.1],
         rotation: [0, 0, 0],
         id: Date.now(),
@@ -155,7 +175,7 @@ const ARScene = ({ sceneNavigator }) => {
   };
 
   return (
-    <ViroARScene>
+    <ViroARScene ref={arSceneRef}>
       <ViroAmbientLight color="#ffffff" intensity={200} />
 
       <ViroLightingEnvironment
