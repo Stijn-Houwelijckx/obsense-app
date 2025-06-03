@@ -101,6 +101,15 @@ const Home = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
+
+          {collectionData.filter((item) => !item.isPublished).length === 0 ? (
+            <View>
+              <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                No drafts available. Create a new collection to get started.
+              </Text>
+            </View>
+          ) : null}
+
           <FlatList
             data={collectionData
               .filter((item) => !item.isPublished)
@@ -144,6 +153,17 @@ const Home = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
+
+          {collectionData.filter((item) => item.isPublished).length === 0 ? (
+            <View>
+              <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
+                No published collections yet. Create a new collection to get
+                started or publish your drafts.
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Render the collection cards */}
           <FlatList
             data={collectionData.filter((item) => item.isPublished).slice(0, 3)}
             renderItem={({ item }) => (
@@ -208,6 +228,9 @@ const styles = StyleSheet.create({
   },
   textColor: {
     color: COLORS.neutral[50],
+  },
+  emptyText: {
+    color: COLORS.neutral[300],
   },
 });
 

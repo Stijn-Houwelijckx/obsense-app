@@ -94,7 +94,11 @@ const ArtistProfile = ({ navigation, route }) => {
           <View style={styles.artistInfo}>
             <FastImage
               style={styles.image}
-              source={{ uri: artist.profilePicture.filePath }}
+              source={
+                artist.profilePicture.filePath
+                  ? { uri: artist.profilePicture.filePath }
+                  : require("../../../assets/profileImages/Default.jpg")
+              }
             />
             <Text style={[globalStyles.headingH6Bold, styles.text]}>
               {artist.username}

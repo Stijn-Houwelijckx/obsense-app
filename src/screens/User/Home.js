@@ -141,7 +141,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {ownedCollections.length === 0 && !isLoading && (
+          {ownedCollections.length === 0 && (
             <View>
               <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
                 No owned tours or expositions found
@@ -194,7 +194,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {artists.length === 0 && !isLoading && (
+          {artists.length === 0 && (
             <View>
               <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
                 No artists found
@@ -243,7 +243,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {collections.length === 0 && !isLoading && (
+          {collections.length === 0 && (
             <View>
               <Text style={[globalStyles.bodySmallItalic, styles.emptyText]}>
                 No collections found

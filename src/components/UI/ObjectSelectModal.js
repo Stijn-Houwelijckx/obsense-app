@@ -81,27 +81,55 @@ const ObjectSelectModal = ({ visible, onClose, objects, onSelect, style }) => {
                   </Text>
                 </TouchableOpacity>
               ))}
+
+              {objects.length === 0 && (
+                <View>
+                  <Text
+                    style={[
+                      globalStyles.bodySmallItalic,
+                      { color: COLORS.neutral[300] },
+                    ]}
+                  >
+                    No objects available.
+                  </Text>
+                </View>
+              )}
             </ScrollView>
           ) : (
-            <FlatList
-              data={objects}
-              keyExtractor={(item) => item.id}
-              numColumns={3}
-              style={{ maxHeight: 300, width: "100%" }}
-              contentContainerStyle={modalStyles.gridContainer}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={modalStyles.gridItem}
-                  onPress={() => onSelect(item)}
-                >
-                  <FastImage
-                    style={modalStyles.gridImage}
-                    source={item.thumbnail}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
+            <View>
+              <FlatList
+                data={objects}
+                keyExtractor={(item) => item.id}
+                numColumns={3}
+                style={{ maxHeight: 300, width: "100%" }}
+                contentContainerStyle={modalStyles.gridContainer}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={modalStyles.gridItem}
+                    onPress={() => onSelect(item)}
+                  >
+                    <FastImage
+                      style={modalStyles.gridImage}
+                      source={item.thumbnail}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+
+              {objects.length === 0 && (
+                <View>
+                  <Text
+                    style={[
+                      globalStyles.bodySmallItalic,
+                      { color: COLORS.neutral[300] },
+                    ]}
+                  >
+                    No objects available.
+                  </Text>
+                </View>
               )}
-            />
+            </View>
           )}
         </Pressable>
       </Pressable>
