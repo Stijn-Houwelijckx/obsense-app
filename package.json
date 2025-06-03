@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-native": "0.73.3",
     "react-native-compass-heading": "^2.0.1",
+    "react-native-dotenv": "^3.4.11",
     "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "^2.20.2",
     "react-native-global-font": "^1.0.3",
