@@ -1,7 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API_PATHS from "../config/apiConfig";
-const API_BASE_URL = "https://obsense-api.onrender.com/api/v1";
+import { API_BASE_URL } from "@env";
 
 // Function to change the current user's password from the API
 const changeCurrentUserPassword = async (oldPassword, newPassword) => {

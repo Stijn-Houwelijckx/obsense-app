@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://obsense-api.onrender.com/api/v1";
+import { API_BASE_URL } from "@env";
 
 const API_PATHS = {
   // Auth Endpoints
