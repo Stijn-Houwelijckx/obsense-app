@@ -1,85 +1,106 @@
-# Viro Starter Kit
+# Obsense App
 
-This is a new [**React Native**](https://reactnative.dev) project, set up with `@reactvision/react-viro`.
+Obsense is an immersive AR (Augmented Reality) mobile application that allows 3D-artists to create, place, and edit digital art collections in AR. Users can browse, purchase, and experience these collections in augmented reality.
 
-## How to Install Viro in an existing project?
+## Features
 
-If you are integrating ViroReact into an existing project, have a look at our [Installation instructions](https://viro-community.readme.io/docs/installation-instructions).
+### Artist Features
 
-## Getting Started
+- Artist authentication
+- Place 3D-objects in AR collections
+- View and interact with collections in AR
+- User profile and settings management
 
-> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions. Stop before you get to the `Creating a new application` section; we have done that for you!
+### User Features
 
-## Step 1: Install Dependencies
+- User authentication
+- Browse collections, artists, and genres
+- Search and purchase collections
+- Token-based purchasing system
+- View and interact with collections in AR
+- User profile and settings management
+- Reporting
 
-```bash
-npm install
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone git@github.com:Stijn-Houwelijckx/obsense-app.git
+   cd obsense-app
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Start the Metro bundler:**
+
+   ```bash
+   npx react-native start
+   ```
+
+4. **Prepare your Android device:**
+
+   - Connect your Android device to your computer with a USB cable.
+   - Enable Developer Mode and USB debugging on your device.
+   - In a terminal, run:
+
+   ```bash
+   adb devices
+   ```
+
+   Approve the connection on your device if prompted.
+
+5. **Run the app on Android:**
+
+   Choose the option to run for Android
+
+   > **Note:** The app requires a physical device because it uses AR features that are not supported in emulators.
+
+## Usage
+
+### For Artists
+
+- Sign up as an artist
+- Edit your own collections
+- Place 3D-objects in AR collections
+- View and interact with your collections in AR
+
+### For Users
+
+- Sign up as a user
+- Browse collections, artists, and genres
+- Purchase collections using tokens
+- View and interact with collections in AR
+
+## Project Structure
+
+```
+src/
+  components/      # Reusable UI components
+  context/         # React context providers
+  navigation/      # Navigation stacks and tab navigators
+  screens/         # App screens (User, Artist, Shared)
+  styles/          # Theme and global styles
+  utils/           # API, helpers, and utility functions
+  assets/          # Images, animations, and videos
 ```
 
-### iOS only:
+## Technologies
 
-```bash
-cd ios
-pod install
-cd ..
-```
+- React Native
+- @reactvision/react-viro (AR)
+- React Navigation
+- AsyncStorage
+- Axios
+- FastImage
+- Custom UI components
 
-## Step 2: Start the Metro Server
+## License
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-npm start
-```
-
-## Step 3: Start your Application
-
-> **Warning**: Due to limitations of the Apple Simulator and the Android Emulator, you must run your project on a physical device.
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-```bash
-# iOS
-npx react-native run-ios
-# Android
-npx react-native run-android
-```
-
-If everything is set up _correctly_, you should see your new app running on you device.
-
-#### Install CocoaPods
-
-```bash
-cd ios
-pod install
-cd ..
-```
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 4: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-## Next Steps
-
-Check out our [documentation](https://viro-community.readme.io/) for guides, examples, and more!
-
-## Need help?
-
-[Reach us in Discord.](https://discord.gg/YfxDBGTxvG) or submit an issue!
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
