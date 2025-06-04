@@ -6,9 +6,18 @@ Obsense is an immersive AR (Augmented Reality) mobile application that allows 3D
 
 ## Screenshots
 
-![Home Screen](assets/images/HomeScreen.jpg)
-![Collection Details](assets/images/CollectionDetails.jpg)
-![AR Collection View](assets/images/ARView.jpg)
+<table>
+  <tr>
+    <td><img src="assets/images/HomeScreen.jpg" alt="Home Screen" width="250"/></td>
+    <td><img src="assets/images/CollectionDetails.jpg" alt="Collection Details" width="250"/></td>
+    <td><img src="assets/images/ARView.jpg" alt="AR Collection View" width="250"/></td>
+  </tr>
+  <tr>
+    <td align="center">Home Screen</td>
+    <td align="center">Collection Details</td>
+    <td align="center">AR Collection View</td>
+  </tr>
+</table>
 
 ### Artist Features
 
