@@ -119,3 +119,44 @@ src/
 ## License
 
 This project is licensed under the Obsense Proprietary License. See the [LICENSE](LICENSE) file for details.
+
+## Privacy Policy
+
+**Obsense**  
+_Last updated: June 2025_
+
+This privacy policy applies to the Obsense mobile application, developed as part of a bachelor thesis project at Thomas More University, Belgium.
+
+### 1. Information We Collect
+
+- **Personal Data:**  
+  When you create an account, we collect personal information such as your name, email address, and password. This information is used to create and manage your account and to provide access to app features.
+
+- **Camera Access:**  
+  The app uses your device’s camera solely for augmented reality (AR) functionality. No camera images or video are stored or transmitted by the app.
+
+- **Location Data:**  
+  When you place AR objects, the app collects your device’s location (latitude and longitude) and sends this information to our backend server. This data is used to associate AR objects with real-world locations and may be stored on our servers.
+
+### 2. How We Use Your Information
+
+- Personal data is used to create and manage your account, authenticate users, and provide access to app features.
+- Camera and location access are used exclusively to provide AR features within the app.
+- Location data is stored on our backend to enable location-based AR experiences.
+- No data is shared with third parties except as required to provide app functionality.
+
+### 3. Third-Party Services
+
+- The app may use third-party services (such as Google Maps for map features) which have their own privacy policies.  
+  We do not share any user data with these services beyond what is necessary for app functionality.
+
+### 4. Children’s Privacy
+
+- The app is intended for general audiences and does not knowingly collect information from children.
+
+### 5. Contact
+
+If you have any questions about this privacy policy or the app, please contact:
+
+**Obsense Email**  
+Email: info@obsense.be
