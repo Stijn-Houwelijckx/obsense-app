@@ -66,16 +66,36 @@ import {
 
 const videos = [
   {
-    title: "Welcome to the App",
-    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+    title: "Add an Object",
+    source: require("../../../assets/videos/tutorials/AR/PlaceObject.mp4"),
   },
   {
-    title: "How to Navigate",
-    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+    title: "Move the Object",
+    source: require("../../../assets/videos/tutorials/AR/MoveObject.mp4"),
   },
   {
-    title: "Useful Tips",
-    source: require("../../../assets/videos/tutorials/AR/ARVideoCropped.mp4"),
+    title: "Scale object by pinching",
+    source: require("../../../assets/videos/tutorials/AR/ScaleObject.mp4"),
+  },
+  {
+    title: "Rotate object by making a circular gesture",
+    source: require("../../../assets/videos/tutorials/AR/RotateObject.mp4"),
+  },
+  {
+    title: "Save the Object",
+    source: require("../../../assets/videos/tutorials/AR/SaveObject.mp4"),
+  },
+  {
+    title: "Remove the Object",
+    source: require("../../../assets/videos/tutorials/AR/DeleteObject.mp4"),
+  },
+  {
+    title: "Disable snap to surface to place object in the air",
+    source: require("../../../assets/videos/tutorials/AR/SnapToSurface.mp4"),
+  },
+  {
+    title: "Turn of animations",
+    source: require("../../../assets/videos/tutorials/AR/DisableAnimation.mp4"),
   },
 ];
 
