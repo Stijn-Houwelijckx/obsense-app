@@ -126,75 +126,71 @@ const TutorialOverlay = ({
         {/* Title */}
         <Text style={styles.title}>{videos[currentIndex].title}</Text>
         {/* Video */}
-        <View style={styles.videoContainer}>
-          <View style={styles.controlsContainer}>
-            {/* Speed button */}
-            <TouchableOpacity
-              onPress={cycleSpeed}
-              style={styles.speedContainer}
-            >
-              <Text style={styles.speed}>{playbackRate}x</Text>
-            </TouchableOpacity>
-            {/* Progress Bars */}
-            <View style={styles.progressBarsContainer}>
-              {allowSkip ? (
-                videos.map((video, index) => {
-                  let barWidth = "0%";
-                  let barColor = COLORS.neutral[300];
+        <View style={styles.controlsContainer}>
+          {/* Speed button */}
+          <TouchableOpacity onPress={cycleSpeed} style={styles.speedContainer}>
+            <Text style={styles.speed}>{playbackRate}x</Text>
+          </TouchableOpacity>
+          {/* Progress Bars */}
+          <View style={styles.progressBarsContainer}>
+            {allowSkip ? (
+              videos.map((video, index) => {
+                let barWidth = "0%";
+                let barColor = COLORS.neutral[300];
 
-                  if (index < currentIndex) {
-                    barWidth = "100%";
-                    barColor = COLORS.primary[500];
-                  } else if (index === currentIndex) {
-                    const percent = durations[index]
-                      ? (progress[index] / durations[index]) * 100
-                      : 0;
-                    barWidth = `${percent}%`;
-                    barColor = COLORS.primary[500];
-                  }
-                  return (
-                    <View key={index} style={styles.barContainer}>
-                      <View
-                        style={[
-                          styles.bar,
-                          {
-                            width: barWidth,
-                            backgroundColor: barColor,
-                          },
-                        ]}
-                      />
-                    </View>
-                  );
-                })
-              ) : (
-                <View style={styles.barContainer}>
-                  <View
-                    style={[
-                      styles.bar,
-                      {
-                        width: durations[currentIndex]
-                          ? `${
-                              (progress[currentIndex] /
-                                durations[currentIndex]) *
-                              100
-                            }%`
-                          : "0%",
-                        backgroundColor: COLORS.primary[500],
-                      },
-                    ]}
-                  />
-                </View>
-              )}
-            </View>
-            {/* Close button */}
-            <IconButton
-              icon={XIcon}
-              onPress={closeOverlay}
-              buttonSize={40}
-              iconSize={20}
-              style={styles.closeButton}
-            />
+                if (index < currentIndex) {
+                  barWidth = "100%";
+                  barColor = COLORS.primary[500];
+                } else if (index === currentIndex) {
+                  const percent = durations[index]
+                    ? (progress[index] / durations[index]) * 100
+                    : 0;
+                  barWidth = `${percent}%`;
+                  barColor = COLORS.primary[500];
+                }
+                return (
+                  <View key={index} style={styles.barContainer}>
+                    <View
+                      style={[
+                        styles.bar,
+                        {
+                          width: barWidth,
+                          backgroundColor: barColor,
+                        },
+                      ]}
+                    />
+                  </View>
+                );
+              })
+            ) : (
+              <View style={styles.barContainer}>
+                <View
+                  style={[
+                    styles.bar,
+                    {
+                      width: durations[currentIndex]
+                        ? `${
+                            (progress[currentIndex] / durations[currentIndex]) *
+                            100
+                          }%`
+                        : "0%",
+                      backgroundColor: COLORS.primary[500],
+                    },
+                  ]}
+                />
+              </View>
+            )}
           </View>
+          {/* Close button */}
+          <IconButton
+            icon={XIcon}
+            onPress={closeOverlay}
+            buttonSize={40}
+            iconSize={20}
+            style={styles.closeButton}
+          />
+        </View>
+        <View style={styles.videoContainer}>
           <Video
             key={currentIndex}
             ref={videoPlayerRef}
@@ -252,9 +248,6 @@ const styles = StyleSheet.create({
     height: "90%", // Fixed height for the overlay
   },
   controlsContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
     zIndex: 10,
     width: "100%",
     flexDirection: "row",
@@ -262,6 +255,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 8,
     gap: 8,
+    borderRadius: 9999,
+    marginBottom: 8,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
 
@@ -299,8 +294,8 @@ const styles = StyleSheet.create({
   },
   videoContainer: {
     // width: screenWidth - 40, // Adjusted for padding
-    height: "95%",
-    aspectRatio: 6 / 11,
+    height: "80%",
+    aspectRatio: 196 / 425,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
