@@ -96,6 +96,30 @@ const TutorialOverlay = ({
     }
   };
 
+  if (!videos || videos.length === 0) {
+    return (
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          {/* Video */}
+          <View style={styles.videoContainer}>
+            <View style={styles.controlsContainer}>
+              {/* Close button */}
+              <IconButton
+                icon={XIcon}
+                onPress={closeOverlay}
+                buttonSize={40}
+                iconSize={20}
+                style={styles.closeButton}
+              />
+            </View>
+
+            <Text style={styles.title}>No videos available</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
