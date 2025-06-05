@@ -26,9 +26,6 @@ import { getDeviceHeading } from "../../utils/headingUtils";
 import { getCurrentLocation } from "../../utils/locationUtils";
 import { calculateARCoordinates } from "../../utils/geoUtils";
 
-// Import Hooks
-import useLocation from "../../hooks/useLocation";
-
 // Import Styles
 import { COLORS } from "../../styles/theme";
 import { globalStyles } from "../../styles/global";
@@ -68,9 +65,6 @@ const AR = (route) => {
   const [arOriginGeoCoordinates, setAROriginGeoCoordinates] = useState(null); // Track AR origin coordinates
   const [initialHeading, setInitialHeading] = useState(0); // Track initial heading
   // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
-
-  // const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  const { location } = useLocation(); // Get location from custom hook
 
   const [currentLocationReady, setCurrentLocationReady] = useState(false); // Track if current location is ready
   const [initialHeadingReady, setInitialHeadingReady] = useState(false); // Track if initial heading is ready
@@ -388,16 +382,6 @@ const AR = (route) => {
         </View>
       )}
 
-      {/* Coordinates Display */}
-      <View style={styles.coordinatesContainer}>
-        <Text style={styles.coordinatesText}>
-          Latitude: {location.latitude.toFixed(6)}
-        </Text>
-        <Text style={styles.coordinatesText}>
-          Longitude: {location.longitude.toFixed(6)}
-        </Text>
-      </View>
-
       {/* Button to go back */}
       <IconButton
         icon={ArrowLeftIcon}
@@ -533,18 +517,6 @@ const styles = StyleSheet.create({
     bottom: 16,
     right: 20,
     alignItems: "center",
-  },
-  coordinatesContainer: {
-    position: "absolute",
-    bottom: 20,
-    left: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
-    padding: 10,
-    borderRadius: 8,
-  },
-  coordinatesText: {
-    color: "white",
-    fontSize: 14,
   },
   scanOverlay: {
     position: "absolute",
