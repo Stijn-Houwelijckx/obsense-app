@@ -24,6 +24,8 @@ import darkModeStyle from "../../styles/mapStyles";
 // Import Components
 import { CustomButton } from "../../components/UI";
 
+const defaultImage = require("../../../assets/images/DefaultImage.jpg");
+
 const Map = ({ navigation }) => {
   const [collectionData, setCollectionData] = useState([]); // State to store collection data
   const { activeCollectionId } = useActiveCollection();
@@ -268,7 +270,12 @@ const Map = ({ navigation }) => {
               {/* Custom marker using the objects's image */}
               <View style={styles.markerContainer}>
                 <FastImage
-                  source={{ uri: object.object.thumbnail.filePath }}
+                  // source={{ uri: object.object.thumbnail.filePath }}
+                  source={
+                    object.object.thumbnail.filePath
+                      ? { uri: object.object.thumbnail.filePath }
+                      : defaultImage
+                  }
                   style={styles.markerImage}
                 />
               </View>

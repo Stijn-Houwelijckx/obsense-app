@@ -99,6 +99,8 @@ const videos = [
   },
 ];
 
+const defaultImage = require("../../../assets/images/DefaultImage.jpg");
+
 const AR = (route) => {
   const navigation = useNavigation(); // React Navigation hook for navigation
   const isFocused = useIsFocused(); // React Navigation hook to track focus
@@ -120,12 +122,7 @@ const AR = (route) => {
   const [isARActive, setIsARActive] = useState(true); // Track AR Scene status
   const [arOriginGeoCoordinates, setAROriginGeoCoordinates] = useState(null); // Track AR origin coordinates
   const [initialHeading, setInitialHeading] = useState(0); // Track initial heading
-  // const [deviceHeading, setDeviceHeading] = useState(0); // Track device heading
 
-  // const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  // const { location } = useLocation(); // Get location from custom hook
-  // const { logs, addLog, clearLogs, copyLogsToClipboard } = useLogs();
-  // const [isLogsVisible, setIsLogsVisible] = useState(false); // State to toggle logs modal
   const [showTutorialOverlay, setShowTutorialOverlay] = useState(false);
 
   const [dependenciesReady, setDependenciesReady] = useState(false);
@@ -140,7 +137,9 @@ const AR = (route) => {
           id: obj._id,
           title: obj.title,
           source: { uri: obj.file.filePath },
-          thumbnail: { uri: obj.thumbnail.filePath },
+          thumbnail: obj.thumbnail.filePath
+            ? { uri: obj.thumbnail.filePath }
+            : defaultImage, // Use default image if thumbnail is not available
         }))
       );
     } else {
@@ -237,13 +236,6 @@ const AR = (route) => {
 
           const arObjects = await Promise.all(
             placedObjects.map(async (obj) => {
-              // console.log("Object: ", obj); // Debug log
-              // const geoCoordinates = await calculateARCoordinates(
-              //   { lat: obj.position.lat, lng: obj.position.lon },
-              //   { latitude: obj.origin.lat, longitude: obj.origin.lon },
-              //   obj.origin.heading
-              // );
-
               const geoCoordinates = await getFinalARPosition({
                 modelPosition: {
                   lat: obj.position.lat,
@@ -314,7 +306,6 @@ const AR = (route) => {
     const fetchHeading = async () => {
       const heading = await getDeviceHeading(); // Get the device's heading
       setInitialHeading(heading); // Save the initial heading
-      // addLog(`Initial heading: \n ${heading} degrees`);
     };
 
     fetchHeading(); // Call the function to fetch heading
@@ -332,11 +323,6 @@ const AR = (route) => {
   const getAROriginGeoCoordinates = async () => {
     try {
       const currentLocation = await getCurrentLocation(); // Get the current location
-      // addLog(
-      //   `AR Origin Coordinates: \n lat: ${currentLocation.latitude.toFixed(
-      //     6
-      //   )} \n lon: ${currentLocation.longitude.toFixed(6)}`
-      // );
 
       setAROriginGeoCoordinates({
         latitude: currentLocation.latitude,
@@ -386,10 +372,8 @@ const AR = (route) => {
 
   const cleanupAndGoBack = async () => {
     clearActiveCollection();
-    // await AsyncStorage.removeItem("activeCollectionId"); // Clear active collection ID
     setObjects([]); // Clear objects when navigating away
     setCurrentlySelectedObjectId(null); // Reset selected object
-    // clearLogs(); // Clear logs when navigating away
     navigation.goBack(); // Go back to the previous screen
   };
 
@@ -438,46 +422,12 @@ const AR = (route) => {
       // addLog("No object selected to save.");
       return;
     }
-    // addLog(`===================`);
-    // addLog(`Save object with ID: \n ${objectId}`);
-    // console.log("Save object with ID: ", objectId);
-    // console.log(
-    //   "Position: ",
-    //   objects.find((obj) => obj.id === objectId).position
-    // );
+
     const currentObject = objects.find((obj) => obj.id === objectId);
     if (!currentObject) return null;
 
-    // addLog(
-    //   `Position: \n x: ${JSON.stringify(
-    //     currentObject.position[0].toFixed(6)
-    //   )}\n y: ${JSON.stringify(
-    //     currentObject.position[1].toFixed(6)
-    //   )}\n z: ${JSON.stringify(currentObject.position[2].toFixed(6))}`
-    // );
-    // // console.log("Scale: ", objects.find((obj) => obj.id === objectId).scale);
-    // addLog(
-    //   `Scale: \n x: ${JSON.stringify(
-    //     currentObject.scale[0]
-    //   )} \n y: ${JSON.stringify(currentObject.scale[1])} \n z: ${JSON.stringify(
-    //     currentObject.scale[2]
-    //   )}`
-    // );
-    // console.log(
-    //   "Rotation: ",
-    //   objects.find((obj) => obj.id === objectId).rotation
-    // );
-    // addLog(
-    //   `Rotation: \n x: ${JSON.stringify(
-    //     currentObject.rotation[0]
-    //   )} \n y: ${JSON.stringify(
-    //     currentObject.rotation[1]
-    //   )} \n z: ${JSON.stringify(currentObject.rotation[2])}`
-    // );
-
     // Get the current heading
     const heading = await getDeviceHeading();
-    // addLog(`Device heading: \n ${heading} degrees`);
 
     const geoCoordinates = await calculateGeoCoordinates(
       currentObject.position,
@@ -497,42 +447,9 @@ const AR = (route) => {
     );
 
     if (!payload) {
-      // addLog("No payload to save.");
       console.log("No payload to save.");
       return;
     }
-
-    // addLog(
-    //   `Payload to save: \n { \n collectionId: \n ${JSON.stringify(
-    //     payload.placedObject.collectionId
-    //   )} \n deviceHeading: \n ${JSON.stringify(
-    //     payload.placedObject.deviceHeading
-    //   )} degrees \n\n objectId: \n ${JSON.stringify(
-    //     payload.placedObject.objectId
-    //   )} \n\n placedObjectId: \n ${JSON.stringify(
-    //     payload.placedObject.placedObjectId
-    //   )} \n\n position: \n { \n lat: ${JSON.stringify(
-    //     payload.placedObject.position.lat.toFixed(6)
-    //   )} \n lon: ${JSON.stringify(
-    //     payload.placedObject.position.lon.toFixed(6)
-    //   )} \n\n x: ${JSON.stringify(
-    //     payload.placedObject.position.x.toFixed(6)
-    //   )} \n y: ${JSON.stringify(
-    //     payload.placedObject.position.y.toFixed(6)
-    //   )} \n z: ${JSON.stringify(
-    //     payload.placedObject.position.z.toFixed(6)
-    //   )} \n } \n\n rotation: \n { \n x: ${JSON.stringify(
-    //     payload.placedObject.rotation.x
-    //   )} \n y: ${JSON.stringify(
-    //     payload.placedObject.rotation.y
-    //   )} \n z: ${JSON.stringify(
-    //     payload.placedObject.rotation.z
-    //   )} \n } \n\n scale: \n { \n x: ${JSON.stringify(
-    //     payload.placedObject.scale.x
-    //   )} \n y: ${JSON.stringify(
-    //     payload.placedObject.scale.y
-    //   )} \n z: ${JSON.stringify(payload.placedObject.scale.z)} \n } \n } \n`
-    // );
 
     // Post the payload to the API
     try {
@@ -559,11 +476,9 @@ const AR = (route) => {
       } else {
         console.error("Failed to save object:", response.message);
         console.log(response);
-        // addLog(`Failed to save object: ${response.message}`);
       }
     } catch (error) {
       console.error("Error saving object:", error.message);
-      // addLog(`Error saving object: ${error.message}`);
     }
 
     setCurrentlySelectedObjectId(null); // Reset the selected object after saving
@@ -575,14 +490,11 @@ const AR = (route) => {
       const response = await deletePlacedObject(objectId);
       if (response.status === "success" || response.data.code === 404) {
         console.log("Object deleted successfully:", response.data);
-        // addLog("Object deleted successfully.");
       } else {
         console.error("Failed to delete object:", response.message);
-        // addLog(`Failed to delete object: ${response.message}`);
       }
     } catch (error) {
       console.error("Error deleting object:", error.message);
-      // addLog(`Error deleting object: ${error.message}`);
     }
   };
 
@@ -668,54 +580,6 @@ const AR = (route) => {
           )}
         </View>
       )}
-
-      {/* Coordinates Display */}
-      {/* <View style={styles.coordinatesContainer}>
-        <Text style={styles.coordinatesText}>
-          Latitude: {location.latitude.toFixed(6)}
-        </Text>
-        <Text style={styles.coordinatesText}>
-          Longitude: {location.longitude.toFixed(6)}
-        </Text>
-      </View> */}
-
-      {/* Button to Show Logs */}
-      {/* <TouchableOpacity
-        style={styles.showLogsButton}
-        onPress={() => setIsLogsVisible(true)}
-      >
-        <Text style={styles.showLogsButtonText}>Show Logs</Text>
-      </TouchableOpacity> */}
-
-      {/* Logs Modal */}
-      {/* <Modal
-        visible={isLogsVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setIsLogsVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Logs</Text>
-            <ScrollView style={styles.logContainer}>
-              {logs.length === 0 && (
-                <Text style={styles.logText}>No logs available.</Text>
-              )}
-              {logs.length > 0 &&
-                logs.map((log, index) => (
-                  <Text key={index} style={styles.logText}>
-                    {log}
-                  </Text>
-                ))}
-            </ScrollView>
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <Button title="Copy" onPress={copyLogsToClipboard} />
-              <Button title="Close" onPress={() => setIsLogsVisible(false)} />
-              <Button title="Clear" onPress={clearLogs} />
-            </View>
-          </View>
-        </View>
-      </Modal> */}
 
       {/* Button to go back */}
       {!showTutorialOverlay && (
@@ -938,31 +802,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  coordinatesContainer: {
-    position: "absolute",
-    bottom: 20,
-    left: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
-    padding: 10,
-    borderRadius: 8,
-  },
-  coordinatesText: {
-    color: "white",
-    fontSize: 14,
-  },
-  showLogsButton: {
-    position: "absolute",
-    bottom: 80,
-    left: 10,
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 8,
-  },
-  showLogsButtonText: {
-    color: "white",
-    fontSize: 14,
-    textAlign: "center",
-  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
@@ -986,11 +825,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
-  },
-  logText: {
-    color: "black",
-    fontSize: 12,
-    marginBottom: 5,
   },
   objectSelectModal: {
     maxWidth: "100%",

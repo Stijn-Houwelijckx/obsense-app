@@ -39,6 +39,8 @@ import {
   CustomButton,
 } from "../../components/UI";
 
+const defaultImage = require("../../../assets/images/DefaultImage.jpg");
+
 const CollectionDetails = ({ navigation, route }) => {
   const { collectionId } = route.params;
   const [collectionDetailsData, setCollectionDetailsData] = useState([]); // State to store collection data
@@ -170,7 +172,11 @@ const CollectionDetails = ({ navigation, route }) => {
               renderItem={({ item }) => (
                 <ObjectCard
                   title={item.title}
-                  imageUrl={item.thumbnail.filePath}
+                  imageUrl={
+                    item.thumbnail.filePath === null
+                      ? defaultImage
+                      : item.thumbnail.filePath
+                  }
                   isPlaced={false}
                 />
               )}
