@@ -53,7 +53,11 @@ const Header = ({
               iconSize={24}
             />
           )}
-          <Text style={[globalStyles.headingH6Bold, styles.headerTitle]}>
+          <Text
+            style={[globalStyles.headingH6Bold, styles.headerTitle]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {title}
           </Text>
           {showBackButton && <View style={styles.spacer} />}
@@ -143,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: COLORS.neutral[50],
+    paddingHorizontal: 8,
   },
   spacer: {
     width: 48,
