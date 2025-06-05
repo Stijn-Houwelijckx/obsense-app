@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  Alert,
-  StyleSheet,
-  PermissionsAndroid,
-  Platform,
-  Linking,
-} from "react-native";
+import { View, Text, Alert, StyleSheet, Platform, Linking } from "react-native";
 import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import Geolocation from "@react-native-community/geolocation";
 import FastImage from "react-native-fast-image";
@@ -290,15 +282,6 @@ const Map = ({ navigation }) => {
             </Marker>
           ))}
       </MapView>
-
-      <View style={styles.coordinatesContainer}>
-        <Text style={styles.coordinatesText}>
-          Latitude: {location.latitude.toFixed(6)}
-        </Text>
-        <Text style={styles.coordinatesText}>
-          Longitude: {location.longitude.toFixed(6)}
-        </Text>
-      </View>
     </View>
   );
 };
@@ -309,18 +292,6 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject, // Make the map fill the entire screen
-  },
-  coordinatesContainer: {
-    position: "absolute",
-    bottom: 20,
-    left: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
-    padding: 10,
-    borderRadius: 8,
-  },
-  coordinatesText: {
-    color: "white",
-    fontSize: 14,
   },
   markerContainer: {
     alignItems: "center",
